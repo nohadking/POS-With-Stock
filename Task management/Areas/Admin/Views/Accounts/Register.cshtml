@@ -1,0 +1,213 @@
+﻿@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="description" content="POS - Bootstrap Admin Template">
+    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
+    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Login - Pos admin template</title>
+    <span style="color:red"> <strong>@TempData["Message2"]</strong></span>
+    <input type="hidden" asp-for="NewRegister.returnUrl" id="url">
+    <script src="~/AdminEn/assets/js/theme-script.js"></script>
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="~/AdminEn/assets/img/favicon.png">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/AdminEn/assets/css/bootstrap.rtl.min.css">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="~/AdminEn/assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="~/AdminEn/assets/plugins/fontawesome/css/all.min.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="~/AdminEn/assets/css/style.css">
+
+</head>
+<body class="account-page">
+
+    <div id="global-loader">
+        <div class="whirly-loader"> </div>
+    </div>
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <div class="account-content">
+            <div class="login-wrapper">
+                <div class="login-content">
+                    <form  asp-controller="Accounts" asp-action="Registers1" enctype="multipart/form-data">
+                        <div class="login-userset">
+                            <div class="login-logo logo-normal">
+                                <img src="~/AdminEn/assets/img/logo.png" alt="img">
+                            </div>
+                            <a href="index.html" class="login-logo logo-white">
+                                <img src="~/AdminEn/assets/img/logo-white.png" alt="">
+                            </a>
+                            <div class="login-userheading">
+                                <h3>Register</h3>
+                                <h4>Create New Dreamspos Account</h4>
+                            </div>
+                            <div class="form-login">
+                                <label>Name</label>
+                                <div class="form-addons">
+                                    <input type="text" asp-for="NewRegister.Name" class="form-control">
+                                    <img src="~/AdminEn/assets/img/icons/user-icon.svg" alt="img">
+                                    <span asp-validation-for="NewRegister.Name"></span>
+                                </div>
+                            </div>
+                            <div class="form-login">
+                                <label>User Name</label>
+                                <div class="form-addons">
+                                    <input type="text" asp-for="NewRegister.userName" class="form-control">
+                                    <img src="~/AdminEn/assets/img/icons/wallet1.svg" alt="img">
+                                    <span asp-validation-for="NewRegister.userName"></span>
+                                </div>
+                            </div>
+                            <div class="form-login">
+                                <label>Email Address</label>
+                                <div class="form-addons">
+                                    <input type="text" asp-for="NewRegister.Email" class="form-control">
+                                    <img src="~/AdminEn/assets/img/icons/mail.svg" alt="img">
+                                    <span asp-validation-for="NewRegister.Email"></span>
+                                </div>
+                            </div>
+                            <div class="form-login">
+                                <label>Phone Number</label>
+                                <div class="form-addons">
+                                    <input type="text" asp-for="NewRegister.PhoneNumber" class="form-control">
+                                    <img src="~/AdminEn/assets/img/icons/edit.svg" alt="img">
+                                    <span asp-validation-for="NewRegister.PhoneNumber"></span>
+
+                                </div>
+                            </div>
+
+                            <div class="form-login">
+                                <label>Password</label>
+                                <div class="pass-group">
+                                    <input type="password" asp-for="NewRegister.Password" class="pass-input">
+                                    <span class="fas toggle-password fa-eye-slash"></span>
+                                    <span asp-validation-for="NewRegister.Password"></span>
+
+                                </div>
+                            </div>
+                            <div class="form-login">
+                                <label>Confirm Passworrd</label>
+                                <div class="pass-group">
+                                    <input type="password" asp-for="NewRegister.ComparePassword" class="pass-inputs">
+                                    <span class="fas toggle-passwords fa-eye-slash"></span>
+                                    <span asp-validation-for="NewRegister.ComparePassword"></span>
+
+                                </div>
+                            </div>
+                           
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title">Image User</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="custom-file-container" data-upload-id="myFirstImage">
+                                            <label>
+                                                <a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a>
+                                            </label>
+                                            <label class="custom-file-container__custom-file">
+                                                <input type="file" class="custom-file-container__custom-file__custom-file-input" name="Files" id="file" onchange="loadFile(event)">
+                                                <input type="hidden" name="MAX_FILE_SIZE" value="10485760">
+                                                <img id="output" width="100" height="100" />
+                                                <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                            </label>
+                                            <div class="custom-file-container__image-preview"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <div class="form-login authentication-check">
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <div class="custom-control custom-checkbox justify-content-start">
+                                            <div class="custom-control custom-checkbox">
+                                                <label class="checkboxs ps-4 mb-0 pb-0 line-height-1">
+                                                    <input type="checkbox">
+                                                    <span class="checkmarks"></span>I agree to the <a href="#" class="hover-a">Terms & Privacy</a>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-login">
+                                <button type="submit" class="btn btn-login">Sign Up</button>
+                            </div>
+                            <div class="signinform">
+                                <h4>Already have an account ? <a href="signin-2.html" class="hover-a">Sign In Instead</a></h4>
+                            </div>
+                            <div class="form-setlogin or-text">
+                                <h4>OR</h4>
+                            </div>
+                            <div class="form-sociallink">
+                                <ul class="d-flex">
+                                    <li>
+                                        <a href="javascript:void(0);" class="facebook-logo">
+                                            <img src="~/AdminEn/assets/img/icons/facebook-logo.svg" alt="Facebook">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);">
+                                            <img src="~/AdminEn/assets/img/icons/google.png" alt="Google">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);" class="apple-logo">
+                                            <img src="~/AdminEn/assets/img/icons/apple-logo.svg" alt="Apple">
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="my-4 d-flex justify-content-center align-items-center copyright-text">
+                                <p>Copyright &copy; 2023 DreamsPOS. All rights reserved</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="login-img">
+                    <img src="~/AdminEn/assets/img/authentication/register02.png" alt="img">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Main Wrapper -->
+    <div class="customizer-links" id="setdata">
+        <ul class="sticky-sidebar">
+            <li class="sidebar-icons">
+                <a href="#" class="navigation-add" data-bs-toggle="tooltip" data-bs-placement="left"
+                   data-bs-original-title="Theme">
+                    <i data-feather="settings" class="feather-five"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- jQuery -->
+    <script src="~/AdminEn/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Feather Icon JS -->
+    <script src="~/AdminEn/assets/js/feather.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="~/AdminEn/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/AdminEn/assets/js/script.js"></script>
+
+    <script>
+        var loadFile = function (event) {
+            var output = document.getElementById('output');
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.onload = function () {
+                URL.revokeObjectURL(output.src); // free memory
+            }
+        };
+    </script>
+</body>
+</html>
+

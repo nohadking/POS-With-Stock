@@ -1,0 +1,2521 @@
+﻿@using Infarstuructre.BL
+@model ViewmMODeElMASTER;
+@inject UserManager<ApplicationUser> userManager
+@{
+    ViewData["Title"] = "MyPurchase";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@{
+    var user = await userManager.GetUserAsync(User);
+}
+
+<div hidden id="UserName">@user.UserName</div>
+
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header transfer">
+            <div class="add-item d-flex">
+                <div class="page-title">
+                    <h4>Purchase List</h4>
+                    <h6>Manage your purchases</h6>
+                </div>
+            </div>
+            <ul class="table-top-head">
+                <li>
+                    <a data-bs-toggle="tooltip" onclick="CreatePdf()" data-bs-placement="top" title="Pdf">
+                        <img src="~/AdminEn/assets/img/icons/pdf.svg" alt="img">
+                    </a>
+                </li>
+                <li>
+                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="Excel">
+                        <img src="~/AdminEn/assets/img/icons/excel.svg" alt="img">
+                    </a>
+                </li>
+                <li>
+                    <a onclick="printDirectPdf()" data-bs-toggle="tooltip" data-bs-placement="top" title="print">
+                        <img src="~/AdminEn/assets/img/icons/printer.svg" alt="img">
+                    </a>
+                </li>
+                <li>
+                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="Refresh">
+                        <i data-feather="rotate-ccw" class="feather-rotate-ccw"></i>
+                    </a>
+                </li>
+                <li>
+                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="Collapse" id="collapse-header"><i data-feather="chevron-up" class="feather-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="d-flex purchase-pg-btn">
+                <div class="page-btn">
+                    <a href="#" class="btn btn-added" data-bs-toggle="modal" data-bs-target="#add-units">
+                        <i data-feather="plus-circle" class="me-2"></i>Add New Purchase
+                    </a>
+                </div>
+                <div class="page-btn import">
+                    <a href="#" class="btn btn-added color" data-bs-toggle="modal" data-bs-target="#view-notes">
+                        <i data-feather="download" class="me-2"></i>Import Purchase
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- /product list -->
+        <div class="card table-list-card">
+            <div class="card-body">
+                <div class="table-top">
+                    <div class="search-set">
+                        <div class="search-input">
+                            <a href="" class="btn btn-searchset">
+                                <i data-feather="search"
+                                   class="feather-search"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="search-path">
+                        <a class="btn btn-filter" id="filter_search">
+                            <i data-feather="filter" class="filter-icon"></i>
+                            <span><img src="~/AdminEn/assets/img/icons/closes.svg" alt="img"></span>
+                        </a>
+                    </div>
+                    <div class="form-sort">
+
+                        <label for="flatpickr-date" class="form-label">اختر تاريخ</label>
+
+                        <select id="SelectDetectedDateForPrint" class="form-select" asp-for="@Model.Purchase.PurchaseNumber" asp-items="@(new SelectList(ViewBag.Purchase, "IdPurchase", "PurchaseDate"))">
+                            <option></option>
+                        </select>
+                    </div>
+                </div>
+                <!-- /Filter -->
+                <div class="card" id="filter_inputs">
+                    <div class="card-body pb-0">
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-6 col-12">
+                                <div class="input-blocks">
+                                    <label for="flatpickr-date" class="form-label">اختر مورد</label>
+
+                                 <select id="SelectSuplierForPrint" class="form-select" asp-for="@Model.Purchase.IdSupplier" asp-items="@(new SelectList(ViewBag.Supplier, "IdSupplier", "SupplierName"))">
+                                        <option></option>
+                                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-6 col-12">
+                                <div class="input-blocks">
+                                    <label for="flatpickr-date" class="form-label">اختر صنف</label>
+
+                                    <select id="SelectProductForPrint" class="form-select" asp-for="@Model.Purchase.IdProduct">
+                                        <option></option>
+                                        @{
+                                            var Cards = (@ViewBag.ClassCard as List<TBViewClassCard>);
+                                        }
+                                        @if (Cards != null && Cards.Any())
+                                        {
+                                            foreach (var item in Cards)
+                                            {
+                                                <option value="@item.IdClassCard" data-additional="@item.Photo">
+                                                    @item.ItemName
+                                                </option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option disabled>لا توجد منتجات متاحة</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-6 col-12">
+                                <div class="input-blocks">
+                                    <label for="flatpickr-date" class="form-label">اختر رقم السند</label>
+
+                                    <select id="SelectPurchaseNumberForPrint" class="form-select" asp-for="@Model.Purchase.PurchaseNumber" asp-items="@(new SelectList(ViewBag.Purchase, "IdPurchase", "PurchaseNumber"))">
+                                        <option></option>
+                                    </select>
+                                </div>
+                            </div>
+                      
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-6 col-12">
+                                <div class="input-blocks">
+                                    
+                                    <label for="flatpickr-date" class="form-label">من تاريخ</label>
+                                    <input id="SelectStartDTForPrint" type="date" class="form-control" placeholder="YYYY-MM-DD" id="flatpickr-date" />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-sm-6 col-12">
+                                <div class="input-blocks">
+                                    
+                                    <label for="flatpickr-date" class="form-label">إلى تاريخ</label>
+                                    <input id="SelectEndDTForPrint" type="date" class="form-control" placeholder="YYYY-MM-DD" id="flatpickr-date" />
+                                </div>
+                            </div>
+                        
+                        </div>
+                    </div>
+                </div>
+                <!-- /Filter -->
+                <div class="table-responsive product-list">
+                    <table id="TblForPrintTBL" class="table  datanew list">
+                        <thead>
+                            <tr>
+                                <th class="no-sort">
+                                    <label class="checkboxs">
+                                        <input type="checkbox" id="select-all">
+                                        <span class="checkmarks"></span>
+                                    </label>
+                                </th>
+                                <th>@ResourceWeb.lbSupplierName</th>
+                                <th>@ResourceWeb.lbPurchaseDate</th>
+                                <th>@ResourceWeb.lbPaymentMethodAr</th>
+
+                                <th>@ResourceWeb.LBPurchaseNumber</th>
+                                <th>@ResourceWeb.LBPurchaseSubNumber</th>
+                                <th>@ResourceWeb.LBTotalQuantity</th>
+                                <th>@ResourceWeb.LBTotalDiscount</th>
+                                <th>@ResourceWeb.LBshipping</th>
+                                <th>@ResourceWeb.LBTotalAll</th>
+                                <th>@ResourceWeb.LbDateTimeEntry</th>
+                                <th>@ResourceWeb.LbDataEntry</th>
+                                <th>@ResourceWeb.lbCurrentState</th>
+                                <th class="no-sort">@ResourceWeb.LbOpration</th>
+                            </tr>
+                        </thead>
+                        <tbody id="TBLToPrint">
+                            @foreach (var item in Model.ListViewPurchase)
+                            {
+                                <tr>
+                                    <td>
+                                        <label class="checkboxs">
+                                            <input type="checkbox">
+                                            <span class="checkmarks"></span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <div class="userimgname">
+                                            <a href="#" class="userslist-img bg-img">
+                                                <img src="@string.Format("/Images/Home/{0}", item.PhotoSupplier)" alt="product">
+                                            </a>
+                                            <div>
+                                                <a href="#">@item.SupplierName</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                
+                                    <td>@item.PurchaseDate</td>
+                                    <td>@item.PaymentMethodAr</td>
+                                    <td>@item.PurchaseNumber</td>
+                                    <td>@item.PurchaseSubNumber</td>
+                                    <td>@item.TotalQuantity</td>
+                                    <td>@item.TotalDiscount</td>
+                                    <td>@item.shipping</td>
+                                    <td>@item.TotalAll</td>
+                                    <td>@item.DateTimeEntry</td>
+                                    <td>@item.DataEntry</td>
+                                    <td>@item.CurrentState</td>
+                                    <td class="action-table-data">
+                                        <div class="edit-delete-action">
+                                            <a class="me-2 p-2" href="javascript:void(0);">
+                                                <i data-feather="eye" class="action-eye"></i>
+                                            </a>
+                                            <a onclick="EditPurcheasData(@item.PurchaseNumber)" class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
+                                                <i data-feather="edit" class="feather-edit"></i>
+                                            </a>
+                                            <a class="confirm-text p-2" href="javascript:void(0);">
+                                                <i data-feather="trash-2" class="feather-trash-2"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <!-- /product list -->
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////// *@
+<!-- /Main Wrapper -->
+<!-- Add Purchase -->
+<div class="modal fade" id="add-units">
+    <div class="modal-dialog purchase modal-dialog-centered stock-adjust-modal">
+        <div class="modal-content">
+            <div class="page-wrapper-new p-0">
+                <div class="content">
+                    <div class="modal-header border-0 custom-modal-header">
+                        <div class="page-title">
+                            <h4>إضافة سند شراء</h4>
+                        </div>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body custom-modal-body">
+                        <form action="purchase-list.html">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="input-blocks add-product">
+                                        <label>@ResourceWeb.lbSupplierName</label>
+                                        <div class="row">
+                                            <div class="col-lg-10 col-sm-10 col-10">
+                                                <select class="form-select" asp-for="@Model.Purchase.IdSupplier" asp-items="@(new SelectList(ViewBag.Supplier, "IdSupplier", "SupplierName"))" id="supplierSelect">
+                                                    <option>اختر المورد</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
+
+                                                <img id="supplierImage" src="" alt="Supplier Image" class="img-fluid" style="max-width: 50px; display: none;" />
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="input-blocks">
+                                        <label>@ResourceWeb.lbPurchaseDate</label>
+                                        <div class="input-groupicon calender-input">
+                                            <input id="PurcheasDt" type="date" class="form-control" placeholder="Choose">
+                                        </div>
+                                    </div>
+                                </div>
+                                    <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="input-blocks">
+                                        <label>بيان الطلب</label>
+                                        <div class="input-groupicon calender-input">
+                                            <input id="purStatment" type="text" class="form-control">
+                                        </div>
+                                    </div>
+                               
+                                </div>
+                            </div>
+                                <div class="row">
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="input-blocks">
+                                        <label>@ResourceWeb.lbPaymentMethodAr</label>
+                                        <select id="PayMethId" class="form-select" asp-for="@Model.Purchase.IdPaymentMethod" asp-items="@(new SelectList(ViewBag.PaymentMethod, "IdPaymentMethod", "PaymentMethodAr"))">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="input-blocks">
+                                        <label>@ResourceWeb.LBPurchaseNumber</label>
+                                        <input id="PurcheasNu" type="text" class="form-control" value="@ViewBag.nomberMax">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="input-blocks">
+                                        <label>@ResourceWeb.LBPurchaseSubNumber</label>
+                                        <input id="PurcheasSubNu" type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                           
+                            <div class="row">
+                                <div class="col-lg-7">
+                                    <div class="input-blocks">
+                                        <label>المنتجات</label>
+
+                                        <select id="productSelect" class="form-select" asp-for="@Model.Purchase.IdProduct">
+                                            <option>اختر منتج</option>
+                                            @{
+                                                var Cards1 = (@ViewBag.ClassCard as List<TBViewClassCard>);
+                                            }
+                                            @if (Cards1 != null && Cards1.Any())
+                                            {
+                                                foreach (var item in Cards1)
+                                                {
+                                                    <option value="@item.IdClassCard" data-additional="@item.Photo">
+                                                        @item.ItemName
+                                                    </option>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <option disabled>لا توجد منتجات متاحة</option>
+                                            }
+                                        </select>
+
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="input-blocks">
+                                        <label>أخر سعر شراء</label>
+                                        <input type="text" id="lastPurchasePrice" class="form-control" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+
+                                    <label>إضافة منتج </label>
+                                    <div class="add-icon tab">
+                                        <a onclick="AddProductToTBL()" href="javascript:void(0);"><i data-feather="plus-circle" class="feather-plus-circles"></i></a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="modal-body-table">
+                                        <div class="table-responsive">
+                                            <table class="table  datanew">
+                                                <thead>
+                                                    <tr>
+                                                        <th>المنتج</th>
+                                                        <th>الكمية</th>
+                                                        <th>الوحدة</th>
+                                                        <th>الكمية المجانية</th>
+                                                        <th>السعر الافرادي($)</th>
+                                                        <th>الخصم($)</th>
+                                                        <th>الضريبة(%)</th>
+                                                        <th>إجمالي الكمية($)</th>
+                                                        <th>أجمالي السعر($)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="TBLToAddPurcheas">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="input-blocks">
+                                            <label>Order Tax</label>
+                                            <input id="OrderTotalTax" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="input-blocks">
+                                            <label>Discount</label>
+                                            <input id="OrderTotalDiscount" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="input-blocks">
+                                            <label>Total Quantity</label>
+                                            <input id="OrderTotalQTY" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="input-blocks">
+                                            <label>Shipping</label>
+                                            <input id="OrderTotalShipping" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="input-blocks">
+                                            <label>Order Total Price</label>
+                                            <input id="OrderTotalPrice" type="text">
+                                            <input hidden id="OrderTotalPriceTemp" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="input-blocks summer-description-box">
+                                    <label>Notes</label>
+                                    <input id="NotesForPurcheas" value="" type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="modal-footer-btn">
+                                    <button type="button" onclick="ClearValues()" class="btn btn-cancel me-2" data-bs-dismiss="modal">Cancel</button>
+                                    <button onclick="SavePurcheasInDB()" type="button" class="btn btn-submit">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////// *@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* ////////////////////////////////////////    Edit Purcheas /////////////////////////////////////////////////// *@
+
+
+
+<!-- /Add Purchase -->
+<!-- Edit Purchase -->
+<div class="modal fade" id="edit-units">
+    <div class="modal-dialog purchase modal-dialog-centered stock-adjust-modal">
+        <div class="modal-content">
+            <div class="page-wrapper-new p-0">
+                <div class="content">
+                    <div class="modal-header border-0 custom-modal-header">
+                        <div class="page-title">
+                            <h4>Edit Purchase</h4>
+                        </div>
+                        <button onclick="ClearValuesForEdit()" type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body custom-modal-body">
+                        <form action="purchase-list.html">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="input-blocks add-product">
+                                        <label>@ResourceWeb.lbSupplierName</label>
+                                        <div class="row">
+                                            <div class="col-lg-10 col-sm-10 col-10">
+                                                <select id="supplierSelectEdit" class="form-select" asp-for="@Model.Purchase.IdSupplier" asp-items="@(new SelectList(ViewBag.Supplier, "IdSupplier", "SupplierName"))">
+                                                    <option>اختر المورد</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
+
+                                                <img id="supplierImageEdit" src="" alt="Supplier Image" class="img-fluid" style="max-width: 50px; display: none;" />
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="input-blocks">
+                                        <label>@ResourceWeb.lbPurchaseDate</label>
+                                        <div class="input-groupicon calender-input">
+                                            <input id="PurcheasDtEdit" type="date" class="form-control" placeholder="Choose">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="input-blocks">
+                                        <label>بيان الطلب</label>
+                                        <div class="input-groupicon calender-input">
+                                            <input id="purStatmentEdit" type="text" class="form-control">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="input-blocks">
+                                        <label>@ResourceWeb.lbPaymentMethodAr</label>
+                                        <select id="PayMethIdEdit" class="form-select" asp-for="@Model.Purchase.IdPaymentMethod" asp-items="@(new SelectList(ViewBag.PaymentMethod, "IdPaymentMethod", "PaymentMethodAr"))">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="input-blocks">
+                                        <label>@ResourceWeb.LBPurchaseNumber</label>
+                                        <input id="PurcheasNuEdit" type="text" class="form-control" value="@ViewBag.nomberMax">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="input-blocks">
+                                        <label>@ResourceWeb.LBPurchaseSubNumber</label>
+                                        <input id="PurcheasSubNuEdit" type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-7">
+                                    <div class="input-blocks">
+                                        <label>المنتجات</label>
+
+                                        <select id="productSelectEdit" class="form-select" asp-for="@Model.Purchase.IdProduct">
+                                            <option>اختر منتج</option>
+                                            @{
+                                                var Cardss = (@ViewBag.ClassCard as List<TBViewClassCard>);
+                                            }
+                                            @if (Cardss != null && Cardss.Any())
+                                            {
+                                                foreach (var item in Cardss)
+                                                {
+                                                    <option value="@item.IdClassCard" data-additional="@item.Photo">
+                                                        @item.ItemName
+                                                    </option>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <option disabled>لا توجد منتجات متاحة</option>
+                                            }
+                                        </select>
+
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="input-blocks">
+                                        <label>أخر سعر شراء</label>
+                                        <input type="text" id="lastPurchasePriceEdit" class="form-control" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+
+                                    <label>إضافة منتج </label>
+                                    <div class="add-icon tab">
+                                        <a onclick="AddProductToTBLEdit()" href="javascript:void(0);"><i data-feather="plus-circle" class="feather-plus-circles"></i></a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="modal-body-table">
+                                        <div class="table-responsive">
+                                            <table id="TblForResultTBL" class="table  datanew">
+                                                <thead>
+                                                    <tr>
+                                                        <th>المنتج</th>
+                                                        <th>الكمية</th>
+                                                        <th>الوحدة</th>
+                                                        <th>الكمية المجانية</th>
+                                                        <th>السعر الافرادي($)</th>
+                                                        <th>الخصم($)</th>
+                                                        <th>الضريبة(%)</th>
+                                                        <th>إجمالي الكمية($)</th>
+                                                        <th>أجمالي السعر($)</th>
+                                                        <th>حذف</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="TBLToAddPurcheasEdit">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="input-blocks">
+                                            <label>Order Tax</label>
+                                            <input id="OrderTotalTaxEdit" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="input-blocks">
+                                            <label>Discount</label>
+                                            <input id="OrderTotalDiscountEdit" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="input-blocks">
+                                            <label>Total Quantity</label>
+                                            <input id="OrderTotalQTYEdit" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="input-blocks">
+                                            <label>Shipping</label>
+                                            <input id="OrderTotalShippingEdit" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="input-blocks">
+                                            <label>Order Total Price</label>
+                                            <input id="OrderTotalPriceEdit" type="text">
+                                            <input hidden id="OrderTotalPriceEditTemp" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="input-blocks summer-description-box">
+                                    <label>Notes</label>
+                                    <input id="NotesForPurcheasEdit" value="" type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="modal-footer-btn">
+                                    <button type="button" onclick="ClearValuesForEdit()" class="btn btn-cancel me-2" data-bs-dismiss="modal">Cancel</button>
+                                    <button onclick="EditPurcheasInDB()" type="button" class="btn btn-submit">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<!-- /Edit Purchase -->
+<!-- Import Purchase -->
+<div class="modal fade" id="view-notes">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="page-wrapper-new p-0">
+                <div class="content">
+                    <div class="modal-header border-0 custom-modal-header">
+                        <div class="page-title">
+                            <h4>Import Purchase</h4>
+                        </div>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body custom-modal-body">
+                        <form action="purchase-list.html">
+                            <div class="row">
+                                <div class="col-lg-6 col-sm-6 col-12">
+                                    <div class="input-blocks">
+                                        <label>Supplier Name</label>
+                                        <div class="row">
+                                            <div class="col-lg-10 col-sm-10 col-10">
+                                                <select class="select">
+                                                    <option>Choose</option>
+                                                    <option>Apex Computers</option>
+                                                    <option>Apex Computers</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
+                                                <div class="add-icon tab">
+                                                    <a href="javascript:void(0);"><i data-feather="plus-circle" class="feather-plus-circles"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-sm-6 col-12">
+                                    <div class="input-blocks">
+                                        <label>Purchase Status </label>
+                                        <select class="select">
+                                            <option>Choose</option>
+                                            <option>Received</option>
+                                            <option>Ordered</option>
+                                            <option>Pending</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-sm-6 col-12">
+                                    <div class="row">
+                                        <div>
+                                            <!-- <div class="input-blocks download">
+                                                <a class="btn btn-submit">Download Sample File</a>
+                                            </div> -->
+                                            <div class="modal-footer-btn download-file">
+                                                <a href="javascript:void(0)" class="btn btn-submit">Download Sample File</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="input-blocks image-upload-down">
+                                        <label>	Upload CSV File</label>
+                                        <div class="image-upload download">
+                                            <input type="file">
+                                            <div class="image-uploads">
+                                                <img src="~/AdminEn/assets/img/download-img.png" alt="img">
+                                                <h4>Drag and drop a <span>file to upload</span></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-sm-6 col-12">
+                                    <div class="input-blocks">
+                                        <label>Order Tax</label>
+                                        <input type="text" value="0">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-sm-6 col-12">
+                                    <div class="input-blocks">
+                                        <label>Discount</label>
+                                        <input type="text" value="0">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-sm-6 col-12">
+                                    <div class="input-blocks">
+                                        <label>Shipping</label>
+                                        <input type="text" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input-blocks summer-description-box transfer" style="margin-right">
+                                <label>Description</label>
+                                <div id="summernote3">
+                                </div>
+                                <p>Maximum 60 Characters</p>
+                            </div>
+                            <div class="modal-footer-btn">
+                                <button type="button" class="btn btn-cancel me-2" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-submit">Submit</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@* ////////////////////////////////////////  End  Edit Purcheas /////////////////////////////////////////////////// *@
+@* ////////////////////////////////////////  End  Edit Purcheas /////////////////////////////////////////////////// *@
+@* ////////////////////////////////////////  End  Edit Purcheas /////////////////////////////////////////////////// *@
+@* ////////////////////////////////////////  End  Edit Purcheas /////////////////////////////////////////////////// *@
+@* ////////////////////////////////////////  End  Edit Purcheas /////////////////////////////////////////////////// *@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- /Import Purchase -->
+<div class="customizer-links" id="setdata">
+    <ul class="sticky-sidebar">
+        <li class="sidebar-icons">
+            <a href="#" class="navigation-add" data-bs-toggle="tooltip" data-bs-placement="left"
+               data-bs-original-title="Theme">
+                <i data-feather="settings" class="feather-five"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+@section Scripts {
+
+    <script src="~/adminen/assets/js/purchasesting.js"></script>
+
+    <script>
+        function AddProductToTBL() {
+            var productName = $('#productSelect').find("option:selected").text();
+            var productId = $('#productSelect').find("option:selected").val();
+            var productImg = $('#productSelect').find("option:selected").data("additional");
+
+            var tbl = $('#TBLToAddPurcheas');
+            var unitData = @Html.Raw(Json.Serialize(ViewBag.Unit));
+            let options = unitData.map(unit => `<option value="${unit.idUnit}">${unit.unit}</option>`).join('');
+
+            const row = `
+                        <tr>
+                            <td ><img src="/Images/Home/${productImg}" alt="${productName}" style="width: 50px; height: 50px;" /> <span class="productName">${productName}</span><span hidden class="productIId">${productId}</span></td>
+                        <td>
+                            <div class="product-quantity" style="margin-right:25px;">
+                                <span onclick="ChangeQTY(+1, this)" class="quantity-btn">
+                                    +<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle plus-circle">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                                    </svg>
+                                </span>
+                                <input type="text" class="quntity-input quaitity" value="0">
+                                <span onclick="ChangeQTY(-1, this)" class="quantity-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus-circle feather-search">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                                    </svg>
+                                </span>
+                            </div>
+                        </td>
+
+                        <td>
+                        <select style="width: 50px;" class="idUnitt form-control">
+                            <option>اختر</option>
+                                    ${options}
+                                </select>
+                            </td>
+                        <td>
+                            <div class="product-quantity">
+                                <span onclick="ChangeQTY(+1, this)" class="quantity-btn">
+                                    +<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle plus-circle">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                                    </svg>
+                                </span>
+                                <input type="text" class="quntity-input freeQuaitity" value="0">
+                                <span onclick="ChangeQTY(-1, this)" class="quantity-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus-circle feather-search">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                                    </svg>
+                                </span>
+                            </div>
+                        </td>
+
+                            <td><input style="width: 100px;" class="form-control price" type="number" /></td>
+                            <td><input style="width: 100px;" class="form-control discount" type="number" /></td>
+                            <td><input style="width: 100px;" class="form-control tax" type="number" /></td>
+                            <td style="width: 100px;" class="totalQty"></td>
+                            <td style="width: 100px;" class="totalPrc"></td>
+                                                    <td><a class="confirm-text p-2" onclick="deleteRow(this)"><i data-feather="trash-2" class="feather-trash-2"></i></a></td>
+                        </tr>
+                    `;
+
+            tbl.append(row);
+        }
+
+
+        function AddProductToTBLEdit() {
+            var productName = $('#productSelectEdit').find("option:selected").text();
+            var productId = $('#productSelectEdit').find("option:selected").val();
+            var productImg = $('#productSelectEdit').find("option:selected").data("additional");
+
+            var tbl = $('#TBLToAddPurcheasEdit');
+            var unitData = @Html.Raw(Json.Serialize(ViewBag.Unit));
+            let options = unitData.map(unit => `<option value="${unit.idUnit}">${unit.unit}</option>`).join('');
+
+
+            const row = `
+                                <tr>
+                                    <td ><img src="/Images/Home/${productImg}" alt="${productName}" style="width: 50px; height: 50px;" /> <span class="productName">${productName}</span><span hidden class="productIId">${productId}</span></td>
+                                <td>
+                                    <div class="product-quantity" style="margin-right:25px;">
+                                        <span onclick="ChangeQTY(+1, this)" class="quantity-btn">
+                                            +<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle plus-circle">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <line x1="12" y1="8" x2="12" y2="16"></line>
+                                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                                            </svg>
+                                        </span>
+                                                <input type="text" class="quntity-input quaitityEdit" value="0">
+                                        <span onclick="ChangeQTY(-1, this)" class="quantity-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus-circle feather-search">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                        <select style="width: 50px;" class="idUnittForEdit form-control">
+                                    <option>اختر</option>
+                                            ${options}
+                                        </select>
+                                    </td>
+                                <td>
+                                    <div class="product-quantity">
+                                        <span onclick="ChangeQTY(+1, this)" class="quantity-btn">
+                                            +<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle plus-circle">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <line x1="12" y1="8" x2="12" y2="16"></line>
+                                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                                            </svg>
+                                        </span>
+                                                <input type="text" class="quntity-input freeQuaitityEdit" value="0">
+                                        <span onclick="ChangeQTY(-1, this)" class="quantity-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus-circle feather-search">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </td>
+                                            <td><input style="width: 100px;" class="form-control priceEdit" type="number" /></td>
+                                            <td><input style="width: 100px;" class="form-control discountEdit" type="number" /></td>
+                                            <td><input style="width: 100px;" class="form-control taxEdit" type="number" /></td>
+                                            <td style="width: 100px;" class="totalQtyEdit"></td>
+                                            <td style="width: 100px;" class="totalPrcEdit"></td>
+                                 <td><a class="confirm-text p-2" onclick="deleteRow(this)"><i data-feather="trash-2" class="feather-trash-2"></i></a></td>
+                                </tr>
+                            `;
+
+            tbl.append(row).trigger('change');
+
+        }
+
+        // function SavePurcheasInDB() {
+        //     var productId = $('#productSelect').find("option:selected").val();
+        //     var supplierId = $('#supplierSelect').find("option:selected").val();
+        //     var supplierNm = $('#supplierSelect').find("option:selected").text();
+        //     var PayMethId = $('#PayMethId').find("option:selected").val();
+        //     var PurcheasDt = $('#PurcheasDt').val();
+        //     var PurcheasNu = $('#PurcheasNu').val();
+        //     var PurcheasSubNu = $('#PurcheasSubNu').val();
+        //     var purStatment = $('#purStatment').val();
+        //     var UserName = $('#UserName').text();
+
+        //     ///////////////////////
+
+        //     var PurcheasTotalPrice = $('#OrderTotalPrice').val();
+        //     var PurcheasTotalQTY = $('#OrderTotalQTY').val();
+        //     var PurcheasTotalDiscount = $('#OrderTotalDiscount').val();
+        //     var PurcheasTotalTax = $('#OrderTotalTax').val();
+        //     var PurcheasNotes = $('#NotesForPurcheas').val();
+        //     var OrderTotalShipping = $('#OrderTotalShipping').val();
+
+        //     var dateNow = new Date();
+        //     var day = dateNow.getDate();
+        //     var month = dateNow.getMonth() + 1;
+        //     var year = dateNow.getFullYear();
+
+        //     var formattedDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day);
+        //     let successfulRequests = 0;
+        //     $('#TBLToAddPurcheas tr').each(function (index, row) {
+
+        //         var productIId = $(row).find('.productIId').text();
+        //         var quantity = $(row).find('.quaitity').val();
+        //         var freeQuantity = $(row).find('.freeQuaitity').val();
+        //         var price = $(row).find('.price').val();
+        //         var discount = $(row).find('.discount').val();
+        //         var tax = $(row).find('.tax').val();
+        //         var totalQty = $(row).find('.totalQty').text();
+        //         var totalPrc = $(row).find('.totalPrc').text();
+        //         var idUnit = $(row).find('.idUnitt').find("option:selected").val();
+        //         var url = window.origin + '/api/PurcheasApi';
+        //         var payLoad = {
+        //             "idPurchase": 0,
+        //             'idSupplier': parseInt(supplierId),
+        //             "idPaymentMethod": parseInt(PayMethId),
+        //             "statement": purStatment,
+        //             "purchaseDate": PurcheasDt,
+        //             "purchaseNumber": parseInt(PurcheasNu),
+        //             "purchaseSubNumber": parseInt(PurcheasSubNu),
+        //             "idProduct": parseInt(productIId),
+        //             "idUnit": parseInt(idUnit),
+        //             "quantity": parseInt(quantity),
+        //             "freeQuantity": parseInt(freeQuantity),
+        //             "allQuantity": parseInt(totalQty),
+        //             "singleDiscount": parseFloat(discount),
+        //             "purchasePrice": parseFloat(price),
+        //             "total": parseFloat(totalPrc),
+        //             "shipping": parseFloat(OrderTotalShipping),
+        //             "nouts": PurcheasNotes,
+        //             "totalQuantity": parseInt(PurcheasTotalQTY),
+        //             "totalDiscount": parseInt(PurcheasTotalDiscount),
+        //             "totalAll": parseFloat(PurcheasTotalPrice) - parseFloat(PurcheasTotalDiscount),
+        //             "dataEntry": UserName,
+        //             "dateTimeEntry": new Date(),
+        //             "currentState": true,
+        //         };
+
+        //         console.log("payLoad " + JSON.stringify(payLoad));
+
+        //         fetch(url, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json'
+        //             },
+        //             body: JSON.stringify(payLoad)
+        //         })
+        //             .then(response => {
+        //                 if (!response.ok) {
+        //                     throw new Error('Network response was not ok');
+        //                 }
+        //                 return response.json();
+        //             })
+        //             .then(data => {
+        //                 console.log('Data received:', data);
+        //                 successfulRequests++; 
+                        
+        //                 if (successfulRequests === $('#TBLToAddPurcheas tr').length) {
+
+        //                     var accountingRest = {
+        //                         "idaccountingRestrictions": 0,
+        //                         "numberaccountingRestrictions": ,
+        //                         "accountingName": supplierNm,
+        //                         "bondType": ,
+        //                         "debtor": 0,
+        //                         "creditor": parseFloat(PurcheasTotalPrice) - parseFloat(PurcheasTotalDiscount),
+        //                         "statement": purStatment,
+        //                         "nouts": PurcheasNotes,
+        //                         "dataEntry": UserName,
+        //                         "dateTimeEntry": new Date(),
+        //                         "currentState": true,
+        //                     }
+        //                     var url2 = window.origin + '/api/AccountingRestriction';
+        //                     fetch(url2, {
+        //                         method: 'POST',
+        //                         headers: {
+        //                             'Content-Type': 'application/json'
+        //                         },
+        //                         body: JSON.stringify(accountingRest)
+        //                     })
+        //                         .then(response => {
+        //                             if (!response.ok) {
+        //                                 throw new Error('Network response was not ok');
+        //                             }
+        //                             return response.json();
+        //                         })
+        //                         .then(data => {
+        //                             console.log('Data received:', data);
+        //                             location.reload();
+        //                         })
+        //                         .catch(error => {
+        //                             console.error('There was a problem with the fetch operation:', error);
+        //                         });
+                                
+                            
+        //              ).then(response => {
+        //                             if (!response.ok) {
+        //                                 throw new Error('Network response was not ok');
+        //                             }
+        //                             return response.json();  // تحويل الاستجابة إلى JSON
+        //                         })
+        //                         .then(data => {
+        //                             console.log('Data received:', data);  // التعامل مع البيانات المستلمة
+        //                         })
+        //                         .catch(error => {
+        //                             console.error('There was a problem with the fetch operation:', error);
+        //                         });
+
+        //                     location.reload();
+        //                 }
+        //             })
+        //             .catch(error => {
+        //                 console.error('There was a problem with the fetch operation:', error);
+        //             });
+
+        //     });
+        // }
+
+
+
+        // اضافة السجلات الى الداتا بيز
+        function SavePurcheasInDB() {
+            var productId = $('#productSelect').find("option:selected").val();
+            var supplierId = $('#supplierSelect').find("option:selected").val();
+            var supplierNm = $('#supplierSelect').find("option:selected").text();
+            var PayMethId = $('#PayMethId').find("option:selected").val();
+            var PurcheasDt = $('#PurcheasDt').val();
+            var PurcheasNu = $('#PurcheasNu').val();
+            var PurcheasSubNu = $('#PurcheasSubNu').val();
+            var purStatment = $('#purStatment').val();
+            var UserName = $('#UserName').text();
+            ///////////////////////
+            var PurcheasTotalPrice = $('#OrderTotalPrice').val();
+            var PurcheasTotalQTY = $('#OrderTotalQTY').val();
+            var PurcheasTotalDiscount = $('#OrderTotalDiscount').val();
+            var PurcheasTotalTax = $('#OrderTotalTax').val();
+            var PurcheasNotes = $('#NotesForPurcheas').val();
+            var OrderTotalShipping = $('#OrderTotalShipping').val();
+            var dateNow = new Date();
+            var day = dateNow.getDate();
+            var month = dateNow.getMonth() + 1;
+            var year = dateNow.getFullYear();
+            var formattedDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day);
+            let successfulRequests = 0;
+            $('#TBLToAddPurcheas tr').each(function (index, row) {
+                var productIId = $(row).find('.productIId').text();
+                var quantity = $(row).find('.quaitity').val();
+                var freeQuantity = $(row).find('.freeQuaitity').val();
+                var price = $(row).find('.price').val();
+                var discount = $(row).find('.discount').val();
+                var tax = $(row).find('.tax').val();
+                var totalQty = $(row).find('.totalQty').text();
+                var totalPrc = $(row).find('.totalPrc').text();
+                var idUnit = $(row).find('.idUnitt').find("option:selected").val();
+                var url = window.origin + '/api/PurcheasApi';
+                var payLoad = {
+                    "idPurchase": 0,
+                    'idSupplier': parseInt(supplierId),
+                    "idPaymentMethod": parseInt(PayMethId),
+                    "statement": purStatment,
+                    "purchaseDate": PurcheasDt,
+                    "purchaseNumber": parseInt(PurcheasNu),
+                    "purchaseSubNumber": parseInt(PurcheasSubNu),
+                    "idProduct": parseInt(productIId),
+                    "idUnit": parseInt(idUnit),
+                    "quantity": parseInt(quantity),
+                    "freeQuantity": parseInt(freeQuantity),
+                    "allQuantity": parseInt(totalQty),
+                    "singleDiscount": parseFloat(discount),
+                    "purchasePrice": parseFloat(price),
+                    "total": parseFloat(totalPrc),
+                    "shipping": parseFloat(OrderTotalShipping),
+                    "nouts": PurcheasNotes,
+                    "totalQuantity": parseInt(PurcheasTotalQTY),
+                    "totalDiscount": parseInt(PurcheasTotalDiscount),
+                    "totalAll": parseFloat(PurcheasTotalPrice) - parseFloat(PurcheasTotalDiscount),
+                    "dataEntry": UserName,
+                    "dateTimeEntry": new Date(),
+                    "currentState": true,
+                };
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payLoad)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("successfulRequests: " + successfulRequests);
+                        successfulRequests++;
+                        console.log("successfulRequests Afteer: " + successfulRequests);
+                        console.log("$('#TBLToAddPurcheas tr').length Afteer: " + $('#TBLToAddPurcheas tr').length);
+                        if (successfulRequests === ($('#TBLToAddPurcheas tr').length) - 1 ) {
+                            var accountingRest = {
+                                "idaccountingRestrictions": 0,
+                                "numberaccountingRestrictions": PurcheasNu, 
+                                "accountingName": supplierNm,
+                                "bondType": "سند شراء",
+                                "bondNumber": parseInt(PurcheasNu),
+                                "debtor": 0,
+                                "creditor": parseFloat(PurcheasTotalPrice) - parseFloat(PurcheasTotalDiscount),
+                                "statement": purStatment,
+                                "nouts": PurcheasNotes,
+                                "dataEntry": UserName,
+                                "dateTimeEntry": new Date(),
+                                "currentState": true,
+                            }
+                            var url2 = window.origin + '/api/AccountRestrection';
+                            fetch(url2, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(accountingRest)
+                            })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Network response was not ok');
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    console.log('Accounting data received:', data);
+                                    location.reload();
+                                })
+                                .catch(error => {
+                                    console.error('There was a problem with the fetch operation for accounting:', error);
+                                });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+            });
+        }
+        $(document).on('input', '.quaitity, .freeQuaitity, .price, .discount, .tax', function () {
+
+            const row = $(this).closest('tr');
+            // الحصول على القيم
+            const quantity = parseFloat(row.find('.quaitity').val()) || 0;       // الكمية
+            const freeQuantity = parseFloat(row.find('.freeQuaitity').val()) || 0; // الكمية المجانية
+            const price = parseFloat(row.find('.price').val()) || 0;            // السعر الفردي
+            const discount = parseFloat(row.find('.discount').val()) || 0;
+            const tax = parseFloat(row.find('.tax').val()) || 0;
+
+
+            // حساب الكمية الإجمالية
+            const totalQuantity = quantity + freeQuantity;
+            // حساب السعر الإجمالي
+            const totalPrice = quantity * price - discount + tax;
+            // وضع النتائج في الأعمدة المناسبة
+            row.find('.totalQty').text(totalQuantity.toFixed(0)); // عرض الكمية الإجمالية كعدد صحيح
+            row.find('.totalPrc').text(totalPrice.toFixed(4));    // عرض السعر الإجمالي مع منزلتين عشريتين
+        });
+
+        $(document).on('change', '#TBLToAddPurcheas', function () {
+            // متغيرات لتخزين المجموعات
+            let totalTax = 0;
+            let totalDiscount = 0;
+            let totalQty = 0;
+            let totalPrice = 0;
+            $('#TBLToAddPurcheas tr').each(function () {
+                const row = $(this);
+                // الحصول على القيم من الأعمدة
+                const qty = parseFloat(row.find('.quaitity').val()) || 0;
+                const freeQty = parseFloat(row.find('.freeQuaitity').val()) || 0;
+                const price = parseFloat(row.find('.price').val()) || 0;
+                const discount = parseFloat(row.find('.discount').val()) || 0;
+                const tax = parseFloat(row.find('.tax').val()) || 0;
+                // حساب الكمية الإجمالية
+                const totalRowQty = qty + freeQty;
+                // حساب السعر الإجمالي للصف (قبل الخصم والضرائب)
+                const totalRowPrice = qty * price - discount + tax;
+                // تحديث المجموعات
+                totalQty += totalRowQty;
+                totalDiscount += discount;
+                totalTax += tax;
+                totalPrice += totalRowPrice;
+            });
+            var totShipp = $('#OrderTotalShipping').val() ?? 0;
+            // تحديث القيم في الحقول أو المتغيرات
+            $('#OrderTotalTax').val(totalTax.toFixed(4));
+            $('#OrderTotalDiscount').val(totalDiscount.toFixed(4));
+            $('#OrderTotalQTY').val(totalQty.toFixed(0));
+            $('#OrderTotalPrice').val(totalPrice.toFixed(4) - totShipp);
+            $('#OrderTotalPriceTemp').val(totalPrice.toFixed(4) - totShipp);
+        });
+
+        $('#OrderTotalShipping').on('change', function () {
+            var shipping = parseFloat($(this).val()) || 0;
+            var tot = parseFloat($('#OrderTotalPriceTemp').val()) || 0;
+            $('#OrderTotalPrice').val(tot + shipping);
+        });
+
+
+        $('#OrderTotalShippingEdit').on('change', function () {
+            var shipping = parseFloat($(this).val()) || 0;
+            var tot = parseFloat($('#OrderTotalPriceEditTemp').val()) || 0;
+            $('#OrderTotalPriceEdit').val(tot + shipping);
+        });
+
+
+        $(document).on('change', '#TBLToAddPurcheasEdit', function () {
+            console.log("ssaa")
+            // متغيرات لتخزين المجموعات
+            let totalTax = 0;
+            let totalDiscount = 0;
+            let totalQty = 0;
+            let totalPrice = 0;
+            $('#TBLToAddPurcheasEdit tr').each(function () {
+                const row = $(this);
+                // الحصول على القيم من الأعمدة
+                const qty = parseFloat(row.find('.quaitity').val()) || 0;
+                const freeQty = parseFloat(row.find('.freeQuaitity').val()) || 0;
+                const price = parseFloat(row.find('.price').val()) || 0;
+                const discount = parseFloat(row.find('.discount').val()) || 0;
+                const tax = parseFloat(row.find('.tax').val()) || 0;
+                // حساب الكمية الإجمالية
+                const totalRowQty = qty + freeQty;
+                // حساب السعر الإجمالي للصف (قبل الخصم والضرائب)
+                const totalRowPrice = qty * price - discount + tax;
+                // تحديث المجموعات
+                totalQty += totalRowQty;
+                totalDiscount += discount;
+                totalTax += tax;
+                totalPrice += totalRowPrice;
+            });
+            // تحديث القيم في الحقول أو المتغيرات
+            $('#OrderTotalTaxEdit').val(totalTax.toFixed(4));
+            $('#OrderTotalDiscountEdit').val(totalDiscount.toFixed(4));
+            $('#OrderTotalQTYEdit').val(totalQty.toFixed(0));
+            $('#OrderTotalPriceEdit').val(totalPrice.toFixed(4));
+        });
+        function ChangeQTY(amount, btn) {
+            var inputElement = btn.closest(".product-quantity").querySelector(".quntity-input");
+            if (inputElement) {
+                var currentValue = parseInt(inputElement.value); 
+                currentValue += amount; 
+                inputElement.value = currentValue;
+            } else {
+                console.error("عنصر الإدخال غير موجود");
+            }
+        }
+    </script>
+    <script>
+
+        function deleteRow(button) {
+            var row = button.parentNode.parentNode;
+            var tbody = row.parentNode;
+
+            tbody.removeChild(row);
+            $(tbody).trigger('change'); 
+        }
+
+
+
+
+        // عند الضغط على زر التعديل
+    
+        function EditPurcheasData(PurcheasNu) {
+            const url = window.origin + `/api/PurcheasApi/GetByPurcheasNu/${PurcheasNu}`;
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(" 1 data" + JSON.stringify(data))
+
+                    $('#supplierSelectEdit').val(parseInt(data[0].idSupplier));
+                    $('#PayMethIdEdit').val(parseInt(data[0].idPaymentMethod));
+
+                    var purchaseDate = new Date(data[0].purchaseDate);
+
+                    if (!isNaN(purchaseDate.getTime())) {
+                        var year = purchaseDate.getFullYear();
+                        var month = ("0" + (purchaseDate.getMonth() + 1)).slice(-2);
+                        var day = ("0" + purchaseDate.getDate()).slice(-2);
+
+                        var formattedDate = `${year}-${month}-${day}`;
+
+                        $('#PurcheasDtEdit').val(formattedDate);
+                    } else {
+                        console.error("التاريخ غير صالح:", data[0].purchaseDate);
+                    }
+
+                    $('#purStatmentEdit').val(data[0].statement);
+                    $('#PurcheasNuEdit').val(data[0].purchaseNumber);
+                    $('#PurcheasSubNuEdit').val(data[0].purchaseSubNumber);
+                    /////////////////////////////////////////////
+
+                    let tbl = $('#TBLToAddPurcheasEdit');
+
+                    var selectedUnitId = 0;
+                    var unitDataa = @Html.Raw(Json.Serialize(ViewBag.Unit));
+                    if (Array.isArray(data)) {
+                        data.forEach((purchase, index) => {
+                            const row = document.createElement('tr');
+                            const url1 = window.origin + `/api/ClassCardAPI/GetById/${purchase.idProduct}`;
+                            selectedUnitId = 0;
+                            console.log("selectedUnitId before" + selectedUnitId);
+                            selectedUnitId = purchase.idUnit;
+                            console.log("selectedUnitId after" + selectedUnitId);
+
+
+                            let optionss = unitDataa.map(unit => `<option value="${unit.idUnit}" ${unit.idUnit == selectedUnitId ? 'selected' : ''} >${unit.unit}</option>`).join('');
+
+                            fetch(url1, {
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            }).then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                                .then(data => {
+                                    console.log(" 2 data" + JSON.stringify(data));
+
+                                    let name = data.itemName;
+                                    let img = data.photo;
+                                    let id = data.idClassCard;
+
+                                    row.innerHTML = `
+                                               <td><img src="/Images/Home/${img}" alt="${name}" style="width: 50px; height: 50px;" /> <span class="productName">${name}</span><span hidden class="productIId">${id}</span></td>
+                                               <td>
+                                                <div class="product-quantity quantityEDED" style="margin-right:25px;">
+                                                            <span onclick="ChangeQTYEdit(+1, this)" class="quantity-btn">
+                                                        +<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle plus-circle">
+                                                            <circle cx="12" cy="12" r="10"></circle>
+                                                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                                                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                                                        </svg>
+                                                    </span>
+                                                    <input type="text" class="quntity-input quaitityEdit" value="${purchase.quantity}">
+                                                            <span onclick="ChangeQTYEdit(-1, this)" class="quantity-btn">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus-circle feather-search">
+                                                            <circle cx="12" cy="12" r="10"></circle>
+                                                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                             </td>
+                                                    <td>
+                                                       <select style="width: 50px;" class="idUnittForEdit form-control">
+                                                            ${optionss}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                     <div class="product-quantity quantityEDED">
+                                                     <span onclick="ChangeQTYEdit(+1, this)" class="quantity-btn">
+                                                       +<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle plus-circle">
+                                                       <circle cx="12" cy="12" r="10"></circle>
+                                                       <line x1="12" y1="8" x2="12" y2="16"></line>
+                                                                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                                                                </svg>
+                                                            </span>
+                                                            <input type="text" class="quntity-input freeQuaitityEdit" value="${purchase.freeQuantity}">
+                                                                    <span onclick="ChangeQTYEdit(-1, this)" class="quantity-btn">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus-circle feather-search">
+                                                                    <circle cx="12" cy="12" r="10"></circle>
+                                                                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                                                                </svg>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                            <td><input style="width: 100px;" value="${purchase.purchasePrice}" class="form-control priceEdit" type="number" /></td>
+                                                            <td><input style="width: 100px;" value="${purchase.singleDiscount}" class="form-control discountEdit" type="number" /></td>
+                                                            <td><input style="width: 100px;" value="${purchase.tax}" class="form-control taxEdit" type="number" /></td>
+                                                            <td style="width: 100px;" class="totalQtyEdit">${purchase.allQuantity}</td>
+                                                            <td style="width: 100px;" class="totalPrcEdit">${purchase.total}</td>
+                                                    <td><button onclick="deleteRow(this)">حذف</button></td>
+                                                `;
+
+                                                                        
+                                    tbl.append(row);
+                                })
+                                .catch(error => {
+                                    console.error('There was a problem with the fetch operation:', error);
+                                });
+                        });
+                    } else {
+                        console.log("الـ data ليست مصفوفة من الكائنات أو تحتوي على عناصر غير كائنات");
+                    }
+
+                    /////////////////////////////////////////////
+                    $('#OrderTotalTaxEdit').val(data[0].idSupplier);
+                    $('#OrderTotalDiscountEdit').val(data[0].totalDiscount);
+                    $('#OrderTotalQTYEdit').val(data[0].totalQuantity);
+                    $('#OrderTotalShippingEdit').val(data[0].shipping);
+                    $('#OrderTotalPriceEdit').val(data[0].totalAll);
+                    $('#OrderTotalPriceEditTemp').val(data[0].totalAll);
+                    $('#NotesForPurcheasEdit').val(data[0].nouts);
+
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+
+
+
+
+            function EditPurcheasInDB() {
+
+            var bondNu = $('#PurcheasNuEdit').val();
+            var bond = "سند شراء";
+
+            var PurcheasNu = $('#PurcheasNuEdit').val();
+            let idsList = [];
+            const url = window.origin + `/api/PurcheasApi/GetByPurcheasNu/${PurcheasNu}`;
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+
+                    if (Array.isArray(data)) {
+                        data.forEach((el, index) => {
+                            var idText = el.idPurchase;
+                            var id = parseInt(idText);
+
+                            if (!isNaN(id)) {
+                                idsList.push(id);
+                            } else {
+                                console.warn('Invalid ID:', idText);
+                            }
+                        });
+                    } else {
+                        console.warn("data is not an array", data);
+                    }
+
+
+                    var deleteUrl = window.origin + '/api/PurcheasApi/DeletePurcheases';
+                    fetch(deleteUrl, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(idsList)
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+
+                            return response.json(); 
+                        })
+                        .then(data => {
+                            console.log('Received response:', data);
+
+
+                                var accountingUrl = window.origin + `/api/AccountRestrection/GetByBondNuAndBondType/${bondNu}/${bond}`;
+                                fetch(accountingUrl, {
+                                    method: 'GET',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Network response was not ok');
+                                        }
+                                        return response.json(); 
+                                    })
+                                    .then(data => {
+
+                                        console.log("AccountRestrection: " + data);
+                                        // حذف الحساب المرتبط
+                                        var deleteAccountingUrl = window.origin + `/api/AccountRestrection/${data.idaccountingRestrictions}`;
+                                        fetch(deleteAccountingUrl, {
+                                            method: 'DELETE',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            }
+                                        })
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    throw new Error('Network response was not ok');
+                                                }
+
+                                                console.log('Accounting data deleted successfully');
+                                            }).then(data => {
+
+                                                 console.log("AccountRestrection: " + data);
+                                                 console.log("start add : " );
+
+                                            // إضافة بيانات جديدة
+                                            var productId = $('#productSelectEdit').find("option:selected").val();
+                                            var supplierId = $('#supplierSelectEdit').find("option:selected").val();
+                                            var supplierNm = $('#supplierSelectEdit').find("option:selected").text();
+                                            var PayMethId = $('#PayMethIdEdit').find("option:selected").val();
+                                            var PurcheasDt = $('#PurcheasDtEdit').val();
+                                            var PurcheasNu = $('#PurcheasNuEdit').val();
+                                            var PurcheasSubNu = $('#PurcheasSubNuEdit').val();
+                                            var purStatment = $('#purStatmentEdit').val();
+                                                                  
+                                            var UserName = $('#UserName').text();
+                                            var dateNow = new Date();
+                                            var day = dateNow.getDate();
+                                            var month = dateNow.getMonth() + 1;
+                                            var year = dateNow.getFullYear();
+                                            var formattedDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day);
+
+                                            // البيانات تحت الجدول
+                                            var PurcheasTotalPrice = $('#OrderTotalPriceEdit').val();
+                                            var PurcheasTotalQTY = $('#OrderTotalQTYEdit').val();
+                                            var PurcheasTotalDiscount = $('#OrderTotalDiscountEdit').val();
+                                            var PurcheasTotalTax = $('#OrderTotalTaxEdit').val();
+                                            var PurcheasNotes = $('#NotesForPurcheasEdit').val();
+                                            var OrderTotalShipping = $('#OrderTotalShippingEdit').val();
+
+                                            let successfulRequests = 0;
+
+                                            $('#TBLToAddPurcheasEdit tr').each(function (index, row) {
+                                                var productIId = $(row).find('.productIId').text();
+                                                var quantity = $(row).find('.quaitityEdit').val();
+                                                var freeQuantity = $(row).find('.freeQuaitityEdit').val();
+                                                var price = $(row).find('.priceEdit').val();
+                                                var discount = $(row).find('.discountEdit').val();
+                                                var tax = $(row).find('.tax').val();
+                                                var totalQty = $(row).find('.totalQtyEdit').text();
+                                                var totalPrc = $(row).find('.totalPrcEdit').text();
+                                                var idUnit = $(row).find('.idUnittForEdit').find("option:selected").val();
+
+                                                var url = window.origin + '/api/PurcheasApi';
+                                                var payLoad = {
+                                                    "idPurchase": 0,
+                                                    'idSupplier': parseInt(supplierId),
+                                                    "idPaymentMethod": parseInt(PayMethId),
+                                                    "statement": purStatment,
+                                                    "purchaseDate": PurcheasDt,
+                                                    "purchaseNumber": parseInt(PurcheasNu),
+                                                    "purchaseSubNumber": parseInt(PurcheasSubNu),
+                                                    "idProduct": parseInt(productIId),
+                                                    "idUnit": parseInt(idUnit),
+                                                    "quantity": parseInt(quantity),
+                                                    "freeQuantity": parseInt(freeQuantity),
+                                                    "allQuantity": parseInt(totalQty),
+                                                    "singleDiscount": parseFloat(discount),
+                                                    "purchasePrice": parseFloat(price),
+                                                    "total": parseFloat(totalPrc),
+                                                    "shipping": parseFloat(OrderTotalShipping),
+                                                    "nouts": PurcheasNotes,
+                                                    "totalQuantity": parseInt(PurcheasTotalQTY),
+                                                    "totalDiscount": parseInt(PurcheasTotalDiscount),
+                                                    "totalAll": parseFloat(PurcheasTotalPrice) - parseFloat(PurcheasTotalDiscount),
+                                                    "dataEntry": UserName,
+                                                    "dateTimeEntry": new Date(),
+                                                    "currentState": true,
+                                                };
+
+
+
+                                                console.log("payLoad pur for new add " + JSON.stringify(payLoad));
+
+                                                fetch(url, {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify(payLoad)
+                                                })
+                                                    .then(response => {
+                                                        if (!response.ok) {
+                                                            throw new Error('Network response was not ok');
+                                                        }
+                                                        return response.json();
+                                                    })
+                                                    .then(data => {
+                                                        console.log('payLoad data added:');
+                                                        console.log('Data received:', data);
+                                                        successfulRequests++;
+
+                                                        console.log("successful Requests: " + successfulRequests);
+                                                        console.log("TBLToAddPurcheasEdit length: " + ($('#TBLToAddPurcheasEdit tr').length) - 1);
+
+                                                        if (successfulRequests === ($('#TBLToAddPurcheasEdit tr').length) - 1) {
+                                                            var accountingRest = {
+                                                                "idaccountingRestrictions": 0,
+                                                                "numberaccountingRestrictions": PurcheasNu,
+                                                                "accountingName": supplierNm,
+                                                                "bondType": "سند شراء",
+                                                                "bondNumber": parseInt(PurcheasNu),
+                                                                "debtor": 0,
+                                                                "creditor": parseFloat(PurcheasTotalPrice) - parseFloat(PurcheasTotalDiscount),
+                                                                "statement": purStatment,
+                                                                "nouts": PurcheasNotes,
+                                                                "dataEntry": UserName,
+                                                                "dateTimeEntry": new Date(),
+                                                                "currentState": true,
+                                                            };
+
+                                                            var url2 = window.origin + '/api/AccountRestrection';
+                                                            fetch(url2, {
+                                                                method: 'POST',
+                                                                headers: {
+                                                                    'Content-Type': 'application/json'
+                                                                },
+                                                                body: JSON.stringify(accountingRest)
+                                                            })
+                                                                .then(response => {
+                                                                    if (!response.ok) {
+                                                                        throw new Error('Network response was not ok');
+                                                                    }
+                                                                    return response.json();
+                                                                })
+                                                                .then(data => {
+
+                                                                    console.log('Accounting data added:');
+                                                                    console.log('Accounting data received:', data);
+                                                                    location.reload();
+                                                                })
+                                                                .catch(error => {
+                                                                    console.error('There was a problem with the fetch operation for accounting:', error);
+                                                                });
+                                                        }
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('There was a problem with the fetch operation:', error);
+                                                    });
+                                            });
+
+                                            })
+                                            .catch(error => {
+                                                console.error('Error deleting accounting data:', error);
+                                            });
+
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching accounting restriction:', error);
+                                    });
+
+                        })
+                        .catch(error => {
+                            console.error('Error deleting purchase:', error);
+                        });
+
+                })
+                .catch(error => {
+                    console.error('Error fetching purchase:', error);
+                });
+
+        }
+
+
+
+        function ChangeQTYEdit(amount, btn) {
+            var inputElement = btn.closest(".quantityEDED").querySelector(".quntity-input");
+
+            if (inputElement) {
+                var currentValue = parseInt(inputElement.value) || 0;
+                currentValue += amount;
+                inputElement.value = currentValue;
+
+                var event = new Event("input", { bubbles: true });
+                inputElement.dispatchEvent(event);
+
+                var changeEvent = new Event("change", { bubbles: true });
+                inputElement.dispatchEvent(changeEvent);
+
+                if (window.jQuery) {
+                    $(inputElement).trigger("input").trigger("change");
+                }
+
+            } else {
+                console.error("عنصر الإدخال غير موجود");
+            }
+        }
+
+
+
+        /////////////// لبب التعديل
+
+        $(document).on('input', '.quaitityEdit, .freeQuaitityEdit, .priceEdit, .discountEdit, .taxEdit', function () {
+
+            const row = $(this).closest('tr');
+
+            // الحصول على القيم
+            const quantity = parseFloat(row.find('.quaitityEdit').val()) || 0;       // الكمية
+            const freeQuantity = parseFloat(row.find('.freeQuaitityEdit').val()) || 0; // الكمية المجانية
+            const price = parseFloat(row.find('.priceEdit').val()) || 0;            // السعر الفردي
+            const discountEdit = parseFloat(row.find('.discountEdit').val()) || 0;
+            const taxEdit = parseFloat(row.find('.taxEdit').val()) || 0;
+
+
+            const totalQuantity = quantity + freeQuantity;
+            // حساب السعر الإجمالي
+            const totalPrice = quantity * price - discountEdit + taxEdit;
+
+            // وضع النتائج في الأعمدة المناسبة
+            row.find('.totalQtyEdit').text(totalQuantity.toFixed(0)); // عرض الكمية الإجمالية كعدد صحيح
+            row.find('.totalPrcEdit').text(totalPrice.toFixed(4));    // عرض السعر الإجمالي مع منزلتين عشريتين
+        });
+
+
+
+
+        $(document).on('change', '#TBLToAddPurcheasEdit', function () {
+            // متغيرات لتخزين المجموعات
+            let totalTax = 0;
+            let totalDiscount = 0;
+            let totalQty = 0;
+            let totalPrice = 0;
+
+            $('#TBLToAddPurcheasEdit tr').each(function () {
+                const row = $(this);
+
+                // الحصول على القيم من الأعمدة
+                const qty = parseFloat(row.find('.quaitityEdit').val()) || 0;
+                const freeQty = parseFloat(row.find('.freeQuaitityEdit').val()) || 0;
+                const price = parseFloat(row.find('.priceEdit').val()) || 0;
+                const discount = parseFloat(row.find('.discountEdit').val()) || 0;
+                const tax = parseFloat(row.find('.taxEdit').val()) || 0;
+
+                // حساب الكمية الإجمالية
+                const totalRowQty = qty + freeQty;
+
+                // حساب السعر الإجمالي للصف (قبل الخصم والضرائب)
+                const totalRowPrice = qty * price - discount + tax;
+
+                // تحديث المجموعات
+                totalQty += totalRowQty;
+                totalDiscount += discount;
+                totalTax += tax;
+                totalPrice += totalRowPrice;
+            });
+
+            // تحديث القيم في الحقول أو المتغيرات
+            $('#OrderTotalTaxEdit').val(totalTax.toFixed(4));
+            $('#OrderTotalDiscountEdit').val(totalDiscount.toFixed(4));
+            $('#OrderTotalQTYEdit').val(totalQty.toFixed(0));
+            $('#OrderTotalPriceEdit').val(totalPrice.toFixed(4));
+        });
+
+
+
+        function ClearValues(){
+            console.log("ClearValues");
+
+            $('#productSelect').prop('selectedIndex', 0);
+            $('#PayMethId').prop('selectedIndex', 0);
+            $('#supplierImage').hide();
+            $('#supplierImage').attr('src', '');
+            $('#supplierSelect').val(0);
+            $('#PurcheasDt').val(new Date);
+            $('#PurcheasNu').val(0);
+            $('#PurcheasSubNu').val('');
+            $('#purStatment').val('');
+            ///////////////////////
+            $('#OrderTotalPrice').val(0);
+            $('#OrderTotalQTY').val(0);
+            $('#OrderTotalDiscount').val(0);
+            $('#OrderTotalTax').val(0);
+            $('#NotesForPurcheas').val(0);
+            $('#OrderTotalShipping').val(0);
+            $('#lastPurchasePrice').val(0);
+            $('#TBLToAddPurcheas').empty();
+        }
+
+
+        function ClearValuesForEdit() {
+            console.log("ClearValuesForEdit");
+
+            $('#productSelectEdit').prop('selectedIndex', 0);
+            $('#PayMethIdEdit').prop('selectedIndex', 0);
+            $('#supplierImageEdit').hide();
+            $('#supplierImageEdit').attr('src', '');
+            $('#supplierSelectEdit').val(0);
+            $('#PurcheasDtEdit').val(new Date);
+            $('#PurcheasNuEdit').val(0);
+            $('#PurcheasSubNuEdit').val('');
+            $('#purStatmentEdit').val('');
+            ///////////////////////
+            $('#OrderTotalPriceEdit').val(0);
+            $('#OrderTotalQTYEdit').val(0);
+            $('#OrderTotalDiscountEdit').val(0);
+            $('#OrderTotalTaxEdit').val(0);
+            $('#NotesForPurcheasEdit').val(0);
+            $('#OrderTotalShippingEdit').val(0);
+            $('#lastPurchasePriceEdit').val(0);
+            $('#TBLToAddPurcheasEdit').empty();
+        }
+
+        function CreatePdf() {
+
+            const suplierName = $('#SelectSuplierForPrint').find('option:selected').text();
+            const productName = $('#SelectProductForPrint').find('option:selected').text();
+            const purNum = $('#SelectPurchaseNumberForPrint').find('option:selected').text();
+            const oneDate = $('#SelectDetectedDateForPrint').find('option:selected').text();
+            const startDateString = $('#SelectStartDTForPrint').val();
+            const endDateString = $('#SelectEndDTForPrint').val();
+
+            console.log("suplierName: " + suplierName);
+            console.log("productName: " + productName);
+            console.log("purNum: " + purNum);
+            console.log("oneDate: " + oneDate);
+            console.log("startDateString: " + startDateString);
+            console.log("endDateString: " + endDateString);
+            console.log("----------");
+
+            var url = `/Admin/Purchase/GeneratePurchasePdf?suplierName=${encodeURIComponent(suplierName)}&productName=${encodeURIComponent(productName)}&purNum=${encodeURIComponent(purNum)}&oneDate=${encodeURIComponent(oneDate)}&startDate=${encodeURIComponent(startDateString)}&endDate=${encodeURIComponent(endDateString)}`;
+
+            window.location.href = url;
+        }
+
+    </script>
+
+
+
+    <script>
+
+        $('#SelectEndDTForPrint').on('change', function () {
+
+            var end = $('#SelectEndDTForPrint').val();
+            var start = $('#SelectStartDTForPrint').val();
+            var sup = $('#SelectSuplierForPrint').find('option:selected').text();
+            var item = $('#SelectProductForPrint').find('option:selected').text();
+
+            console.log('SelectEndDTForPrint: ', end);
+            console.log('SelectStartDTForPrint: ', start);
+            console.log('SelectSuplierForPrint: ', sup);
+            console.log('SelectProductForPrint: ', item);
+
+            const endDate = $(this).val();
+            const startDate = $("#SelectStartDTForPrint").val();
+            const originalUrl = window.origin;
+
+            const formattedDateStart = new Date(startDate).toISOString();
+            const formattedDateEnd = new Date(endDate).toISOString();
+
+            if ($('#SelectSuplierForPrint').find('option:selected').text() != null && $('#SelectSuplierForPrint').find('option:selected').text() != ""){
+                var suplier = $('#SelectSuplierForPrint').find('option:selected').text();
+
+                fetch(`${originalUrl}/api/PurcheasApi/GetBySupAndPeriodDate/${suplier}/${formattedDateStart}/${formattedDateEnd}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('حدث خطأ في جلب البيانات');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("data: " + JSON.stringify(data, null, 2));
+
+                        if ($.fn.DataTable.isDataTable('#TblForResultTBL')) {
+                            $('#TblForResultTBL').DataTable().clear().destroy();
+                        }
+
+                        const tbody = $('#TblForPrintTBL');
+                        tbody.empty();
+
+                        data.forEach(item => {
+                            const row = `
+                                            <tr>
+                                                                                 <td>
+                                         <label class="checkboxs">
+                                             <input type="checkbox">
+                                             <span class="checkmarks"></span>
+                                         </label>
+                                     </td>
+                                                <td>${item.supplierName}</td>
+                                                <td>${item.purchaseDate}</td>
+                                                <td>${item.paymentMethodAr}</td>
+                                                <td>${item.purchaseNumber}</td>
+                                                <td>${item.purchaseSubNumber}</td>
+                                                <td>${item.totalQuantity}</td>
+                                                <td>$${item.totalDiscount}</td>
+                                                <td>$${item.shipping}</td>
+                                                <td>${item.totalAll}</td>
+
+                                                <td>${item.dateTimeEntry}</td>
+                                                <td>${item.dataEntry}</td>
+                                                <td>${item.currentState}</td>
+                                                <td class="action-table-data">
+                                                    <div class="edit-delete-action">
+                                                        <a class="me-2 p-2" href="javascript:void(0);">
+                                                            <i data-feather="eye" class="action-eye"></i>
+                                                        </a>
+                                                        <a onclick="EditPurcheasData(${item.PurchaseNumber})" class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
+                                                            <i data-feather="edit" class="feather-edit"></i>
+                                                        </a>
+                                                        <a class="confirm-text p-2" href="javascript:void(0);">
+                                                            <i data-feather="trash-2" class="feather-trash-2"></i>
+                                                        </a>
+                                                    </div>
+                                              </td>
+                                            </tr>`;
+                            tbody.append(row);
+                        });
+
+
+                        $('#TblForResultTBL').DataTable({
+                            paging: true,
+                            searching: false,
+                            ordering: false,
+                            language: {
+                                url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/ar.json'
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error(`خطأ: ${error.message}`);
+                    });
+            }
+            else if ($('#SelectProductForPrint').find('option:selected').text() != null && $('#SelectProductForPrint').find('option:selected').text() != "") {
+
+                var item = $('#SelectProductForPrint').find('option:selected').text();
+
+                fetch(`${originalUrl}/api/PurcheasApi/GetByItemAndPeriodDate/${item}/${formattedDateStart}/${formattedDateEnd}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('حدث خطأ في جلب البيانات');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("data: " + JSON.stringify(data, null, 2));
+
+                        if ($.fn.DataTable.isDataTable('#TblForResultTBL')) {
+                            $('#TblForResultTBL').DataTable().clear().destroy();
+                        }
+
+                        const tbody = $('#TblForPrintTBL');
+                        tbody.empty();
+
+                        data.forEach(item => {
+                            const row = `
+                                            <tr>
+                                                                                 <td>
+                                         <label class="checkboxs">
+                                             <input type="checkbox">
+                                             <span class="checkmarks"></span>
+                                         </label>
+                                     </td>
+                                                <td>${item.supplierName}</td>
+                                                <td>${item.purchaseDate}</td>
+                                                <td>${item.paymentMethodAr}</td>
+                                                <td>${item.purchaseNumber}</td>
+                                                <td>${item.purchaseSubNumber}</td>
+                                                <td>${item.totalQuantity}</td>
+                                                <td>$${item.totalDiscount}</td>
+                                                <td>$${item.shipping}</td>
+                                                <td>${item.totalAll}</td>
+                                                <td>${item.dateTimeEntry}</td>
+                                                <td>${item.dataEntry}</td>
+                                                <td>${item.currentState}</td>
+                                                        <td class="action-table-data">
+                                                            <div class="edit-delete-action">
+                                                                <a class="me-2 p-2" href="javascript:void(0);">
+                                                                    <i data-feather="eye" class="action-eye"></i>
+                                                                </a>
+                                                                <a onclick="EditPurcheasData(${item.PurchaseNumber})" class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
+                                                                    <i data-feather="edit" class="feather-edit"></i>
+                                                                </a>
+                                                                <a class="confirm-text p-2" href="javascript:void(0);">
+                                                                    <i data-feather="trash-2" class="feather-trash-2"></i>
+                                                                </a>
+                                                            </div>
+                                                      </td>                                            </tr>`;
+                            tbody.append(row);
+                        });
+
+
+                        $('#TblForResultTBL').DataTable({
+                            paging: true,
+                            searching: false,
+                            ordering: false,
+                            language: {
+                                url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/ar.json'
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error(`خطأ: ${error.message}`);
+                    });
+            }
+            else {
+                fetch(`${originalUrl}/api/PurcheasApi/GetByPeriodDate/${formattedDateStart}/${formattedDateEnd}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('حدث خطأ في جلب البيانات');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("data: " + JSON.stringify(data, null, 2));
+
+                        if ($.fn.DataTable.isDataTable('#TblForResultTBL')) {
+                            $('#TblForResultTBL').DataTable().clear().destroy();
+                        }
+
+                        const tbody = $('#TblForPrintTBL');
+                        tbody.empty();
+
+                        data.forEach(item => {
+                            const row = `
+                                                                                            <tr>
+                                                                                         <td>
+                                                 <label class="checkboxs">
+                                                     <input type="checkbox">
+                                                     <span class="checkmarks"></span>
+                                                 </label>
+                                             </td>
+                                                        <td>${item.supplierName}</td>
+                                                        <td>${item.purchaseDate}</td>
+                                                        <td>${item.paymentMethodAr}</td>
+                                                        <td>${item.purchaseNumber}</td>
+                                                        <td>${item.purchaseSubNumber}</td>
+                                                        <td>${item.totalQuantity}</td>
+                                                        <td>$${item.totalDiscount}</td>
+                                                        <td>$${item.shipping}</td>
+                                                        <td>${item.totalAll}</td>
+                                                        <td>${item.dateTimeEntry}</td>
+                                                        <td>${item.dataEntry}</td>
+                                                        <td>${item.currentState}</td>
+                                                                <td class="action-table-data">
+                                                                    <div class="edit-delete-action">
+                                                                        <a class="me-2 p-2" href="javascript:void(0);">
+                                                                            <i data-feather="eye" class="action-eye"></i>
+                                                                        </a>
+                                                                        <a onclick="EditPurcheasData(${item.PurchaseNumber})" class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
+                                                                            <i data-feather="edit" class="feather-edit"></i>
+                                                                        </a>
+                                                                        <a class="confirm-text p-2" href="javascript:void(0);">
+                                                                            <i data-feather="trash-2" class="feather-trash-2"></i>
+                                                                        </a>
+                                                                    </div>
+                                                              </td>                                            </tr>`;
+                            tbody.append(row);
+                        });
+
+
+                        $('#TblForResultTBL').DataTable({
+                            paging: true,
+                            searching: false,
+                            ordering: false,
+                            language: {
+                                url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/ar.json'
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error(`خطأ: ${error.message}`);
+                    });
+            }
+        });
+
+
+
+        $('#SelectDetectedDateForPrint').on('change', function () {
+
+            const date = $(this).find('option:selected').text();
+            console.log(date);
+
+            const originalUrl = window.origin;
+
+            const Dt = new Date(date).toISOString();
+
+            fetch(`${originalUrl}/api/PurcheasApi/GetByDate/${Dt}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('حدث خطأ في جلب البيانات');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("data: " + JSON.stringify(data, null, 2));
+
+                    if ($.fn.DataTable.isDataTable('#TblForPrintTBL')) {
+                        $('#TblForPrintTBL').DataTable().clear().destroy();
+                    }
+
+                    const tbody = $('#TBLToPrint');
+                    tbody.empty();
+
+                    data.forEach(item => {
+                        const row = `
+                                                                                                    <tr>
+                                                                                                 <td>
+                                                         <label class="checkboxs">
+                                                             <input type="checkbox">
+                                                             <span class="checkmarks"></span>
+                                                         </label>
+                                                     </td>
+                                                                <td>${item.supplierName}</td>
+                                                                <td>${item.purchaseDate}</td>
+                                                                <td>${item.paymentMethodAr}</td>
+                                                                <td>${item.purchaseNumber}</td>
+                                                                <td>${item.purchaseSubNumber}</td>
+                                                                <td>${item.totalQuantity}</td>
+                                                                <td>$${item.totalDiscount}</td>
+                                                                <td>$${item.shipping}</td>
+                                                                <td>${item.totalAll}</td>
+                                                                <td>${item.dateTimeEntry}</td>
+                                                                <td>${item.dataEntry}</td>
+                                                                <td>${item.currentState}</td>
+                                                                        <td class="action-table-data">
+                                                                            <div class="edit-delete-action">
+                                                                                <a class="me-2 p-2" href="javascript:void(0);">
+                                                                                    <i data-feather="eye" class="action-eye"></i>
+                                                                                </a>
+                                                                                <a onclick="EditPurcheasData(${item.PurchaseNumber})" class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
+                                                                                    <i data-feather="edit" class="feather-edit"></i>
+                                                                                </a>
+                                                                                <a class="confirm-text p-2" href="javascript:void(0);">
+                                                                                    <i data-feather="trash-2" class="feather-trash-2"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                      </td>                                            </tr>`;
+                        tbody.append(row);
+                    });
+
+
+                    $('#TblForPrintTBL').DataTable({
+                        paging: true,
+                        searching: false,
+                        ordering: false,
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/ar.json'
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error(`خطأ: ${error.message}`);
+                });
+
+        });
+
+
+        // رقم السند
+
+        $('#SelectPurchaseNumberForPrint').on('change', function () {
+
+
+            const pueNm = parceInt($(this).find('option:selected').text());
+
+            const originalUrl = window.origin;
+
+            fetch(`${originalUrl}/api/PurcheasApi/GetBySup/${pueNm}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('حدث خطأ في جلب البيانات');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("data: " + JSON.stringify(data, null, 2));
+
+                    if ($.fn.DataTable.isDataTable('#TblForPrintTBL')) {
+                        $('#TblForPrintTBL').DataTable().clear().destroy();
+                    }
+
+                    const tbody = $('#TBLToPrint');
+                    tbody.empty();
+
+                    data.forEach(item => {
+                        const row = `
+                                                                                                    <tr>
+                                                                                                 <td>
+                                                         <label class="checkboxs">
+                                                             <input type="checkbox">
+                                                             <span class="checkmarks"></span>
+                                                         </label>
+                                                     </td>
+                                                                <td>${item.supplierName}</td>
+                                                                <td>${item.purchaseDate}</td>
+                                                                <td>${item.paymentMethodAr}</td>
+                                                                <td>${item.purchaseNumber}</td>
+                                                                <td>${item.purchaseSubNumber}</td>
+                                                                <td>${item.totalQuantity}</td>
+                                                                <td>$${item.totalDiscount}</td>
+                                                                <td>$${item.shipping}</td>
+                                                                <td>${item.totalAll}</td>
+                                                                <td>${item.dateTimeEntry}</td>
+                                                                <td>${item.dataEntry}</td>
+                                                                <td>${item.currentState}</td>
+                                                                        <td class="action-table-data">
+                                                                            <div class="edit-delete-action">
+                                                                                <a class="me-2 p-2" href="javascript:void(0);">
+                                                                                    <i data-feather="eye" class="action-eye"></i>
+                                                                                </a>
+                                                                                <a onclick="EditPurcheasData(${item.PurchaseNumber})" class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
+                                                                                    <i data-feather="edit" class="feather-edit"></i>
+                                                                                </a>
+                                                                                <a class="confirm-text p-2" href="javascript:void(0);">
+                                                                                    <i data-feather="trash-2" class="feather-trash-2"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                      </td>                                            </tr>`;
+                        tbody.append(row);
+                    });
+
+
+                    $('#TblForPrintTBL').DataTable({
+                        paging: true,
+                        searching: false,
+                        ordering: false,
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/ar.json'
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error(`خطأ: ${error.message}`);
+                });
+            });
+
+
+
+
+            // لمورد
+
+
+        $('#SelectSuplierForPrint').on('change', function () {
+
+
+            const sup = $(this).find('option:selected').text();
+
+            const originalUrl = window.origin;
+
+                fetch(`${originalUrl}/api/PurcheasApi/GetBySup/${sup}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('حدث خطأ في جلب البيانات');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("data: " + JSON.stringify(data, null, 2));
+
+                    if ($.fn.DataTable.isDataTable('#TblForPrintTBL')) {
+                        $('#TblForPrintTBL').DataTable().clear().destroy();
+                    }
+
+                    const tbody = $('#TBLToPrint');
+                    tbody.empty();
+
+                    data.forEach(item => {
+                        const row = `
+                                                                                                    <tr>
+                                                                                                 <td>
+                                                         <label class="checkboxs">
+                                                             <input type="checkbox">
+                                                             <span class="checkmarks"></span>
+                                                         </label>
+                                                     </td>
+                                                                <td>${item.supplierName}</td>
+                                                                <td>${item.purchaseDate}</td>
+                                                                <td>${item.paymentMethodAr}</td>
+                                                                <td>${item.purchaseNumber}</td>
+                                                                <td>${item.purchaseSubNumber}</td>
+                                                                <td>${item.totalQuantity}</td>
+                                                                <td>$${item.totalDiscount}</td>
+                                                                <td>$${item.shipping}</td>
+                                                                <td>${item.totalAll}</td>
+                                                                <td>${item.dateTimeEntry}</td>
+                                                                <td>${item.dataEntry}</td>
+                                                                <td>${item.currentState}</td>
+                                                                        <td class="action-table-data">
+                                                                            <div class="edit-delete-action">
+                                                                                <a class="me-2 p-2" href="javascript:void(0);">
+                                                                                    <i data-feather="eye" class="action-eye"></i>
+                                                                                </a>
+                                                                                <a onclick="EditPurcheasData(${item.PurchaseNumber})" class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
+                                                                                    <i data-feather="edit" class="feather-edit"></i>
+                                                                                </a>
+                                                                                <a class="confirm-text p-2" href="javascript:void(0);">
+                                                                                    <i data-feather="trash-2" class="feather-trash-2"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                      </td>                                            </tr>`;
+                        tbody.append(row);
+                    });
+
+
+                    $('#TblForPrintTBL').DataTable({
+                        paging: true,
+                        searching: false,
+                        ordering: false,
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/ar.json'
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error(`خطأ: ${error.message}`);
+                });
+            });
+
+
+
+        // لصنف
+            $('#SelectProductForPrint').on('change', function () {
+
+            const product = $(this).find('option:selected').text();
+
+            const originalUrl = window.origin;
+
+                fetch(`${originalUrl}/api/PurcheasApi/GetByItem/${product}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('حدث خطأ في جلب البيانات');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("data: " + JSON.stringify(data, null, 2));
+
+                    if ($.fn.DataTable.isDataTable('#TblForPrintTBL')) {
+                        $('#TblForPrintTBL').DataTable().clear().destroy();
+                    }
+
+                    const tbody = $('#TBLToPrint');
+                    tbody.empty();
+
+                    data.forEach(item => {
+                        const row = `
+                                                                                                    <tr>
+                                                                                                 <td>
+                                                         <label class="checkboxs">
+                                                             <input type="checkbox">
+                                                             <span class="checkmarks"></span>
+                                                         </label>
+                                                     </td>
+                                                                <td>${item.supplierName}</td>
+                                                                <td>${item.purchaseDate}</td>
+                                                                <td>${item.paymentMethodAr}</td>
+                                                                <td>${item.purchaseNumber}</td>
+                                                                <td>${item.purchaseSubNumber}</td>
+                                                                <td>${item.totalQuantity}</td>
+                                                                <td>$${item.totalDiscount}</td>
+                                                                <td>$${item.shipping}</td>
+                                                                <td>${item.totalAll}</td>
+                                                                <td>${item.dateTimeEntry}</td>
+                                                                <td>${item.dataEntry}</td>
+                                                                <td>${item.currentState}</td>
+                                                                        <td class="action-table-data">
+                                                                            <div class="edit-delete-action">
+                                                                                <a class="me-2 p-2" href="javascript:void(0);">
+                                                                                    <i data-feather="eye" class="action-eye"></i>
+                                                                                </a>
+                                                                                <a onclick="EditPurcheasData(${item.PurchaseNumber})" class="me-2 p-2" data-bs-toggle="modal" data-bs-target="#edit-units">
+                                                                                    <i data-feather="edit" class="feather-edit"></i>
+                                                                                </a>
+                                                                                <a class="confirm-text p-2" href="javascript:void(0);">
+                                                                                    <i data-feather="trash-2" class="feather-trash-2"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                      </td>                                            </tr>`;
+                        tbody.append(row);
+                    });
+
+
+                    $('#TblForPrintTBL').DataTable({
+                        paging: true,
+                        searching: false,
+                        ordering: false,
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/ar.json'
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error(`خطأ: ${error.message}`);
+                });
+        });
+
+
+
+    </script>
+
+    <script>
+        function printDirectPdf() {
+
+            var searchInput = $('.form-control.form-control-sm').val();
+
+            console.log(searchInput);
+            var url = `/Admin/Purchase/CreateDirectPdf?num=${encodeURIComponent(searchInput)}`;
+            window.location.href = url;
+        }
+    </script>
+
+}
+
+
+
+
+
+
+
+
+
+
+

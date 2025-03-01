@@ -1,0 +1,101 @@
+﻿@model ViewmMODeElMASTER
+@{
+    ViewData["Title"] = "RegistersAr";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdminAr.cshtml";
+}
+
+
+
+<div class="page-wrapper cardhead">
+    <div class="content container-fluid">
+
+        <div class="col-xl-12">
+            <div class="card">
+
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">
+                                    @ResourceWebAr.LBUserInformation
+
+                                    <a href="#" class="btn btn-outline-info rounded-pill">Home</a>
+
+
+
+                                    <a href="" class="btn btn-outline-info rounded-pill">Cpanel</a>
+
+                                </h4>
+
+                            </div>
+                            <div class="card-body">
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered mb-0 ">
+                                        <thead>
+                                            <tr>
+                                                <th>@ResourceWebAr.LbUserEmage</th>
+                                                <th>@ResourceWebAr.LbUserName</th>
+                                                <th>@ResourceWebAr.LbUserName</th>
+                                                <th>@ResourceWebAr.LbUserPhone</th>
+                                                <th>@ResourceWebAr.LbUserEmail</th>
+                                                <th>@ResourceWebAr.LbNameRols</th>
+                                                <th>@ResourceWebAr.LbActiveUser</th>
+                                                <th>@ResourceWebAr.LbOpration</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+
+
+                                            @foreach (var item in Model.Users)
+                                            {
+                                                <tr>
+                                                    <td><img src="@string.Format("/Images/Users/{0}",item.ImageUser)" class="img-thumbnail rounded-pill" style="width:100px; height:100px"> </td>
+                                                    <td>@item.Name</td>
+                                                    <td>@item.UserName</td>
+                                                    <td>@item.PhoneNumber</td>
+                                                    <td>@item.Email</td>
+                                                    <td>@item.Role</td>
+                                                    <td>
+                                                        <div class="form-check form-check-lg form-switch">
+                                                            <input class="form-check-input" type="checkbox" role="switch" id="switch-lg" checked="@item.ActiveUser">
+                                                            <label class="form-check-label" for="switch-lg">@item.ActiveUser</label>
+                                                        </div>
+                                                    </td>
+
+
+                                                    <td>
+                                                        <div class="hstack gap-2 fs-15">
+                                                            <a asp-area="Admin" asp-controller="Accounts" asp-action="EditeRegisterAr" asp-route-Id="@item.Id" class="btn btn-icon btn-outline-success rounded-pill">
+                                                                <i class="fas fa fa-edit"></i>
+                                                            </a>
+                                                            <a asp-area="Admin" asp-controller="Accounts" asp-action="AddEditRolesUser" asp-route-id="@item.Id" class="btn btn-icon btn-outline-info rounded-pill">
+                                                                <i class="fas fa fa-cogs"></i>
+                                                            </a>
+                                                            <a asp-area="Admin" asp-controller="Accounts" asp-action="ChangePassword" asp-route-Id="@item.Id" class="btn btn-icon btn-outline-secondary rounded-pill">
+                                                                <i class="fas fa fa-unlock-alt"></i>
+                                                            </a>
+                                                            <a asp-area="Admin" asp-controller="Accounts" asp-action="DeleteUser" asp-route-userId="@item.Id" class="btn btn-icon btn-outline-danger rounded-pill">
+                                                                <i class="fas fa fa-trash"></i>
+                                                            </a>
+
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

@@ -1,0 +1,153 @@
+﻿@model ViewmMODeElMASTER
+@{
+    ViewData["Title"] = ResourceWeb.LBAddCitie;
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<form class="flex-fill" method="post" asp-controller="Citie" asp-action="Save" enctype="multipart/form-data">
+    <div class="page-wrapper cardhead">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="page-title">@ResourceWeb.LBAddCitie</h3>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active">@ResourceWeb.LBAddCitie</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Header -->
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">@ResourceWeb.LBAddCitie</h5>
+                        </div>
+
+                        <div class="card-body">
+
+
+                            <input type="hidden" asp-for="@Model.Citie.DataEntry" class="form-control" value="@User.Identity.Name">
+                            <input type="hidden" asp-for="@Model.Citie.IdCitie" class="form-control">
+                    
+                            <input type="hidden" asp-for="@Model.Citie.DateTimeEntry" value="@DateTime.Now">
+                            <input type="hidden" asp-for="@Model.returnUrl" id="url">
+                            <span style="color:royalblue"> <strong>@TempData["Saved successfully"]</strong></span>
+                            <span style="color:red"> <strong>@TempData["ErrorSave"]</strong></span>
+
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-12 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbCitieName</label>
+                                        <input type="text" asp-for="@Model.Citie.CitieName" placeholder="@ResourceWeb.lbCitieName" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.Citie.CitieName" class="text-danger"></span>
+
+                                    </div>
+                              
+                                </div>
+                            </div>
+
+
+
+
+
+                            <div class="card-content" style="margin-top:50px">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" asp-for="@Model.Citie.Active" role="switch" id="flexSwitchCheckChecked" checked="">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">
+                                                @Model.Citie.Active /التفعيل
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="card-content" style="margin-top:50px">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" asp-for="@Model.Citie.CurrentState" role="switch" id="flexSwitchCheckChecked" checked="">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">
+                                                "@Model.Citie.CurrentState /الحالة
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="page-wrapper cardhead" style="margin-top:-50px">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <!-- /Page Header -->
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Olde Photo</h5>
+                        </div>
+
+
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+
+
+
+
+
+                              
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mb-4">
+
+
+
+                            <button class="btn btn-secondary" type="submit">@ResourceWeb.lbSave</button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</form>
+@section Scripts {
+
+}
+

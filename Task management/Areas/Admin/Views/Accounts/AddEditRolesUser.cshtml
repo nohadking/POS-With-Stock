@@ -1,0 +1,78 @@
+﻿@model ViewmMODeElMASTER
+@{
+    ViewData["Title"] = "AddEditRolesUser";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="page-wrapper cardhead">
+    <div class="content container-fluid">
+
+        <div class="col-xl-12">
+            <div class="card">
+                <form asp-action="AddEditRolesUser" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input type="hidden" asp-for="UserId" />
+
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+
+
+                                <h5 class="card-title">@Model.UserName</h5>
+
+
+                            </div>
+                            <div class="card-body">
+                                <select class="select2 form-control" id="select2-placeholder-single" asp-for="SelectedRoleId" class="form-control" asp-items="Model.Roles1">
+                           
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+            
+                   
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+
+
+    <!-- jQuery -->
+    <script src="~/AdminEn/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Feather Icon JS -->
+    <script src="~/AdminEn/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll JS -->
+    <script src="~/AdminEn/assets/js/jquery.slimscroll.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="~/AdminEn/assets/plugins/select2/js/select2.min.js"></script>
+    <!-- <script src="assets/plugins/select2/js/custom-select.js"></script> -->
+    <!-- Datatable JS -->
+    <script src="~/AdminEn/assets/js/jquery.dataTables.min.js"></script>
+    <script src="~/AdminEn/assets/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="~/AdminEn/assets/js/bootstrap.bundle.min.js"></script>
+
+
+    <script src="~/AdminEn/assets/js/custom-select2.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/AdminEn/assets/js/script.js"></script>
+
+
+}
+
+

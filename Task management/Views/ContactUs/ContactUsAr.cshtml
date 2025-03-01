@@ -1,0 +1,138 @@
+﻿@model ViewmMODeElMASTER
+@{
+    ViewData["Title"] = "ContactUsAr";
+    Layout = "~/Views/Shared/_LayoutAr.cshtml";
+}
+
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>contact</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item active">contact</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb End -->
+<!--section start-->
+@foreach (var item in Model.ListCompanyInformation)
+{
+    <section class="contact-page section-b-space" style="margin-top:30px">
+        <div class="container">
+            <div class="row section-b-space" style="margin-top:100px">
+                <div class="col-lg-7 map">
+                    <iframe src="@item.Mabs"
+                            allowfullscreen></iframe>
+                </div>
+                <div class="col-lg-5">
+                    <div class="contact-right">
+                        <ul>
+                            <li>
+                                <div class="contact-icon">
+                                    <img src="~/Web/assets/images/icon/phone.png"
+                                         alt="Generic placeholder image">
+                                    <h6>إتصل بنا </h6>
+                                </div>
+                                <div class="media-body">
+                                    <p>@item.Mobile</p>
+                                    <p>@item.PhoneOner</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="contact-icon">
+                                    <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                    <h6>العنوان</h6>
+                                </div>
+                                <div class="media-body">
+                                    <p>@item.AddressAr</p>
+                                    @* <p>USA 123456</p> *@
+                                </div>
+                            </li>
+                            <li>
+                                <div class="contact-icon">
+                                    <img src="~/Web/assets/images/icon/email.png"
+                                         alt="Generic placeholder image">
+                                    <h6>البريد الاكتروني</h6>
+                                </div>
+                                <div class="media-body">
+                                    <p>@item.EmailCompany</p>
+                                    <p>@item.EmailOner</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="contact-icon">
+                                    <i class="fa fa-fax" aria-hidden="true"></i>
+                                    <h6>المدير التنفيذي</h6>
+                                </div>
+                                <div class="media-body">
+                                    <p>@item.NameOner</p>
+                                    <p>@item.EmailOner</p>
+                                    <p>@item.PhoneOner</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <form class="theme-form">
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="name">First Name</label>
+                                <input type="text" class="form-control" id="name" placeholder="Enter Your name"
+                                       required="">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email">Last Name</label>
+                                <input type="text" class="form-control" id="last-name" placeholder="Email" required="">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="review">Phone number</label>
+                                <input type="text" class="form-control" id="review" placeholder="Enter your number"
+                                       required="">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email">Email</label>
+                                <input type="text" class="form-control" id="email" placeholder="Email" required="">
+                            </div>
+                            <div class="col-md-12">
+                                <label for="review">Write Your Message</label>
+                                <textarea class="form-control" placeholder="Write Your Message"
+                                          id="exampleFormControlTextarea1" rows="6"></textarea>
+                            </div>
+                            <div class="col-md-12">
+                                <button class="btn btn-solid" type="submit">Send Your Message</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<!--Section ends-->
+@section Scripts {
+    <script>
+        function openSearch() {
+            document.getElementById("search-overlay").style.display = "block";
+        }
+
+        function closeSearch() {
+            document.getElementById("search-overlay").style.display = "none";
+        }
+    </script>
+
+}
+

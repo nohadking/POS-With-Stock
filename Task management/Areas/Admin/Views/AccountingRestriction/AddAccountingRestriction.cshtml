@@ -1,0 +1,166 @@
+﻿@model ViewmMODeElMASTER
+@{
+    ViewData["Title"] = ResourceWeb.LBAddAccountingRestriction;
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<form class="flex-fill" method="post" asp-controller="AccountingRestriction" asp-action="Save" enctype="multipart/form-data">
+    <div class="page-wrapper cardhead">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="page-title">Basic Inputs</h3>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Basic Inputs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Header -->
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Basic Inputs</h5>
+                        </div>
+                        <div class="card-body">
+                            <input type="hidden" asp-for="@Model.AccountingRestriction.DataEntry" class="form-control" value="@User.Identity.Name">
+                            <input type="hidden" asp-for="@Model.AccountingRestriction.IdaccountingRestrictions" class="form-control">
+                            <input type="hidden" asp-for="@Model.AccountingRestriction.DateTimeEntry" value="@DateTime.Now">
+                            <input type="hidden" asp-for="@Model.returnUrl" id="url">
+                            <span style="color:royalblue"> <strong>@TempData["Saved successfully"]</strong></span>
+                            <span style="color:red"> <strong>@TempData["ErrorSave"]</strong></span>
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbNumberaccountingRestrictions</label>
+                                        <input type="text" asp-for="@Model.AccountingRestriction.NumberaccountingRestrictions" placeholder="@ResourceWeb.lbNumberaccountingRestrictions" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.AccountingRestriction.NumberaccountingRestrictions" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbAccountingName</label>
+                                        <select id="mainAccountSelect" class="form-select" asp-for="@Model.AccountingRestriction.AccountingName"
+                                                asp-items="@(new SelectList(ViewBag.LevelForeAccount, "LevelForeAccountsName", "LevelForeAccountsName"))">
+                                            <option value="">اختر حساب</option>
+                                        </select>
+                                        <span asp-validation-for="@Model.AccountingRestriction.AccountingName" class="text-danger"></span>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-4">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbBondType</label>
+                                        <input type="text" asp-for="@Model.AccountingRestriction.BondType" placeholder="@ResourceWeb.lbBondType" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.AccountingRestriction.BondType" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-lg-6 col-xs-4">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbStatement</label>
+                                        <input type="text" asp-for="@Model.AccountingRestriction.Statement" placeholder="@ResourceWeb.lbStatement" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.AccountingRestriction.Statement" class="text-danger"></span>
+
+                                    </div>  
+                                    <div class="col-lg-6 col-xs-4">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbBondNumber</label>
+                                        <input type="text" asp-for="@Model.AccountingRestriction.BondNumber" placeholder="@ResourceWeb.lbBondNumber" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.AccountingRestriction.BondNumber" class="text-danger"></span>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbDebtor</label>
+                                        <input type="text" asp-for="@Model.AccountingRestriction.Debtor" placeholder="@ResourceWeb.lbDebtor" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.AccountingRestriction.Debtor" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbcreditor</label>
+                                        <input type="text" asp-for="@Model.AccountingRestriction.creditor" placeholder="@ResourceWeb.lbcreditor" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.AccountingRestriction.creditor" class="text-danger"></span>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg12 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.LbNouts</label>
+                                        <input type="text" asp-for="@Model.AccountingRestriction.Nouts" placeholder="@ResourceWeb.LbNouts" class="form-control" maxlength="500">
+                                        <span asp-validation-for="@Model.AccountingRestriction.Nouts" class="text-danger"></span>
+                                    </div>
+                                 
+                                </div>
+                            </div>
+
+                   
+                            <div class="card-content" style="margin-top:50px">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" asp-for="@Model.AccountingRestriction.CurrentState" role="switch" id="flexSwitchCheckChecked" checked="">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">
+                                                "@Model.AccountingRestriction.CurrentState /الحالة
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-wrapper cardhead" style="margin-top:-50px">
+        <div class="content container-fluid">
+            <!-- Page Header -->
+            <!-- /Page Header -->
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Olde Photo</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="card-content">
+                                        <div class="row small-spacing">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2 mb-4">
+                            <button class="btn btn-secondary" type="submit">@ResourceWeb.lbSave</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+@section Scripts {
+    <script>
+        var loadFile = function (event) {
+            var output = document.getElementById('output');
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.onload = function () {
+                URL.revokeObjectURL(output.src); // free memory
+            }
+        };
+    </script>
+}
+

@@ -1,0 +1,206 @@
+﻿@model ViewmMODeElMASTER
+@{
+    ViewData["Title"] = ResourceWeb.LBAddHomeSliderContent;
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<form class="flex-fill" method="post" asp-controller="HomeSliderContent" asp-action="Save" enctype="multipart/form-data">
+    <div class="page-wrapper cardhead">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="page-title">Basic Inputs</h3>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Basic Inputs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Header -->
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Basic Inputs</h5>
+                        </div>
+
+                        <div class="card-body">
+
+
+                            <input type="hidden" asp-for="@Model.HomeSliderContent.DataEntry" class="form-control" value="@User.Identity.Name">
+                            <input type="hidden" asp-for="@Model.HomeSliderContent.IdHomeSliderContent" class="form-control">
+                            <input type="hidden" asp-for="@Model.HomeSliderContent.DateTimeEntry" value="@DateTime.Now">
+                            <input type="hidden" asp-for="@Model.returnUrl" id="url">
+                            <span style="color:royalblue"> <strong>@TempData["Saved successfully"]</strong></span>
+                            <span style="color:red"> <strong>@TempData["ErrorSave"]</strong></span>
+
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleOneAr</label>
+                                        <input type="text" asp-for="@Model.HomeSliderContent.TitleOneAr" placeholder="@ResourceWeb.lbTitleOneAr" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.HomeSliderContent.TitleOneAr" class="text-danger"></span>
+                                        <span style="color:red"> <strong>@TempData["TitleOneAr"]</strong></span>
+
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleOneEn</label>
+                                        <input type="text" asp-for="@Model.HomeSliderContent.TitleOneEn" placeholder="@ResourceWeb.lbTitleOneEn" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.HomeSliderContent.TitleOneEn" class="text-danger"></span>
+                                        <span style="color:red"> <strong>@TempData["TitleOneEn"]</strong></span>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleTwoAr</label>
+                                        <input type="text" asp-for="@Model.HomeSliderContent.TitleTwoAr" placeholder="@ResourceWeb.lbTitleTwoAr" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.HomeSliderContent.TitleTwoAr" class="text-danger"></span>
+                                     
+
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleTwoEn</label>
+                                        <input type="text" asp-for="@Model.HomeSliderContent.TitleTwoEn" placeholder="@ResourceWeb.lbTitleTwoEn" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.HomeSliderContent.TitleTwoEn" class="text-danger"></span>                                      
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleButtonAr</label>
+                                        <input type="text" asp-for="@Model.HomeSliderContent.TitleButtonAr" placeholder="@ResourceWeb.lbTitleButtonAr" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.HomeSliderContent.TitleButtonAr" class="text-danger"></span>
+
+
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleButtonEn</label>
+                                        <input type="text" asp-for="@Model.HomeSliderContent.TitleButtonEn" placeholder="@ResourceWeb.lbTitleButtonEn" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.HomeSliderContent.TitleButtonEn" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbUrlButtonAr</label>
+                                        <input type="text" asp-for="@Model.HomeSliderContent.UrlButtonAr" placeholder="@ResourceWeb.lbUrlButtonAr" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.HomeSliderContent.UrlButtonAr" class="text-danger"></span>
+
+
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbUrlButtonEn</label>
+                                        <input type="text" asp-for="@Model.HomeSliderContent.UrlButtonEn" placeholder="@ResourceWeb.lbUrlButtonEn" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.HomeSliderContent.UrlButtonEn" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+                            <div class="card-content" style="margin-top:50px">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" asp-for="@Model.HomeSliderContent.CurrentState" role="switch" id="flexSwitchCheckChecked" checked="">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">
+                                                "@Model.HomeSliderContent.CurrentState /الحالة
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="page-wrapper cardhead" style="margin-top:-50px">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <!-- /Page Header -->
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Olde Photo</h5>
+                        </div>
+
+
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+
+
+
+
+
+                                    <div class="card-content">
+                                        <div class="row small-spacing">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mb-4">
+
+
+
+                            <button class="btn btn-secondary" type="submit">@ResourceWeb.lbSave</button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</form>
+@section Scripts {
+    <script>
+        var loadFile = function (event) {
+            var output = document.getElementById('output');
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.onload = function () {
+                URL.revokeObjectURL(output.src); // free memory
+            }
+        };
+    </script>
+}
+

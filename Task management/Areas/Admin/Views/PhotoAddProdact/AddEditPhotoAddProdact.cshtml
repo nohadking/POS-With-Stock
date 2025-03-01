@@ -1,0 +1,178 @@
+﻿@model ViewmMODeElMASTER
+@{
+    ViewData["Title"] = ResourceWeb.LBAddEditPhotoAddProdact;
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<form class="flex-fill" method="post" asp-controller="PhotoAddProdact" asp-action="Save" enctype="multipart/form-data">
+    <div class="page-wrapper cardhead">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="page-title">Basic Inputs</h3>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Basic Inputs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Header -->
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Basic Inputs</h5>
+                        </div>
+
+                        <div class="card-body">
+
+
+                            <input type="hidden" asp-for="@Model.PhotoAddProdact.DataEntry" class="form-control" value="@User.Identity.Name">
+                            <input type="hidden" asp-for="@Model.PhotoAddProdact.IdPhotoAddProdact" class="form-control">
+                            <input type="hidden" asp-for="@Model.PhotoAddProdact.Photo" class="form-control">
+                            <input type="hidden" asp-for="@Model.PhotoAddProdact.DateTimeEntry" value="@DateTime.Now">
+                            <input type="hidden" asp-for="@Model.returnUrl" id="url">
+                            <span style="color:royalblue"> <strong>@TempData["Saved successfully"]</strong></span>
+                            <span style="color:red"> <strong>@TempData["ErrorSave"]</strong></span>
+
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label asp-for="@Model.PhotoAddProdact.IdProduct" for="exampleInputEmail1">@ResourceWeb.lbProductNameAr</label>
+                                        <select class="form-select" asp-for="@Model.PhotoAddProdact.IdProduct" asp-items="@(new SelectList(ViewBag.Product, "IdProduct", "ProductNameAr"))">
+                                        </select>
+                                        <span asp-validation-for="@Model.PhotoAddProdact.IdProduct" class="text-danger"></span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+
+
+
+                            <div class="card-content" style="margin-top:50px">
+                                <div class="row small-spacing">
+                                </div>
+                            </div>
+                            <div class="card-content" style="margin-top:50px">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" asp-for="@Model.PhotoAddProdact.CurrentState" role="switch" id="flexSwitchCheckChecked" checked="">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">
+                                                "@Model.PhotoAddProdact.CurrentState /الحالة
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="page-wrapper cardhead" style="margin-top:-50px">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <!-- /Page Header -->
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Olde Photo</h5>
+                        </div>
+
+
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+
+
+
+
+
+                                    <div class="card-content">
+                                        <div class="row small-spacing">
+                                            <div class="col-lg-6 col-xs-6">
+                                                <div class="custom-file-container" data-upload-id="myFirstImage">
+                                                    <label>
+                                                        <a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a>
+                                                    </label>
+
+                                                    <label class="custom-file-container__custom-file">
+                                                        <input type="file" class="custom-file-container__custom-file__custom-file-input" name="Files" id="file" onchange="loadFile(event)">
+                                                        <input type="hidden" name="MAX_FILE_SIZE" value="10485760">
+                                                        <img id="output" width="100" height="100" />
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-lg-6 col-xs-6">
+                                                <div class="form-group">
+                                                    <input type="hidden" asp-for="@Model.PhotoAddProdact.Photo" for="exampleInputEmail1"></input>
+                                                    <p><img src="@string.Format("/Images/Home/{0}",Model.PhotoAddProdact.Photo)" id="output" width="100" height="100" /></p>
+                                                </div>
+                                                <span class="custom-file-container__custom-file__custom-file-control"></span>
+
+                                                <div class="custom-file-container__image-preview"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mb-4">
+
+
+
+                            <button class="btn btn-secondary" type="submit">@ResourceWeb.lbSave</button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</form>
+@section Scripts {
+    <script>
+        var loadFile = function (event) {
+            var output = document.getElementById('output');
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.onload = function () {
+                URL.revokeObjectURL(output.src); // free memory
+            }
+        };
+    </script>
+}
+

@@ -1,0 +1,293 @@
+﻿@model ViewmMODeElMASTER
+@{
+    ViewData["Title"] = ResourceWeb.LBAddEditSupplier;
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<form class="flex-fill" method="post" asp-controller="Supplier" asp-action="Save" enctype="multipart/form-data">
+    <div class="page-wrapper cardhead">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="page-title">Basic Inputs</h3>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Basic Inputs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Header -->
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Basic Inputs</h5>
+                        </div>
+                        <div class="card-body">
+                            <input type="hidden" asp-for="@Model.Supplier.DataEntry" class="form-control" value="@User.Identity.Name">
+                            <input type="hidden" asp-for="@Model.Supplier.IdSupplier" class="form-control">
+                            <input type="hidden" asp-for="@Model.Supplier.Photo" class="form-control">
+                            <input type="hidden" asp-for="@Model.Supplier.DateTimeEntry" value="@DateTime.Now">
+                            <input type="hidden" asp-for="@Model.returnUrl" id="url">
+                            <span style="color:royalblue"> <strong>@TempData["Saved successfully"]</strong></span>
+                            <span style="color:red"> <strong>@TempData["ErrorSave"]</strong></span>
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-3 col-xs-6">
+                                        <label class="form-label" asp-for="@Model.Supplier.SupplierName">@ResourceWeb.lbSupplierName</label>
+                                        <input type="text" class="form-control" asp-for="@Model.Supplier.SupplierName">
+                                        <span asp-validation-for="@Model.Supplier.SupplierName" class="text-danger"></span>
+                                        <span style="color:red"> <strong>@TempData["Suppliers"]</strong></span>
+                                    </div>
+                                    <div class="col-lg-3 col-xs-6">
+                                        <label asp-for="@Model.Supplier.IdPaymentMethod" for="exampleInputEmail1">أسلوب  التعامل </label>
+                                        <select class="form-select" asp-for="@Model.Supplier.IdPaymentMethod" asp-items="@(new SelectList(ViewBag.paymentMethod, "IdPaymentMethod", "PaymentMethodAr"))">
+                                        </select>
+                                        <span asp-validation-for="@Model.Supplier.IdPaymentMethod" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-lg-3 col-xs-6">
+                                        <label asp-for="@Model.Supplier.IdPaymentMethod" for="exampleInputEmail1">أسلوب  التعامل </label>
+                                        <label for="exampleInputEmail1">تابع لحساب</label>
+                                        <select class="form-select" asp-items="@(new SelectList(ViewBag.BLevelThreeAccount, "IdLevelThreeAccount", "NameLevelThreeAccounts"))" id="IdLevelThreeAccount">
+                                        </select>
+                                        <span asp-validation-for="@Model.Supplier.IdPaymentMethod" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-lg-3 col-xs-6">
+                                        <label class="form-label" asp-for="Supplier.NumberAccount">@ResourceWeb.lbNumberAccount</label>
+                                        <input type="text" class="form-control" asp-for="Supplier.NumberAccount" id="Supplier_NumberAccount" readonly>
+                                        <span asp-validation-for="Supplier.NumberAccount" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label class="form-label" asp-for="@Model.Supplier.Specialization">@ResourceWeb.lbSpecialization</label>
+                                        <input type="text" class="form-control" asp-for="@Model.Supplier.Specialization" maxlength="500">
+                                        <span asp-validation-for="@Model.Supplier.Specialization" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbPhone</label>
+                                        <input type="text" asp-for="@Model.Supplier.Phone" placeholder="@ResourceWeb.lbPhone" class="form-control" maxlength="20">
+                                        <span asp-validation-for="@Model.Supplier.Phone" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbMobile</label>
+                                        <input type="text" asp-for="@Model.Supplier.Mobile" placeholder="@ResourceWeb.lbMobile" class="form-control" maxlength="20">
+                                        <span asp-validation-for="@Model.Supplier.Mobile" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbNameOner</label>
+                                        <input type="text" asp-for="@Model.Supplier.NameOner" placeholder="@ResourceWeb.lbNameOner" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.Supplier.NameOner" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbPhoneOner</label>
+                                        <input type="text" asp-for="@Model.Supplier.PhoneOner" placeholder="@ResourceWeb.lbPhoneOner" class="form-control" maxlength="20">
+                                        <span asp-validation-for="@Model.Supplier.PhoneOner" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbEmailOner</label>
+                                        <input type="email" asp-for="@Model.Supplier.EmailOner" placeholder="@ResourceWeb.lbEmailOner" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.Supplier.EmailOner" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.LbEmailCompany</label>
+                                        <input type="email" asp-for="@Model.Supplier.EmailCompany" placeholder="@ResourceWeb.LbEmailCompany" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.Supplier.EmailCompany" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbAddress</label>
+                                        <input type="text" asp-for="@Model.Supplier.Address" placeholder="@ResourceWeb.lbAddress" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.Supplier.Address" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbDebtlimit</label>
+                                        <input type="text" asp-for="@Model.Supplier.Debtlimit" placeholder="@ResourceWeb.lbDebtlimit" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.Supplier.Debtlimit" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.LbGracePeriod</label>
+                                        <input type="text" asp-for="@Model.Supplier.GracePeriod" placeholder="@ResourceWeb.LbGracePeriod" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.Supplier.GracePeriod" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-12">
+                                        <label for="exampleInputEmail1">@ResourceWeb.Lbwebsite</label>
+                                        <input type="text" asp-for="@Model.Supplier.website" placeholder="@ResourceWeb.Lbwebsite" class="form-control" >
+                                        <span asp-validation-for="@Model.Supplier.website" class="text-danger"></span>
+                                    </div>
+
+                                   
+                                </div>
+                            </div>
+                            <div class="card-content" style="margin-top:50px">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" asp-for="@Model.Supplier.Active" role="switch" id="flexSwitchCheckChecked" checked="">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">
+                                                "@Model.Supplier.Active /التفعيل
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-content" style="margin-top:50px">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" asp-for="@Model.Supplier.CurrentState" role="switch" id="flexSwitchCheckChecked" checked="">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">
+                                                "@Model.Supplier.CurrentState /الحالة
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="page-wrapper cardhead" style="margin-top:-50px">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <!-- /Page Header -->
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Olde Photo</h5>
+                        </div>
+
+
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+
+
+
+
+
+                                    <div class="card-content">
+                                        <div class="row small-spacing">
+                                            <div class="col-lg-6 col-xs-6">
+                                                <div class="custom-file-container" data-upload-id="myFirstImage">
+                                                    <label>
+                                                        <a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a>
+                                                    </label>
+
+                                                    <label class="custom-file-container__custom-file">
+                                                        <input type="file" class="custom-file-container__custom-file__custom-file-input" name="Files" id="file" onchange="loadFile(event)">
+                                                        <input type="hidden" name="MAX_FILE_SIZE" value="10485760">
+                                                        <img id="output" width="100" height="100" />
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-lg-6 col-xs-6">
+                                                <div class="form-group">
+                                                    <input type="hidden" asp-for="@Model.Supplier.Photo" for="exampleInputEmail1"></input>
+                                                    <p><img src="@string.Format("/Images/Home/{0}",Model.Supplier.Photo)" id="output" width="100" height="100" /></p>
+                                                </div>
+                                                <span class="custom-file-container__custom-file__custom-file-control"></span>
+
+                                                <div class="custom-file-container__image-preview"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mb-4">
+
+
+
+                            <button class="btn btn-secondary" type="submit">@ResourceWeb.lbSave</button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</form>
+@section Scripts {
+    <script>
+        var loadFile = function (event) {
+            var output = document.getElementById('output');
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.onload = function () {
+                URL.revokeObjectURL(output.src); // free memory
+            }
+        };
+    </script>
+    <script>
+        document.getElementById("IdLevelThreeAccount").addEventListener("change", function () {
+            var idLevelThreeAccount = this.value; // القيمة التي تم اختيارها
+
+            if (idLevelThreeAccount) {
+                // إرسال القيمة إلى الكنترول عبر AJAX
+                fetch(`/Admin/Supplier/GetNumberAccount?idLevelThreeAccount=${idLevelThreeAccount}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // تحديث حقل NumberAccount بالقيمة الجديدة
+                            document.getElementById("Supplier_NumberAccount").value = data.numberAccount;
+                        } else {
+                            alert(data.message); // في حال فشل العملية
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        });
+    </script>
+}
+

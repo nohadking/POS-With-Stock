@@ -1,0 +1,159 @@
+﻿@model ViewmMODeElMASTER
+@{
+    ViewData["Title"] = "AddEditPaymentMethod";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<form class="flex-fill" method="post" asp-controller="PaymentMethod" asp-action="Save" enctype="multipart/form-data">
+    <div class="page-wrapper cardhead">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="page-title">Basic Inputs</h3>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Basic Inputs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Header -->
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Basic Inputs</h5>
+                        </div>
+
+                        <div class="card-body">
+
+
+                            <input type="hidden" asp-for="@Model.PaymentMethod.DataEntry" class="form-control" value="@User.Identity.Name">
+                            <input type="hidden" asp-for="@Model.PaymentMethod.IdPaymentMethod" class="form-control">   
+                            <input type="hidden" asp-for="@Model.PaymentMethod.DateTimeEntry" value="@DateTime.Now">
+                            <input type="hidden" asp-for="@Model.returnUrl" id="url">
+                            <span style="color:royalblue"> <strong>@TempData["Saved successfully"]</strong></span>
+                            <span style="color:red"> <strong>@TempData["ErrorSave"]</strong></span>
+
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbPaymentMethodAr</label>
+                                        <input type="text" asp-for="@Model.PaymentMethod.PaymentMethodAr" placeholder="@ResourceWeb.lbPaymentMethodAr" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.PaymentMethod.PaymentMethodAr" class="text-danger"></span>
+
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbPaymentMethodEn</label>
+                                        <input type="text" asp-for="@Model.PaymentMethod.PaymentMethodEn" placeholder="@ResourceWeb.lbPaymentMethodEn" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.PaymentMethod.PaymentMethodEn" class="text-danger"></span>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+                            <div class="card-content" style="margin-top:50px">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" asp-for="@Model.PaymentMethod.Active" role="switch" id="flexSwitchCheckChecked" checked="">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">
+                                                @Model.PaymentMethod.Active /التفعيل
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="card-content" style="margin-top:50px">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" asp-for="@Model.PaymentMethod.CurrentState" role="switch" id="flexSwitchCheckChecked" checked="">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">
+                                                "@Model.PaymentMethod.CurrentState /الحالة
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="page-wrapper cardhead" style="margin-top:-50px">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <!-- /Page Header -->
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Olde Photo</h5>
+                        </div>
+
+
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+
+
+
+
+
+                                    <div class="card-content">
+                                        <div class="row small-spacing">
+                                         
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mb-4">
+
+
+
+                            <button class="btn btn-secondary" type="submit">@ResourceWeb.lbSave</button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</form>
+@section Scripts {
+    <script>
+        var loadFile = function (event) {
+            var output = document.getElementById('output');
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.onload = function () {
+                URL.revokeObjectURL(output.src); // free memory
+            }
+        };
+    </script>
+}
+

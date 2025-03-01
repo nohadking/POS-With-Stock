@@ -1,0 +1,192 @@
+﻿@model ViewmMODeElMASTER
+@{
+    ViewData["Title"] = ResourceWeb.LBAddWarehouse;
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<form class="flex-fill" method="post" asp-controller="Warehouse" asp-action="Save" enctype="multipart/form-data">
+    <div class="page-wrapper cardhead">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="page-title">Basic Inputs</h3>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Basic Inputs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Header -->
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Basic Inputs</h5>
+                        </div>
+                        <div class="card-body">
+                            <input type="hidden" asp-for="@Model.Warehouse.DataEntry" class="form-control" value="@User.Identity.Name">
+                            <input type="hidden" asp-for="@Model.Warehouse.IdWarehouse" class="form-control">
+                     
+                            <input type="hidden" asp-for="@Model.Warehouse.DateTimeEntry" value="@DateTime.Now">
+                            <input type="hidden" asp-for="@Model.returnUrl" id="url">
+                            <span style="color:royalblue"> <strong>@TempData["Saved successfully"]</strong></span>
+                            <span style="color:red"> <strong>@TempData["ErrorSave"]</strong></span>
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-3 col-xs-6">
+                                        <label class="form-label" asp-for="@Model.Warehouse.WarehouseName">@ResourceWeb.lbWarehouseName</label>
+                                        <input type="text" class="form-control" asp-for="@Model.Warehouse.WarehouseName">
+                                        <span asp-validation-for="@Model.Warehouse.WarehouseName" class="text-danger"></span>
+                                        <span style="color:red"> <strong>@TempData["Warehouses"]</strong></span>
+                                    </div>
+
+                              
+
+                                    <div class="col-lg-3 col-xs-6">
+                                        <label class="form-label" asp-for="Warehouse.PhoneNumber">@ResourceWeb.lbPhone</label>
+                                        <input type="text" class="form-control" asp-for="Warehouse.PhoneNumber">
+                                        <span asp-validation-for="Warehouse.PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-lg-3 col-xs-6">
+                                        <label for="exampleInputEmail1">تابع لحساب</label>
+                                        <select class="form-select" asp-items="@(new SelectList(ViewBag.BLevelThreeAccount, "IdLevelThreeAccount", "NameLevelThreeAccounts"))" id="IdLevelThreeAccount">
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-xs-6">
+                                        <label class="form-label" asp-for="Warehouse.AccountNumber">@ResourceWeb.lbNumberAccount</label>
+                                        <input type="text" class="form-control" asp-for="Warehouse.AccountNumber" id="Warehouse_NumberAccount" readonly>
+                                        <span asp-validation-for="Warehouse.AccountNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label class="form-label" asp-for="@Model.Warehouse.MasterMail">@ResourceWeb.lbMasterMail</label>
+                                        <input type="text" class="form-control" asp-for="@Model.Warehouse.MasterMail" maxlength="500">
+                                        <span asp-validation-for="@Model.Warehouse.MasterMail" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-lg-6 col-xs-6">
+                                        
+                                        <label for="exampleInputEmail1">أمين المستودع</label>
+                                        <select class="form-control select2_1" asp-for="@Model.Warehouse.UserId" asp-items="@(new SelectList(ViewBag.user, "Id", "Name"))"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+          
+                            <div class="card-body d-sm-flex align-item-center justify-content-between">
+
+                                <div class="form-check form-check-lg form-switch">
+                                    <input asp-for="@Model.Warehouse.Active" class="form-check-input" type="checkbox" role="switch" id="switch-lg">
+                                    <label class="form-check-label" for="switch-lg">@Model.Warehouse.Active :التفعيل</label>
+                                </div>
+                                <div class="form-check form-check-lg form-switch">
+                                    <input asp-for="@Model.Warehouse.CurrentState" class="form-check-input" type="checkbox" role="switch" id="switch-lg">
+                                    <label class="form-check-label" for="switch-lg">@Model.Warehouse.CurrentState :الحالة</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="page-wrapper cardhead" style="margin-top:-50px">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <!-- /Page Header -->
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Olde Photo</h5>
+                        </div>
+
+
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+
+
+
+
+
+                                    <div class="card-content">
+                                        <div class="row small-spacing">
+                                   
+                                         
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mb-4">
+
+
+
+                            <button class="btn btn-secondary" type="submit">@ResourceWeb.lbSave</button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</form>
+@section Scripts {
+    <script>
+        var loadFile = function (event) {
+            var output = document.getElementById('output');
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.onload = function () {
+                URL.revokeObjectURL(output.src); // free memory
+            }
+        };
+    </script>
+    <script>
+        document.getElementById("IdLevelThreeAccount").addEventListener("change", function () {
+            var idLevelThreeAccount = this.value; // القيمة التي تم اختيارها
+
+            if (idLevelThreeAccount) {
+                // إرسال القيمة إلى الكنترول عبر AJAX
+                fetch(`/Admin/Warehouse/GetNumberAccount?idLevelThreeAccount=${idLevelThreeAccount}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // تحديث حقل NumberAccount بالقيمة الجديدة
+                            document.getElementById("Warehouse_NumberAccount").value = data.numberAccount;
+                        } else {
+                            alert(data.message); // في حال فشل العملية
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        });
+    </script>
+}
+

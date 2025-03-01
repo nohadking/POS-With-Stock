@@ -1,0 +1,173 @@
+﻿
+@{
+    ViewData["Title"] = "MyCartAr";
+    Layout = "~/Views/Shared/_LayoutAr.cshtml";
+}
+
+
+<!-- breadcrumb start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>cart</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item active">cart</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb End -->
+<!--section start-->
+<section class="cart-section section-b-space" style="margin-top:10px">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table cart-table table-responsive-xs">
+                    <thead>
+                        <tr class="table-head">
+                            <th scope="col">image</th>
+                            <th scope="col">product name</th>
+                            <th scope="col">price</th>
+                            <th scope="col">quantity</th>
+                            <th scope="col">action</th>
+                            <th scope="col">total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="CartBody">
+                        
+                    </tbody>
+                </table>
+                <table class="table cart-table table-responsive-md">
+                    <tfoot>
+                        <tr>
+                            <td>total price :</td>
+                            <td>
+                                <h2 id="totalPrcAr"></h2>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="row cart-buttons">
+            <div class="col-6"><a href="#" class="btn btn-solid">continue shopping</a></div>
+            <div class="col-6"><a asp-area="" asp-controller="CheckOut" asp-action="MYCheckOutAr" class="btn btn-solid">check out</a></div>
+        </div>
+    </div>
+</section>
+<!--section end-->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    function openSearch() {
+        document.getElementById("search-overlay").style.display = "block";
+    }
+
+    function closeSearch() {
+        document.getElementById("search-overlay").style.display = "none";
+    }
+
+
+    $(document).ready(function () {
+        var cart = JSON.parse(localStorage.getItem('cart')) || [];
+        var CartBody = $('#CartBody');
+        var totalPrc = 0;
+
+        function updateCartTotal() {
+            totalPrc = 0;
+            cart.forEach(product => {
+                totalPrc += product.quantity * product.price;
+            });
+            $('#totalPrcAr').text(`$${totalPrc.toFixed(2)}`);
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        cart.forEach(product => {
+
+            totalPrc += product.quantity * product.price;
+
+            var url = window.origin + `/api/PublicProductsAPI/${product.id}`;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    var fixName = data.productNameAr;
+
+                    var tr = `
+                        <tr id="CartItem-${product.id}">
+                            <td>
+                                <a href="#"><img src="/Images/Home/${product.photo}" alt="" style="width:78px;height:100px"></a>
+                            </td>
+                            <td>
+                                    <a href="#">${fixName}</a>
+                            </td>
+                            <td>
+                                <h2 class="td-color">$${(product.price).toFixed(2)}</h2>
+                            </td>
+                            <td>
+                                <div class="qty-box">
+                                    <div class="input-group">
+                                        <input type="number" name="quantity" class="form-control QTYForItem input-number"
+                                               data-id="${product.id}" value="${product.quantity}" min="1">
+                                    </div>
+                                </div>
+                            </td>
+                            <td><a href="#" class="icon remove-item" data-id="${product.id}"><i class="ti-close"></i></a></td>
+                            <td>
+                                <h2 class="td-color item-total" id="TotalForItem-${product.id}">$${(product.quantity * product.price).toFixed(2)}</h2>
+                            </td>
+                        </tr>
+                    `;
+                    CartBody.append(tr);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+
+        });
+
+        $('#totalPrcAr').text(`$${totalPrc.toFixed(2)}`);
+
+        $(document).on('change', '.QTYForItem', function () {
+            var productId = $(this).data('id');
+            var newQuantity = parseInt($(this).val());
+
+            if (newQuantity < 1 || isNaN(newQuantity)) {
+                $(this).val(1);
+                newQuantity = 1;
+            }
+
+            var product = cart.find(p => p.id == productId);
+            if (product) {
+                product.quantity = newQuantity;
+                $(`#TotalForItem-${productId}`).text(`$${(product.quantity * product.price).toFixed(2)}`);
+                updateCartTotal();
+            }
+        });
+
+
+        $(document).on('click', '.remove-item', function (e) {
+            e.preventDefault();
+            var productId = $(this).data('id');
+            cart = cart.filter(p => p.id != productId);
+            $(`#CartItem-${productId}`).remove();
+            updateCartTotal();
+        });
+    });
+</script>
+

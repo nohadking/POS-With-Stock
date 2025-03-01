@@ -1,0 +1,459 @@
+﻿@model ViewmMODeElMASTER
+@inject UserManager<ApplicationUser> userManager
+@inject SignInManager<ApplicationUser> signInManager
+@{
+    ViewData["Title"] = "MYCheckOut";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var user = await userManager.GetUserAsync(User);
+    var roles = await userManager.GetRolesAsync(user);
+    var userRole = roles.FirstOrDefault();
+}
+    <div class="breadcrumb-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="page-title">
+                        <h2>Check-out</h2>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Check-out</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb End -->
+
+
+    <!-- section start -->
+<section class="section-b-space" style="margin-top:30px">
+    <div class="container">
+        <div class="payment-box">
+            <div class="upper-box">
+                <div class="payment-options">
+                    <ul>
+                        <li>
+                            <div class="radio-option">
+                                <input type="radio" name="payment-group-top" id="payment-5" checked="checked" onchange="toggleBillingDetails()">
+                                <label for="payment-5">
+                                    Pick up from store<span class="small-text">
+                                        Please send a check to Store
+                                        Name, Store Street, Store Town, Store State /
+                                        County, Store Postcode.
+                                    </span>
+                                </label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="radio-option">
+                                <input type="radio" name="payment-group-top" id="payment-8" onchange="toggleBillingDetails()">
+                                <label for="payment-8">
+                                    Delivery service<span class="small-text">
+                                        Please send a check to Store
+                                        Name, Store Street, Store Town, Store State /
+                                        County, Store Postcode.
+                                    </span>
+                                </label>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="text-right"><a href="#" class="btn-solid btn">Place Order</a></div>
+        </div>
+        <div class="checkout-title">
+            <h3>Invose number:@ViewBag.nomberMax</h3>
+        </div> 
+        <div class="checkout-title">
+            <h3>@DateTime.Now</h3>
+        </div>
+        <div class="checkout-page"id="checkout-page">
+            <div class="checkout-form">
+                <form>
+                    <div class="row">
+                        <div id="BillingDetails" class="col-lg-6 col-sm-12 col-xs-12">
+                            <div class="checkout-title">
+                                <h3>Billing Details</h3>
+                            </div>
+                            <div class="row check-out">
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <div class="field-label">First Name</div>
+                             
+                                    <input type="text" name="field-name" value="@user.Name"  placeholder=""readonly>
+                                
+                                </div>
+
+
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <span class="user-letter">
+                                        <img src="@Helper.PathImageuser@user.ImageUser" alt="" class="img-fluid rounded-circle" style="height:50px;width:50px">
+                                    </span>
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <div class="field-label">Phone</div>
+                                    <input type="text" name="field-name" value="@user.PhoneNumber" placeholder="" readonly>
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                    <div class="field-label">Email Address</div>
+                                    <input type="text" name="field-name" value="@user.Email" placeholder="" readonly>
+                                </div>
+                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                    <div class="field-label">Country</div>
+                                    <label>المنطقة</label>
+                                    <select id="SelectExpenseCategoryFprPrint" class="form-select" asp-items="@(new SelectList(ViewBag.arae, "IdDeliveryCompanyPricing", "AreaName"))">
+                                        <option></option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                    <div class="field-label">Address</div>
+                                    <input type="text" name="field-name" value="" placeholder="Street address">
+                                </div>
+                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                    <div class="field-label">Town/City</div>
+                                    <input type="text" name="field-name" value="" placeholder="">
+                                </div>
+                                <div class="form-group col-md-12 col-sm-6 col-xs-12">
+                                    <div class="field-label">State / County</div>
+                                    <input type="text" name="field-name" value="" placeholder="">
+                                </div>
+                                <div class="form-group col-md-12 col-sm-6 col-xs-12">
+                                    <div class="field-label">Postal Code</div>
+                                    <input type="text" name="field-name" value="" placeholder="">
+                                </div>
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <input type="checkbox" name="shipping-option" id="account-option">
+                                    <label for="account-option">Create An Account?</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* ///////////////////////////////////////////////////////////////////////////////// *@
+                        <div class="col-lg-6 col-sm-12 col-xs-12">
+                            <div class="checkout-details">
+                                <div class="order-box">
+                                    <div class="title-box">
+                                        <div>Product <span>Total</span> <span></span></div>
+                                    </div>
+                                    <ul id="ProductsToBuy" class="qty">
+                                    </ul>
+                                    <ul class="sub-total">
+                                        <li>Subtotal <span id="totalPrice" class="count"></span></li>
+                                        <li>
+                                            Shipping
+                                            <div class="shipping">
+                                                <div class="shopping-option">
+                                                    <input type="checkbox" name="free-shipping" id="free-shipping">
+                                                    <label for="free-shipping">Free Shipping</label>
+                                                </div>
+                                                <div class="shopping-option">
+                                                    <input type="checkbox" name="local-pickup" id="local-pickup">
+                                                    <label for="local-pickup">Local Pickup</label>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <ul class="total">
+                                        <li>Sipping <span id="ShippingCost" class="count"></span></li>
+                                        <li>Total <span id="totalPriceTotal" class="count"></span></li>
+                                        <li hidden>Total 2<span id="totalPriceTotalFix" class="count"></span></li>
+
+                                    </ul>
+                                </div>
+                                <div class="payment-box">
+                                    <div class="upper-box">
+                                        <div class="payment-options">
+                                            <ul>
+                                                <li>
+                                                    <div class="radio-option">
+                                                        <input type="radio" name="payment-group-bottom" id="payment-1" checked="checked">
+                                                        <label for="payment-1">
+                                                            Check Payments<span class="small-text">
+                                                                Please send a check to Store
+                                                                Name, Store Street, Store Town, Store State /
+                                                                County, Store Postcode.
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="radio-option">
+                                                        <input type="radio" name="payment-group-bottom" id="payment-2">
+                                                        <label for="payment-2">
+                                                            Cash On Delivery<span class="small-text">
+                                                                Please send a check to Store
+                                                                Name, Store Street, Store Town, Store State /
+                                                                County, Store Postcode.
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="radio-option paypal">
+                                                        <input type="radio" name="payment-group-bottom" id="payment-3">
+                                                        <label for="payment-3">PayPal<span class="image"><img src="~/Web/assets/images/paypal.png" alt=""></span></label>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="text-right"><a href="#" class="btn-solid btn">Place Order</a></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* /////////////////////////////////////////////////////////////////////////////////////////// *@
+                    </div>
+                </form>
+
+            
+            </div>
+        </div>
+    </div>
+</section>
+    <!-- section end -->
+<div class="light-layout">
+    <div class="container">
+        <section class="small-section border-section border-top-0">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="subscribe">
+                        <div>
+                            <h4>KNOW IT ALL FIRST!</h4>
+                            <p>Never Miss Anything From Multikart By Signing Up To Our Newsletter.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <form action="https://pixelstrap.us19.list-manage.com/subscribe/post?u=5a128856334b598b395f1fc9b&amp;id=082f74cbda"
+                          class="form-inline subscribe-form auth-form needs-validation" method="post"
+                          id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" target="_blank">
+                        <div class="form-group mx-sm-3">
+                            <input type="text" class="form-control" name="EMAIL" id="mce-EMAIL"
+                                   placeholder="Enter your email" required="required">
+                        </div>
+                        <button type="submit" class="btn btn-solid" id="mc-submit">subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+
+
+<!-- theme setting -->
+<!-- tap to top start -->
+    <div class="tap-top">
+        <div><i class="fa fa-angle-double-up"></i></div>
+    </div>
+ @section Scripts {
+     <script>
+
+                 function openSearch() {
+            document.getElementById("search-overlay").style.display = "block";
+        }
+
+        function closeSearch() {
+            document.getElementById("search-overlay").style.display = "none";
+        }
+
+         </script>
+
+
+    <script>
+
+        var cart = JSON.parse(localStorage.getItem('cart')) || [];
+        var CartBody = $('#ProductsToBuy');
+        var totalPrc = 0;
+
+        function updateTotalPrice() {
+            totalPrc = cart.reduce((sum, p) => sum + (p.quantity * p.price), 0);
+            $('#totalPrice').text(`$${totalPrc.toFixed(2)}`);
+            $('#totalPriceTotal').text(`$${totalPrc.toFixed(2)}`);
+            $('#totalPriceTotalFix').text(`$${totalPrc.toFixed(2)}`);
+        }
+
+        function updateCartItemQuantity(itemId, newQuantity) {
+            cart = cart.map(p => {
+                if (p.id === itemId) {
+                    p.quantity = newQuantity;
+                }
+                return p;
+            });
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function removeCartItem(itemId) {
+            cart = cart.filter(p => p.id !== itemId);
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function renderCart() {
+            CartBody.empty();
+            totalPrc = 0;
+
+            cart.forEach(product => {
+                totalPrc += product.quantity * product.price;
+
+                var li = $(`
+                    <li data-id="${product.id}">
+                        <img style="width: 80px; height: 70px;" src="/Images/Home/${product.photo}" />
+                        <span class="product-name">${product.productName}</span> ×
+                        <button class="decrease-btn" style="background-color: #ddd; border: none; padding: 5px;">-</button>
+                        <input type="number" class="quantity-input" value="${product.quantity}" min="1" style="width: 70px; text-align: center;">
+                        <button class="increase-btn" style="background-color: #ddd; border: none; padding: 5px;">+</button>
+                        <span class="item-price">${(product.quantity * product.price).toFixed(2)}</span>
+                        <button class="remove-btn" style="margin-left: 10px; background-color: red; color: white; border: none; padding: 5px;">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </li>
+                `);
+
+                CartBody.append(li);
+            });
+
+            updateTotalPrice();
+        }
+
+        function attachEventListeners() {
+            // زيادة الكمية
+            CartBody.on("click", ".increase-btn", function (event) {
+                event.preventDefault();
+                var li = $(this).closest("li");
+                var itemId = parseInt(li.data("id"));
+                var input = li.find(".quantity-input");
+                var newQuantity = parseInt(input.val()) + 1;
+                input.val(newQuantity).trigger("input");
+            });
+
+            // نقصان الكمية
+            CartBody.on("click", ".decrease-btn", function (event) {
+                event.preventDefault();
+                var li = $(this).closest("li");
+                var itemId = parseInt(li.data("id"));
+                var input = li.find(".quantity-input");
+                var newQuantity = parseInt(input.val()) - 1;
+                if (newQuantity >= 1) {
+                    input.val(newQuantity).trigger("input");
+                }
+            });
+
+            // تعديل الكمية يدويًا
+            CartBody.on("input", ".quantity-input", function (event) {
+                event.preventDefault();
+                var li = $(this).closest("li");
+                var itemId = parseInt(li.data("id"));
+                var newQuantity = parseInt($(this).val());
+                if (isNaN(newQuantity) || newQuantity < 1) {
+                    newQuantity = 1;
+                    $(this).val(newQuantity);
+                }
+
+                updateCartItemQuantity(itemId, newQuantity);
+                var product = cart.find(p => p.id === itemId);
+                li.find(".item-price").text((newQuantity * product.price).toFixed(2));
+
+                updateTotalPrice();
+            });
+
+            CartBody.on("click", ".remove-btn", function (event) {
+                event.preventDefault();
+                var li = $(this).closest("li");
+                var itemId = parseInt(li.data("id"));
+
+                li.remove();
+                removeCartItem(itemId);
+                updateTotalPrice();
+            });
+        }
+
+        function fetchProductNames() {
+            let requests = cart.map(product => {
+                let url = window.origin + `/api/PublicProductsAPI/${product.id}`;
+                return fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        product.productName = data.productNameEn;
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+            });
+
+            Promise.all(requests).then(() => {
+                renderCart();
+                attachEventListeners();
+            });
+        }
+
+        $(document).ready(function () {
+            fetchProductNames();
+        });
+
+
+
+
+    </script>
+
+    <script>
+        function toggleBillingDetails() {
+            var BillingDetails = document.getElementById('BillingDetails');
+            var pickup = document.getElementById('payment-5');
+            var checkoutPage = document.getElementById('payment-8');
+
+            if (pickup.checked) {
+                BillingDetails.style.visibility = 'hidden'; 
+            } else {
+                BillingDetails.style.visibility = 'visible';
+            }
+        }
+
+        window.onload = toggleBillingDetails;
+    </script>
+    <script>
+        $('#SelectExpenseCategoryFprPrint').on('change', function(){
+            var city = $(this).find('option:selected').text().trim();
+
+
+            var url = window.origin + `/api/DeliveryShipingAPI/${city}`
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json(); 
+                })
+                .then(data => {
+
+                    var shi = data.cost;
+                    var shipp = parseFloat(shi);
+                    var fakeTotal = $('#totalPriceTotalFix').text().replace('$', '');
+                    var cost = parseFloat(fakeTotal);
+                    $('#ShippingCost').text(shi + '$');
+                    var endCost = cost + shipp;
+                    $('#totalPriceTotal').text(endCost + '$');
+
+
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
+
+        })
+    </script>
+ }

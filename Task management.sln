@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POS", "Task management\POS.csproj", "{064AE746-C377-4210-8114-C0ABD8D2FC50}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domin", "Domin\Domin.csproj", "{C75C69DC-3DCB-4F73-9C13-229034C3BB8C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infarstuructre", "Infarstuructre\Infarstuructre.csproj", "{60FB0EDF-5F20-4108-9BC4-78E3F05E6C27}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{064AE746-C377-4210-8114-C0ABD8D2FC50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{064AE746-C377-4210-8114-C0ABD8D2FC50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{064AE746-C377-4210-8114-C0ABD8D2FC50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{064AE746-C377-4210-8114-C0ABD8D2FC50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C75C69DC-3DCB-4F73-9C13-229034C3BB8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C75C69DC-3DCB-4F73-9C13-229034C3BB8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C75C69DC-3DCB-4F73-9C13-229034C3BB8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C75C69DC-3DCB-4F73-9C13-229034C3BB8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60FB0EDF-5F20-4108-9BC4-78E3F05E6C27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60FB0EDF-5F20-4108-9BC4-78E3F05E6C27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60FB0EDF-5F20-4108-9BC4-78E3F05E6C27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60FB0EDF-5F20-4108-9BC4-78E3F05E6C27}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F9654243-1F07-491B-8567-2A0F4F2F586B}
+	EndGlobalSection
+EndGlobal

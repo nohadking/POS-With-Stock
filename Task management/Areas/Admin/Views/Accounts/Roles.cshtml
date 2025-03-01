@@ -1,0 +1,99 @@
+﻿@model ViewmMODeElMASTER
+@{
+    ViewData["Title"] = ResourceWeb.LBLbRoles;
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+<div class="page-wrapper cardhead">
+    <div class="content container-fluid">
+
+        <div class="col-xl-12">
+            <div class="card">
+
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">
+                                    @ResourceWeb.LBUserInformation
+
+                                    <a href="#" class="btn btn-outline-info rounded-pill">Home</a>
+                                    <a href="" class="btn btn-outline-info rounded-pill">Cpanel</a> 
+                                    <a asp-area="Admin" asp-controller="Accounts" asp-action="AddEditRoles" class="btn btn-outline-info rounded-pill">Add</a>
+
+                                </h4>
+
+                            </div>
+                            <div class="card-body">
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered mb-0 ">
+                                        <thead>
+                                            <tr>
+                                                <th>@ResourceWeb.LbNameRols</th>
+                                   
+                                                <th>@ResourceWeb.LbOpration</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+
+
+                                            @foreach (var item in Model.ListIdentityRole)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @switch (@item.Name)
+                                                        {
+                                                            case "Developer":
+                                                                <span class="btn btn-outline-secondary rounded-pill">@item.Name</span>
+                                                                break;
+                                                            case "Admin":
+                                                                <span class="btn btn-outline-danger rounded-pill">@item.Name</span>
+                                                                break;
+                                                            case "Data Entry":
+                                                                <span class="btn btn-outline-primary rounded-pill">@item.Name</span>
+                                                                break;
+
+                                                            case "Basic":
+                                                                <span class="btn btn-outline-info rounded-pill">@item.Name</span>
+                                                                break;
+                                                            default:
+                                                                <span class="btn btn-outline-info rounded-pill">@item.Name</span>
+                                                                break;
+                                                        }
+                                                    </td>
+                                                   
+                                                 
+
+
+                                                    <td>
+                                                        <div class="hstack gap-2 fs-15">
+                                                            <a asp-area="Admin" asp-controller="Accounts" asp-action="AddEditRoles" asp-route-Id="@item.Id" class="btn btn-icon btn-outline-success rounded-pill">
+                                                                <i class="fas fa fa-edit"></i>
+                                                            </a>
+
+
+                                                            <a asp-area="Admin" asp-controller="Accounts" asp-action="DeleteRole" asp-route-Id="@item.Id"  class="btn btn-icon btn-outline-danger rounded-pill">
+                                                                <i class="fas fa fa-trash"></i>
+                                                            </a>
+
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

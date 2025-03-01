@@ -1,0 +1,232 @@
+﻿@model ViewmMODeElMASTER
+@{
+    ViewData["Title"] = ResourceWeb.LBAddEditCategoryServic;
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<form class="flex-fill" method="post" asp-controller="CategoryServic" asp-action="Save" enctype="multipart/form-data">
+    <div class="page-wrapper cardhead">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="page-title">@ResourceWeb.LBAddEditCategoryServic</h3>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a asp-area="Admin"asp-controller="Home"asp-action="Index">Dashboard</a></li>
+                            <li class="breadcrumb-item active">@ResourceWeb.LBAddEditCategoryServic</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Header -->
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">@ResourceWeb.LBAddEditCategoryServic</h5>
+                        </div>
+                        <div class="card-body">
+                            <input type="hidden" asp-for="@Model.CategoryServic.DataEntry" class="form-control" value="@User.Identity.Name">
+                            <input type="hidden" asp-for="@Model.CategoryServic.IdCategoryServic" class="form-control">
+                            <input type="hidden" asp-for="@Model.CategoryServic.Photo" class="form-control">
+                            <input type="hidden" asp-for="@Model.CategoryServic.DateTimeEntry" value="@DateTime.Now">
+                            <input type="hidden" asp-for="@Model.returnUrl" id="url">
+                            <span style="color:royalblue"> <strong>@TempData["Saved successfully"]</strong></span>
+                            <span style="color:red"> <strong>@TempData["ErrorSave"]</strong></span>
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleOneAr</label>
+                                        <input type="text" asp-for="@Model.CategoryServic.TitleOneAr" placeholder="@ResourceWeb.lbTitleOneAr" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.CategoryServic.TitleOneAr" class="text-danger"></span>
+                                        <span style="color:red"> <strong>@TempData["TitleOneAr"]</strong></span>
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleOneEn</label>
+                                        <input type="text" asp-for="@Model.CategoryServic.TitleOneEn" placeholder="@ResourceWeb.lbTitleOneEn" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.CategoryServic.TitleOneEn" class="text-danger"></span>
+                                        <span style="color:red"> <strong>@TempData["TitleOneEn"]</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleTwoAr</label>
+                                        <input type="text" asp-for="@Model.CategoryServic.TitleTwoAr" placeholder="@ResourceWeb.lbTitleTwoAr" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.CategoryServic.TitleTwoAr" class="text-danger"></span>                                 
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleTwoEn</label>
+                                        <input type="text" asp-for="@Model.CategoryServic.TitleOneEn" placeholder="@ResourceWeb.lbTitleTwoEn" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.CategoryServic.TitleTwoEn" class="text-danger"></span>                                
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleThreAr</label>
+                                        <input type="text" asp-for="@Model.CategoryServic.TitleThreAr" placeholder="@ResourceWeb.lbTitleThreAr" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.CategoryServic.TitleThreAr" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleThreEn</label>
+                                        <input type="text" asp-for="@Model.CategoryServic.TitleThreEn" placeholder="@ResourceWeb.lbTitleThreEn" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.CategoryServic.TitleThreEn" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleForAr</label>
+                                        <input type="text" asp-for="@Model.CategoryServic.TitleForAr" placeholder="@ResourceWeb.lbTitleForAr" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.CategoryServic.TitleForAr" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleForEn</label>
+                                        <input type="text" asp-for="@Model.CategoryServic.TitleForEn" placeholder="@ResourceWeb.lbTitleForEn" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.CategoryServic.TitleForEn" class="text-danger"></span>
+                                    </div>
+                                </div>
+                           </div>
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitlefiveAr</label>
+                                        <input type="text" asp-for="@Model.CategoryServic.TitlefiveAr" placeholder="@ResourceWeb.lbTitlefiveAr "class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.CategoryServic.TitlefiveAr" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitlefiveEn</label>
+                                        <input type="text" asp-for="@Model.CategoryServic.TitlefiveEn" placeholder="@ResourceWeb.lbTitlefiveEn" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.CategoryServic.TitlefiveEn" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleButtonAr</label>
+                                        <input type="text" asp-for="@Model.CategoryServic.TitleButtonAr" placeholder="@ResourceWeb.lbTitleButtonAr" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.CategoryServic.TitleButtonAr" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbTitleButtonEn</label>
+                                        <input type="text" asp-for="@Model.CategoryServic.TitleButtonEn" placeholder="@ResourceWeb.lbTitleButtonEn" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.CategoryServic.TitleButtonEn" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbUrlButtonAr</label>
+                                        <input type="text" asp-for="@Model.CategoryServic.UrlButtonAr" placeholder="@ResourceWeb.lbUrlButtonAr "class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.CategoryServic.UrlButtonAr" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbUrlButtonEn</label>
+                                        <input type="text" asp-for="@Model.CategoryServic.UrlButtonEn" placeholder="@ResourceWeb.lbUrlButtonEn" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.CategoryServic.UrlButtonEn" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-content" style="margin-top:50px">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" asp-for="@Model.CategoryServic.Active" role="switch" id="flexSwitchCheckChecked" checked="">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">
+                                                @Model.CategoryServic.Active /التفعيل
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-content" style="margin-top:50px">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-6 col-xs-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" asp-for="@Model.CategoryServic.CurrentState" role="switch" id="flexSwitchCheckChecked" checked="">
+                                            <label class="form-check-label" for="flexSwitchCheckChecked">
+                                                "@Model.CategoryServic.CurrentState /الحالة
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-wrapper cardhead" style="margin-top:-50px">
+        <div class="content container-fluid">
+            <!-- Page Header -->
+            <!-- /Page Header -->
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Olde Photo</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="card-content">
+                                        <div class="row small-spacing">
+                                            <div class="col-lg-6 col-xs-6">
+                                                <div class="custom-file-container" data-upload-id="myFirstImage">
+                                                    <label>
+                                                        <a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image"></a>
+                                                    </label>
+
+                                                    <label class="custom-file-container__custom-file">
+                                                        <input type="file" class="custom-file-container__custom-file__custom-file-input" name="Files" id="file" onchange="loadFile(event)">
+                                                        <input type="hidden" name="MAX_FILE_SIZE" value="10485760">
+                                                        <img id="output" width="100" height="100" />
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-lg-6 col-xs-6">
+                                                <div class="form-group">
+                                                    <input type="hidden" asp-for="@Model.CategoryServic.Photo" for="exampleInputEmail1"></input>
+                                                    <p><img src="@string.Format("/Images/Home/{0}",Model.CategoryServic.Photo)" id="output" width="100" height="100" /></p>
+                                                </div>
+                                                <span class="custom-file-container__custom-file__custom-file-control"></span>
+
+                                                <div class="custom-file-container__image-preview"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2 mb-4">
+                           <button class="btn btn-secondary" type="submit">@ResourceWeb.lbSave</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+@section Scripts {
+    <script>
+        var loadFile = function (event) {
+            var output = document.getElementById('output');
+            output.src = URL.createObjectURL(event.target.files[0]);
+            output.onload = function () {
+                URL.revokeObjectURL(output.src); // free memory
+            }
+        };
+    </script>
+}
+

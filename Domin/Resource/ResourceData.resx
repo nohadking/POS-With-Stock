@@ -687,4 +687,7 @@
   <data name="VlAccountNumberw" xml:space="preserve">
     <value>يرجى أدراج رقم الحساب لتتم العملية بنجاح ...!</value>
   </data>
+  <data name="VlBondType" xml:space="preserve">
+    <value>يرجى أدراج نوع السند لتتم العملية بنجاح ..!</value>
+  </data>
 </root>

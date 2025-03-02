@@ -642,6 +642,18 @@ namespace Infarstuructre.Data
            .Property(b => b.CurrentState)
            .HasDefaultValueSql("((1))");  
        
+            //---------------------------------  
+            //---------------------------------
+            builder.Entity<TBBondType>()
+           .Property(b => b.DateTimeEntry)
+           .HasDefaultValueSql("getdate()");
+            builder.Entity<TBBondType>()
+           .Property(b => b.CurrentState)
+           .HasDefaultValueSql("((1))");  
+            builder.Entity<TBBondType>()
+           .Property(b => b.Active)
+           .HasDefaultValueSql("((1))");  
+       
             //--------------------------------- 
         }
         //***********************************
@@ -706,6 +718,7 @@ namespace Infarstuructre.Data
         public DbSet<TBViewWarehouse> ViewWarehouse { get; set; }
         public DbSet<TBStock> TBStocks { get; set; }
         public DbSet<TBViewStock> ViewStock { get; set; }
+        public DbSet<TBBondType> TBBondTypes { get; set; }
 
 
     }

@@ -448,6 +448,15 @@ namespace Domin.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to يرجى أدراج نوع السند لتتم العملية بنجاح ..!.
+        /// </summary>
+        internal static string VlBondType {
+            get {
+                return ResourceManager.GetString("VlBondType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to VlBuilding.
         /// </summary>
         internal static string VlBuilding {

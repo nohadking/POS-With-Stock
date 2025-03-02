@@ -195,17 +195,18 @@
                                             <span class="checkmarks"></span>
                                         </label>
                                     </td>
+                            
                                     <td>
                                         <div class="userimgname">
                                             <a href="#" class="userslist-img bg-img">
-                                                <img src="@string.Format("/Images/Home/{0}", item.Photo)" alt="product">
+                                                <input type="hidden" name="name" value="@item.IdSupplier" />
+                                                <img src="@string.Format("/Images/Home/{0}", ViewBag.GetSupplierPhoto[item.IdSupplier])" alt="supplier">
                                             </a>
                                             <div>
                                                 <a href="#">@item.SupplierName</a>
                                             </div>
                                         </div>
                                     </td>
-                                
                                     <td>@item.PurchaseDate</td>
                                     <td>@item.PaymentMethodAr</td>
                                     <td>@item.PurchaseNumber</td>

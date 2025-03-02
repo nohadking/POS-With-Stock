@@ -41,22 +41,55 @@ namespace Task_management.Areas.Admin.Controllers
         }
         public IActionResult MyPurchase()
         {
+            // إنشاء نموذج العرض
             ViewmMODeElMASTER vmodel = new ViewmMODeElMASTER();
+
+            // جلب بيانات الشركة
             vmodel.ListCompanyInformation = iCompanyInformation.GetAll().Take(1).ToList();
-            //vmodel.ListViewPurchase = iPurchase.GetAll() .GroupBy(i => i.PurchaseNumber) .Select(g => g.First()) .ToList();
-            ViewBag.Supplier = vmodel.ListViewSupplier = iSupplier.GetAll().GroupBy(i => i.SupplierName).Select(g => g.First()).ToList();
-            ViewBag.PaymentMethod = vmodel.ListPaymentMethod = iPaymentMethod.GetAll();
-            ViewBag.Unit = vmodel.ListUnit = iUnit.GetAll();
-            ViewBag.ClassCard = vmodel.ListViewProduct = iProduct.GetAll();
-            ViewBag.Purchase = vmodel.ListViewPurchase = iPurchase.GetAll().GroupBy(i => i.PurchaseNumber).Select(g => g.First()).ToList();
-            ViewBag.Warehouse = vmodel.ListViewWarehouse = iWarehouse.GetAll();
-            var numberinvose = vmodel.ListViewPurchase = iPurchase.GetAll()
-    .GroupBy(p => p.PurchaseNumber) // تجميع حسب رقم السند
-    .Select(g => g.First())        // أخذ السجل الأول من كل مجموعة
-    .ToList();
-            ViewBag.nomberMax = numberinvose.Any()
-        ? numberinvose.Max(c => c.PurchaseNumber) + 1
-        : 1;
+
+            // جلب بيانات الموردين
+            vmodel.ListViewSupplier = iSupplier.GetAll()
+                .GroupBy(i => i.SupplierName)
+                .Select(g => g.First())
+                .ToList();
+            ViewBag.Supplier = vmodel.ListViewSupplier;
+
+            // جلب طرق الدفع
+            vmodel.ListPaymentMethod = iPaymentMethod.GetAll();
+            ViewBag.PaymentMethod = vmodel.ListPaymentMethod;
+
+            // جلب الوحدات
+            vmodel.ListUnit = iUnit.GetAll();
+            ViewBag.Unit = vmodel.ListUnit;
+
+            // جلب المنتجات
+            vmodel.ListViewProduct = iProduct.GetAll();
+            ViewBag.ClassCard = vmodel.ListViewProduct;
+
+            // جلب بيانات المستودعات
+            vmodel.ListViewWarehouse = iWarehouse.GetAll();
+            ViewBag.Warehouse = vmodel.ListViewWarehouse;
+
+            // جلب بيانات الفواتير المجمعة حسب رقم الفاتورة
+            var purchaseList = iPurchase.GetAll()
+                .GroupBy(p => p.PurchaseNumber)
+                .Select(g => g.First())
+                .ToList();
+
+            vmodel.ListViewPurchase = purchaseList;
+            ViewBag.Purchase = vmodel.ListViewPurchase;
+
+            // إنشاء قاموس يربط بين `IdSupplier` والصورة الخاصة به
+            var supplierPhotos = iSupplier.GetAll()
+                .ToDictionary(s => s.IdSupplier, s => s.Photo ?? "default.png"); // استخدم صورة افتراضية إن لم يكن هناك صورة
+
+            ViewBag.GetSupplierPhoto = supplierPhotos;
+
+            // تحديد أكبر رقم فاتورة وإضافة 1 له
+            ViewBag.nomberMax = purchaseList.Any()
+                ? purchaseList.Max(c => c.PurchaseNumber) + 1
+                : 1;
+
             return View(vmodel);
         }
         public IActionResult AddPurchase(int? IdPurchase)
@@ -657,7 +690,15 @@ namespace Task_management.Areas.Admin.Controllers
             var pdfData = pdfDocument.GeneratePdf();
             return File(pdfData, "application/pdf", "Purchase_Receipt_Report.pdf");
         }
-
+        public string GetSupplierPhoto(int idSupplier)
+        {
+        
+                var supplier = dbcontext.TBSuppliers.FirstOrDefault(s => s.IdSupplier == idSupplier);
+                return supplier != null && !string.IsNullOrEmpty(supplier.Photo)
+                    ? $"/Images/Suppliers/{supplier.Photo}"
+                    : "/Images/default.png"; // صورة افتراضية في حالة عدم وجود صورة
+            
+        }
 
     }
 }

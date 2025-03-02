@@ -174,6 +174,7 @@
 
                                 <th>@ResourceWeb.LBPurchaseNumber</th>
                                 <th>@ResourceWeb.LBPurchaseSubNumber</th>
+                                <th>@ResourceWeb.lbWarehouseName</th>
                                 <th>@ResourceWeb.LBTotalQuantity</th>
                                 <th>@ResourceWeb.LBTotalDiscount</th>
                                 <th>@ResourceWeb.LBshipping</th>
@@ -197,7 +198,7 @@
                                     <td>
                                         <div class="userimgname">
                                             <a href="#" class="userslist-img bg-img">
-                                                <img src="@string.Format("/Images/Home/{0}", item.PhotoSupplier)" alt="product">
+                                                <img src="@string.Format("/Images/Home/{0}", item.Photo)" alt="product">
                                             </a>
                                             <div>
                                                 <a href="#">@item.SupplierName</a>
@@ -209,6 +210,7 @@
                                     <td>@item.PaymentMethodAr</td>
                                     <td>@item.PurchaseNumber</td>
                                     <td>@item.PurchaseSubNumber</td>
+                                    <td>@item.WarehouseName</td>
                                     <td>@item.TotalQuantity</td>
                                     <td>@item.TotalDiscount</td>
                                     <td>@item.shipping</td>
@@ -310,23 +312,31 @@
                                 </div>
                             </div>
                                 <div class="row">
-                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="col-lg-3 col-md-6 col-sm-12">
                                     <div class="input-blocks">
                                         <label>@ResourceWeb.lbPaymentMethodAr</label>
                                         <select id="PayMethId" class="form-select" asp-for="@Model.Purchase.IdPaymentMethod" asp-items="@(new SelectList(ViewBag.PaymentMethod, "IdPaymentMethod", "PaymentMethodAr"))">
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="col-lg-3 col-md-6 col-sm-12">
                                     <div class="input-blocks">
                                         <label>@ResourceWeb.LBPurchaseNumber</label>
                                         <input id="PurcheasNu" type="text" class="form-control" value="@ViewBag.nomberMax">
                                     </div>
                                 </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="col-lg-3 col-md-6 col-sm-12">
                                     <div class="input-blocks">
                                         <label>@ResourceWeb.LBPurchaseSubNumber</label>
                                         <input id="PurcheasSubNu" type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <div class="input-blocks">
+                                        <label>@ResourceWeb.lbWarehouseName</label>
+                                        <select class="form-select" asp-for="@Model.Purchase.IdWarehouse" asp-items="@(new SelectList(ViewBag.Warehouse, "IdWarehouse", "WarehouseName"))">
+                                            <option>اختر مستودع </option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -339,14 +349,14 @@
                                         <select id="productSelect" class="form-select" asp-for="@Model.Purchase.IdProduct">
                                             <option>اختر منتج</option>
                                             @{
-                                                var Cards1 = (@ViewBag.ClassCard as List<TBViewClassCard>);
+                                                var Cards1 = (@ViewBag.ClassCard as List<TBViewProduct>);
                                             }
                                             @if (Cards1 != null && Cards1.Any())
                                             {
                                                 foreach (var item in Cards1)
                                                 {
-                                                    <option value="@item.IdClassCard" data-additional="@item.Photo">
-                                                        @item.ItemName
+                                                    <option value="@item.IdProduct" data-additional="@item.Photo">
+                                                        @item.ProductNameAr
                                                     </option>
                                                 }
                                             }
@@ -358,6 +368,7 @@
 
 
                                     </div>
+
                                 </div>
                                 <div class="col-lg-2">
                                     <div class="input-blocks">

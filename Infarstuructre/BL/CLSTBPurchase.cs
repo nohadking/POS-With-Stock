@@ -129,7 +129,7 @@ namespace Infarstuructre.BL
         public List<TBViewPurchase> GetAByPruductAndPeriod(string productName, DateTime sdate, DateTime edate)
 		{
 			List<TBViewPurchase> MySlider = dbcontext.ViewPurchase.OrderByDescending(n => n.IdPurchase)
-				.Where(a => a.ItemName == productName && a.PurchaseDate >= DateOnly.FromDateTime(sdate) && a.PurchaseDate <= DateOnly.FromDateTime(edate))
+				.Where(a => a.ProductNameAr == productName && a.PurchaseDate >= DateOnly.FromDateTime(sdate) && a.PurchaseDate <= DateOnly.FromDateTime(edate))
 				.Where(a => a.CurrentState == true).ToList();
 			return MySlider;
 		}
@@ -145,7 +145,7 @@ namespace Infarstuructre.BL
         public List<TBViewPurchase> GetByProduct(string productName)
         {
             List<TBViewPurchase> MySlider = dbcontext.ViewPurchase.OrderByDescending(n => n.IdPurchase)
-                .Where(a => a.ItemName == productName)
+                .Where(a => a.ProductNameAr == productName)
                 .Where(a => a.CurrentState == true).ToList();
             return MySlider;
         }

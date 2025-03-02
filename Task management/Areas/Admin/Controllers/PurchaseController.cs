@@ -25,8 +25,9 @@ namespace Task_management.Areas.Admin.Controllers
         IIUnit iUnit;
         IIClassCard iClassCard;
         IIPurchase iPurchase;
-
-        public PurchaseController(MasterDbcontext dbcontext1, IICompanyInformation iCompanyInformation1, IISupplier iSupplier1, IIPaymentMethod iPaymentMethod1, IIUnit iUnit1, IIClassCard iClassCard1, IIPurchase iPurchase1)
+        IIWarehouse iWarehouse;
+        IIProduct iProduct;
+        public PurchaseController(MasterDbcontext dbcontext1, IICompanyInformation iCompanyInformation1, IISupplier iSupplier1, IIPaymentMethod iPaymentMethod1, IIUnit iUnit1, IIClassCard iClassCard1, IIPurchase iPurchase1,IIWarehouse iWarehouse1,IIProduct iProduct1)
         {
             dbcontext = dbcontext1;
             iCompanyInformation = iCompanyInformation1;
@@ -35,6 +36,8 @@ namespace Task_management.Areas.Admin.Controllers
             iUnit = iUnit1;
             iClassCard = iClassCard1;
             iPurchase = iPurchase1;
+            iWarehouse = iWarehouse1;
+            iProduct = iProduct1;
         }
         public IActionResult MyPurchase()
         {
@@ -44,9 +47,9 @@ namespace Task_management.Areas.Admin.Controllers
             ViewBag.Supplier = vmodel.ListViewSupplier = iSupplier.GetAll().GroupBy(i => i.SupplierName).Select(g => g.First()).ToList();
             ViewBag.PaymentMethod = vmodel.ListPaymentMethod = iPaymentMethod.GetAll();
             ViewBag.Unit = vmodel.ListUnit = iUnit.GetAll();
-            ViewBag.ClassCard = vmodel.ListViewClassCard = iClassCard.GetAll();
+            ViewBag.ClassCard = vmodel.ListViewProduct = iProduct.GetAll();
             ViewBag.Purchase = vmodel.ListViewPurchase = iPurchase.GetAll().GroupBy(i => i.PurchaseNumber).Select(g => g.First()).ToList();
-
+            ViewBag.Warehouse = vmodel.ListViewWarehouse = iWarehouse.GetAll();
             var numberinvose = vmodel.ListViewPurchase = iPurchase.GetAll()
     .GroupBy(p => p.PurchaseNumber) // تجميع حسب رقم السند
     .Select(g => g.First())        // أخذ السجل الأول من كل مجموعة
@@ -63,8 +66,10 @@ namespace Task_management.Areas.Admin.Controllers
             vmodel.ListViewPurchase = iPurchase.GetAll().GroupBy(i => i.PurchaseNumber).Select(g => g.First()).ToList();
             ViewBag.Supplier = vmodel.ListViewSupplier = iSupplier.GetAll().GroupBy(i => i.SupplierName).Select(g => g.First()).ToList();
             ViewBag.PaymentMethod = vmodel.ListPaymentMethod = iPaymentMethod.GetAll();
+            ViewBag.Warehouse = vmodel.ListViewWarehouse = iWarehouse.GetAll();
+
             ViewBag.Unit = vmodel.ListUnit = iUnit.GetAll();
-            ViewBag.ClassCard = vmodel.ListViewClassCard = iClassCard.GetAll();
+            ViewBag.ClassCard = vmodel.ListViewProduct = iProduct.GetAll();
             var numberinvose = vmodel.ListViewPurchase = iPurchase.GetAll().Distinct().ToList();
 
             ViewBag.nomberMax = numberinvose.Any()
@@ -89,6 +94,7 @@ namespace Task_management.Areas.Admin.Controllers
             try
             {
                 slider.IdPurchase = model.Purchase.IdPurchase;
+                slider.IdWarehouse = model.Purchase.IdWarehouse;
                 slider.IdSupplier = model.Purchase.IdSupplier;
                 slider.IdPaymentMethod = model.Purchase.IdPaymentMethod;
                 slider.Statement = model.Purchase.Statement;
@@ -619,7 +625,7 @@ namespace Task_management.Areas.Admin.Controllers
                                 table.Cell().Border(1).AlignCenter().Text($"{product.Total:F3}");
                                 table.Cell().Border(1).AlignCenter().Text($"{product.PurchasePrice:F3}");
                                 table.Cell().Border(1).AlignCenter().Text($"{product.Quantity:F3}");
-                                table.Cell().Border(1).AlignCenter().Text(product.ItemName.ToString());
+                                table.Cell().Border(1).AlignCenter().Text(product.ProductNameAr.ToString());
 
 
                             }

@@ -7,6 +7,7 @@
 }
 @{
     var user = await userManager.GetUserAsync(User);
+
     var roles = await userManager.GetRolesAsync(user);
     var userRole = roles.FirstOrDefault();
 }
@@ -41,7 +42,7 @@
                     <ul>
                         <li>
                             <div class="radio-option">
-                                <input type="radio" name="payment-group-top" id="payment-5" checked="checked" onchange="toggleBillingDetails()">
+                                <input type="radio" name="payment-group-top" id="payment-5" value="Pick up from store" checked="checked" onchange="toggleBillingDetails()">
                                 <label for="payment-5">
                                     Pick up from store<span class="small-text">
                                         Please send a check to Store
@@ -53,7 +54,7 @@
                         </li>
                         <li>
                             <div class="radio-option">
-                                <input type="radio" name="payment-group-top" id="payment-8" onchange="toggleBillingDetails()">
+                                <input type="radio" name="payment-group-top" value="Delivery service" id="payment-8" onchange="toggleBillingDetails()">
                                 <label for="payment-8">
                                     Delivery service<span class="small-text">
                                         Please send a check to Store
@@ -70,10 +71,13 @@
             <div class="text-right"><a href="#" class="btn-solid btn">Place Order</a></div>
         </div>
         <div class="checkout-title">
-            <h3>Invose number:@ViewBag.nomberMax</h3>
+            <h3>Invose number: <span id="InvoseNum">@ViewBag.nomberMax</span></h3>
         </div> 
         <div class="checkout-title">
-            <h3>@DateTime.Now</h3>
+            <h3 id="DateNow">@DateTime.Now</h3>
+            <h3 hidden id="userIIDD">@user.Id</h3>
+            <h3 hidden id="userNNmm">@user.Name</h3>
+            <h3 hidden id="orderTypeId">@ViewBag.orderTypeId</h3>
         </div>
         <div class="checkout-page"id="checkout-page">
             <div class="checkout-form">
@@ -128,6 +132,10 @@
                                     <div class="field-label">Postal Code</div>
                                     <input type="text" name="field-name" value="" placeholder="">
                                 </div>
+                                <div class="form-group col-md-12 col-sm-6 col-xs-12">
+                                    <div class="field-label">Notes</div>
+                                    <input type="text" id="NotesForSave" name="field-name" value="" placeholder="">
+                                </div>
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <input type="checkbox" name="shipping-option" id="account-option">
                                     <label for="account-option">Create An Account?</label>
@@ -161,6 +169,7 @@
                                         </li>
                                     </ul>
                                     <ul class="total">
+                                        <li>Total Quntity <span id="TotalQuntityFinally" class="count"></span></li>
                                         <li>Sipping <span id="ShippingCost" class="count"></span></li>
                                         <li>Total <span id="totalPriceTotal" class="count"></span></li>
                                         <li hidden>Total 2<span id="totalPriceTotalFix" class="count"></span></li>
@@ -171,40 +180,21 @@
                                     <div class="upper-box">
                                         <div class="payment-options">
                                             <ul>
-                                                <li>
-                                                    <div class="radio-option">
-                                                        <input type="radio" name="payment-group-bottom" id="payment-1" checked="checked">
-                                                        <label for="payment-1">
-                                                            Check Payments<span class="small-text">
-                                                                Please send a check to Store
-                                                                Name, Store Street, Store Town, Store State /
-                                                                County, Store Postcode.
-                                                            </span>
-                                                        </label>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="radio-option">
-                                                        <input type="radio" name="payment-group-bottom" id="payment-2">
-                                                        <label for="payment-2">
-                                                            Cash On Delivery<span class="small-text">
-                                                                Please send a check to Store
-                                                                Name, Store Street, Store Town, Store State /
-                                                                County, Store Postcode.
-                                                            </span>
-                                                        </label>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="radio-option paypal">
-                                                        <input type="radio" name="payment-group-bottom" id="payment-3">
-                                                        <label for="payment-3">PayPal<span class="image"><img src="~/Web/assets/images/paypal.png" alt=""></span></label>
-                                                    </div>
-                                                </li>
+                                                @foreach (var pay in Model.ListPaymentMethod)
+                                                {
+                                                    <li>
+                                                        <div class="radio-option">
+                                                            <input type="radio" name="payment1-group-bottom" value="@pay.IdPaymentMethod" id="payment1-@pay.IdPaymentMethod">
+                                                            <label for="payment1-@pay.IdPaymentMethod">
+                                                                @pay.PaymentMethodEn
+                                                            </label>
+                                                        </div>
+                                                    </li>
+                                                }
                                             </ul>
                                         </div>
                                     </div>
-                                    <div class="text-right"><a href="#" class="btn-solid btn">Place Order</a></div>
+                                    <div class="text-right"><a onclick="AddOrderToDB()" class="btn-solid btn">Place Order</a></div>
                                 </div>
                             </div>
                         </div>
@@ -258,7 +248,7 @@
  @section Scripts {
      <script>
 
-                 function openSearch() {
+        function openSearch() {
             document.getElementById("search-overlay").style.display = "block";
         }
 
@@ -275,12 +265,20 @@
         var CartBody = $('#ProductsToBuy');
         var totalPrc = 0;
 
+
         function updateTotalPrice() {
             totalPrc = cart.reduce((sum, p) => sum + (p.quantity * p.price), 0);
+
+            totalQty = cart.reduce((sum, p) => sum + p.quantity, 0);
+
             $('#totalPrice').text(`$${totalPrc.toFixed(2)}`);
             $('#totalPriceTotal').text(`$${totalPrc.toFixed(2)}`);
             $('#totalPriceTotalFix').text(`$${totalPrc.toFixed(2)}`);
+
+            $('#TotalQuntityFinally').text(`${totalQty}`);
         }
+
+
 
         function updateCartItemQuantity(itemId, newQuantity) {
             cart = cart.map(p => {
@@ -455,5 +453,103 @@
                 });
 
         })
+    </script>
+
+    <script>
+        function AddOrderToDB() {
+            var invoiceNumber = parseInt($('#InvoseNum').text()) || 0;
+            var userId = $('#userIIDD').text().trim();
+            var userNm = $('#userNNmm').text().trim();
+            var qtyAll = parseInt($('#TotalQuntityFinally').text()) || 0;
+            var selectedPaymentMethod = parseInt($('input[name="payment1-group-bottom"]:checked').val()) || 0;
+            var reciveMethod = $('input[name="payment-group-top"]:checked').val() || 0;
+            var notesForSave = $('#NotesForSave').text().trim();
+            var orderTypeId = parseInt($('#orderTypeId').text()) || 0;
+
+            var invoiceHeader = {
+                'idInvoseHeder': 0,
+                'invoiceNumber': invoiceNumber,
+                'idPaymentMethod': parseInt(selectedPaymentMethod),
+                'dateInvos': new Date().toISOString(),
+                'idUser': userId,
+                'dataEntry': userNm,
+                'dateTimeEntry': new Date().toISOString(),
+                'outstandingBill': true,
+                'currentState': true
+            };
+
+            var baseUrl = `${window.location.origin}/api`;
+
+            fetch(`${baseUrl}/InvoiceHeader`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(invoiceHeader)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response from save header:', data);
+                    var invoId = data.idInvoseHeder;
+                    var cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+                    var promises = cart.map(p => {
+                        var invoice = {
+                            "idInvose": 0,
+                            "idInvoseHeder": invoId,
+                            "idProduct": p.id,
+                            "quantity": parseInt(p.quantity),
+                            "price": parseFloat(p.price),
+                            "total": parseFloat(p.price) * parseInt(p.quantity),
+                            "dataEntry": userNm,
+                            "dateTimeEntry": new Date().toISOString(),
+                            "currentState": true
+                        };
+
+                        return fetch(`${baseUrl}/Invoice`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(invoice)
+                        }).then(response => response.json());
+                    });
+
+                    return Promise.all(promises).then(results => {
+                        console.log('تمت إضافة جميع المنتجات بنجاح:', results);
+
+                        var orderOnline = {
+                            'idOrderOnline': 0,
+                            'idInvose': invoiceNumber,
+                            'userId': userId,
+                            'idTypeOrder': orderTypeId,
+                            'totalQuantity': qtyAll,
+                            'totalPrice': parseFloat($('#totalPriceTotal').text().replace('$', '')) || 0,
+                            'nouts': notesForSave,
+                            'receivingMethod': reciveMethod,
+                            'dataEntry': userNm,
+                            'dateTimeEntry': new Date().toISOString(),
+                            'currentState': true
+                        };
+
+                        return fetch(`${baseUrl}/OrderOnlineAPI`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(orderOnline)
+                        });
+                    });
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('تم حفظ الاونلاين بنجاح:', data);
+                    alert('تم حفظ الطلب بنجاح!');
+                    localStorage.setItem('cart', JSON.stringify([])); 
+                    console.log('تم إفراغ الكارت بنجاح');
+
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                })
+                .catch(error => {
+                    console.error('حدث خطأ أثناء الإرسال:', error);
+                });
+        }
+
     </script>
  }

@@ -692,6 +692,7 @@ namespace Infarstuructre.Data
         public DbSet<TBViewDeliveryCompanyPricing> ViewDeliveryCompanyPricing { get; set; }
         public DbSet<TBTypeOrder> TBTypeOrders { get; set; }
         public DbSet<TBOrderOnline> TBOrderOnlines { get; set; }
+        public DbSet<TBViewOrderOnline> ViewOrderOnline { get; set; }
         public DbSet<TBWarehouse> TBWarehouses { get; set; }
         public DbSet<TBViewWarehouse> ViewWarehouse { get; set; }
         public DbSet<TBStock> TBStocks { get; set; }

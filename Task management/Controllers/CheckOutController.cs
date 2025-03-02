@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Domin.Entity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Task_management.Controllers
 {
@@ -10,13 +11,20 @@ namespace Task_management.Controllers
         IIHomeBackgroundimage iHomeBackgroundimage;
         IIDeliveryCompanyPricing DeliveryCompanyPricing;
         IIInvoseHeder iInvoseHeder;
-        public CheckOutController(ILogger<HomeController> logger, IICompanyInformation iCompanyInformation1, IIHomeBackgroundimage iHomeBackgroundimage1, IIDeliveryCompanyPricing iDeliveryCompanyPricing1, IIInvoseHeder iInvoseHeder1)
+        IIPaymentMethod iPaymentMethod;
+        private readonly MasterDbcontext dbcontext;
+        IIOrderOnline iOrderOnline;
+
+        public CheckOutController(ILogger<HomeController> logger, IICompanyInformation iCompanyInformation1, IIHomeBackgroundimage iHomeBackgroundimage1, IIDeliveryCompanyPricing iDeliveryCompanyPricing1, IIInvoseHeder iInvoseHeder1, IIPaymentMethod iPaymentMethod1, MasterDbcontext dbcontext, IIOrderOnline iOrderOnline = null)
         {
             _logger = logger;
             iCompanyInformation = iCompanyInformation1;
             iHomeBackgroundimage = iHomeBackgroundimage1;
             DeliveryCompanyPricing = iDeliveryCompanyPricing1;
             iInvoseHeder = iInvoseHeder1;
+            iPaymentMethod = iPaymentMethod1;
+            this.dbcontext = dbcontext;
+            this.iOrderOnline = iOrderOnline;
         }
         public IActionResult MYCheckOut()
         {
@@ -26,8 +34,13 @@ namespace Task_management.Controllers
             ViewBag.arae = vmodel.ListViewDeliveryCompanyPricing = DeliveryCompanyPricing.GetAll().Distinct().ToList();
             var numberinvose = vmodel.ListViewInvoseHede = iInvoseHeder.GetAll();
             ViewBag.nomberMax = numberinvose.Any()
-        ? numberinvose.Max(c => c.InvoiceNumber) + 1
-        : 1;
+                ? numberinvose.Max(c => c.InvoiceNumber) + 1
+                : 1;
+
+            vmodel.ListPaymentMethod = iPaymentMethod.GetAll();
+
+            var orderType = dbcontext.TBTypeOrders.Find(1);
+            ViewBag.orderTypeId = orderType.IdTypeOrder;
 
             return View(vmodel);
         }
@@ -41,7 +54,15 @@ namespace Task_management.Controllers
             ViewBag.nomberMax = numberinvose.Any()
             ? numberinvose.Max(c => c.InvoiceNumber) + 1
             : 1;
+            vmodel.ListPaymentMethod = iPaymentMethod.GetAll();
             return View(vmodel);
         }
+        public IActionResult savedata(TBOrderOnline model)
+        {
+            var result = iOrderOnline.saveData(model);
+
+            return View();
+        }
+
     }
 }

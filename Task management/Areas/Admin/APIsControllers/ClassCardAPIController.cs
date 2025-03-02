@@ -8,16 +8,18 @@ namespace Task_management.Areas.Admin.APIsControllers
     public class ClassCardAPIController : ControllerBase
     {
         IIClassCard iClassCard;
-        public ClassCardAPIController(IIClassCard iClassCard)
+        IIProduct iProduct;
+        public ClassCardAPIController(IIClassCard iClassCard, IIProduct iProduct)
         {
             this.iClassCard = iClassCard;
+            this.iProduct = iProduct;
         }
 
 
         [HttpGet("/api/ClassCardAPI/GetById/{id}")]
         public IActionResult GetById(int id)
         {
-            var purcheas = iClassCard.GetById(id);
+            var purcheas = iProduct.GetByIdview(id);
             return Ok(purcheas);
         }
     }

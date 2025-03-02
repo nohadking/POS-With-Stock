@@ -52,6 +52,7 @@ namespace Infarstuructre.BL
 		}
 		public bool saveData(TBPurchase savee)
 		{
+			//راح يتم أضافة على المشتريات  خانة من خلالها تختار المستودع الي راح تنزل عليه البضاعة وهي علي  
 			try
 			{
 				dbcontext.Add<TBPurchase>(savee);

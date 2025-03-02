@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domin.Entity
 {
-    public class TBWarehouse
+    public class TBWarehouse// هذا جدول عام  مهمته يعرف مستودعات بشكل تلقائي على شجرة الحساب 
     {
         [Key]
         public int IdWarehouse { get; set; }

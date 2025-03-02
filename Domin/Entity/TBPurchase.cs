@@ -45,6 +45,7 @@ namespace Domin.Entity
         public DateTime DateTimeEntry { get; set; }//مدخل البيانات
         public bool CurrentState { get; set; }//حالة السند 
 
+        public int IdWarehouse { get; set; }
 
 
 

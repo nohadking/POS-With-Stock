@@ -20,9 +20,10 @@ namespace Domin.Entity
         public int PurchaseNumber { get; set; }
         public int? PurchaseSubNumber { get; set; }
         public int IdProduct { get; set; }
-        public string ItemName { get; set; }
-        public string PhotoItem { get; set; }
-        public string CodeItem { get; set; }
+        public string CategoryNameAr { get; set; }
+        public string ProductNameAr { get; set; }
+        public string Photo { get; set; }
+ 
         public int IdUnit { get; set; }
         public string Unit { get; set; }
         public int Quantity { get; set; }
@@ -39,5 +40,8 @@ namespace Domin.Entity
 		public string DataEntry { get; set; }
 		public DateTime DateTimeEntry { get; set; }
 		public bool CurrentState { get; set; }
-	}
+        public int IdWarehouse { get; set; }
+        public string WarehouseName { get; set; }
+
+    }
 }

@@ -21,5 +21,9 @@ namespace Domin.Entity
         public DateTime DateTimeEntry { get; set; }
         public bool CurrentState { get; set; }
         public decimal Amount { get; set; }
+        public int IdLevelForeAccountcreditor { get; set; }
+        public string AccountNameCreditor { get; set; }
+
+
     }
 }

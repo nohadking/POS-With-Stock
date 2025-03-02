@@ -1692,4 +1692,10 @@
   <data name="LBAddWarehouse" xml:space="preserve">
     <value>إضافة وتعديل بيانات المستودعات ...!</value>
   </data>
+  <data name="lbFromaccount" xml:space="preserve">
+    <value>من حساب</value>
+  </data>
+  <data name="lbToAccount" xml:space="preserve">
+    <value>إلى حساب</value>
+  </data>
 </root>

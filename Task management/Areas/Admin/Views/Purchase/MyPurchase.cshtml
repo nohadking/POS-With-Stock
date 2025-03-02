@@ -1407,6 +1407,7 @@
 
                     $('#supplierSelectEdit').val(parseInt(data[0].idSupplier));
                     $('#PayMethIdEdit').val(parseInt(data[0].idPaymentMethod));
+                    $('#WarehouseSelectedEdit').val(parseInt(data[0].idWarehouse));
 
                     var purchaseDate = new Date(data[0].purchaseDate);
 
@@ -1630,7 +1631,7 @@
                                                 console.log('Accounting data deleted successfully');
                                             }).then(data => {
 
-                                                 console.log("AccountRestrection: " + data);
+                                            console.log("AccountRestrection: " + JSON.stringify(data))
                                                  console.log("start add : " );
 
                                             // إضافة بيانات جديدة

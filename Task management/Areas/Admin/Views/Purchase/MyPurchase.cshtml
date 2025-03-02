@@ -1455,9 +1455,9 @@
                                 .then(data => {
                                     console.log(" 2 data" + JSON.stringify(data));
 
-                                    let name = data.itemName;
+                                    let name = data.productNameAr;
                                     let img = data.photo;
-                                    let id = data.idClassCard;
+                                    let id = data.idProduct;
 
                                     row.innerHTML = `
                                                <td><img src="/Images/Home/${img}" alt="${name}" style="width: 50px; height: 50px;" /> <span class="productName">${name}</span><span hidden class="productIId">${id}</span></td>

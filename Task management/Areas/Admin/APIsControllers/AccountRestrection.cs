@@ -46,7 +46,7 @@ namespace Task_management.Areas.Admin.APIsControllers
 			var result = dbcontext.TBAccountingRestrictions.Remove(acc);
             dbcontext.SaveChanges();
 
-			return Ok(result);
+			return Ok(acc);
         }
 
         [HttpGet]

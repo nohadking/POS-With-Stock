@@ -334,7 +334,7 @@
                                 <div class="col-lg-3 col-md-6 col-sm-12">
                                     <div class="input-blocks">
                                         <label>@ResourceWeb.lbWarehouseName</label>
-                                        <select class="form-select" asp-for="@Model.Purchase.IdWarehouse" asp-items="@(new SelectList(ViewBag.Warehouse, "IdWarehouse", "WarehouseName"))">
+                                        <select id="WarehouseSelected" class="form-select" asp-for="@Model.Purchase.IdWarehouse" asp-items="@(new SelectList(ViewBag.Warehouse, "IdWarehouse", "WarehouseName"))">
                                             <option>اختر مستودع </option>
                                         </select>
                                     </div>
@@ -558,6 +558,14 @@
                                     <div class="input-blocks">
                                         <label>@ResourceWeb.LBPurchaseSubNumber</label>
                                         <input id="PurcheasSubNuEdit" type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                    <div class="input-blocks">
+                                        <label>@ResourceWeb.lbWarehouseName</label>
+                                        <select id="WarehouseSelectedEdit" class="form-select" asp-for="@Model.Purchase.IdWarehouse" asp-items="@(new SelectList(ViewBag.Warehouse, "IdWarehouse", "WarehouseName"))">
+                                            <option>اختر مستودع </option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -1136,6 +1144,7 @@
         // اضافة السجلات الى الداتا بيز
         function SavePurcheasInDB() {
             var productId = $('#productSelect').find("option:selected").val();
+            var wareHouseId = $('#WarehouseSelected').find("option:selected").val();
             var supplierId = $('#supplierSelect').find("option:selected").val();
             var supplierNm = $('#supplierSelect').find("option:selected").text();
             var PayMethId = $('#PayMethId').find("option:selected").val();
@@ -1178,6 +1187,7 @@
                     "purchaseSubNumber": parseInt(PurcheasSubNu),
                     "idProduct": parseInt(productIId),
                     "idUnit": parseInt(idUnit),
+                    "idWarehouse": parseInt(wareHouseId),
                     "quantity": parseInt(quantity),
                     "freeQuantity": parseInt(freeQuantity),
                     "allQuantity": parseInt(totalQty),
@@ -1625,6 +1635,7 @@
 
                                             // إضافة بيانات جديدة
                                             var productId = $('#productSelectEdit').find("option:selected").val();
+                                            var wareHouseId = $('#WarehouseSelectedEdit').find("option:selected").val();
                                             var supplierId = $('#supplierSelectEdit').find("option:selected").val();
                                             var supplierNm = $('#supplierSelectEdit').find("option:selected").text();
                                             var PayMethId = $('#PayMethIdEdit').find("option:selected").val();
@@ -1677,6 +1688,7 @@
                                                     "allQuantity": parseInt(totalQty),
                                                     "singleDiscount": parseFloat(discount),
                                                     "purchasePrice": parseFloat(price),
+                                                    "idWarehouse": parseFloat(wareHouseId),
                                                     "total": parseFloat(totalPrc),
                                                     "shipping": parseFloat(OrderTotalShipping),
                                                     "nouts": PurcheasNotes,

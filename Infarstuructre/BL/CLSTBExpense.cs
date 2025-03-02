@@ -24,12 +24,12 @@ namespace Infarstuructre.BL
         List<TBViewExpense> GetByExpense(string expense);
         List<TBViewExpense> GetByCategory(string category);
     }
-    public class CLSTBExpense: IIExpense
+    public class CLSTBExpense : IIExpense
     {
         MasterDbcontext dbcontext;
         public CLSTBExpense(MasterDbcontext dbcontext1)
         {
-            dbcontext=dbcontext1;
+            dbcontext = dbcontext1;
         }
         public List<TBViewExpense> GetAll()
         {
@@ -66,71 +66,142 @@ namespace Infarstuructre.BL
 
         public bool saveData(TBExpense savee)
         {
-            try
+            using (var transaction = dbcontext.Database.BeginTransaction()) // استخدام transaction لضمان حفظ البيانات بشكل متكامل
             {
-                var saveaccount = new TBAccountingRestriction();
-                // إضافة البيانات إلى الجدول الأول (TBExpense)
-                dbcontext.Add<TBExpense>(savee);
+                try
+                {
+                    // **التحقق من صحة البيانات قبل الحفظ**
+                    if (savee == null)
+                    {
+                        return false; // لا يمكن الحفظ إذا كان الكائن فارغًا
+                    }
 
-                var max = dbcontext.TBAccountingRestrictions.Any()
-               ? dbcontext.TBAccountingRestrictions.Max(c => c.NumberaccountingRestrictions) + 1
-               : 1;
-                var expnsevcatrg = dbcontext.TBExpenseCategorys.FirstOrDefault(a => a.IdExpenseCategory == savee.IdExpenseCategory);
-                var LavelFore = dbcontext.TBLevelForeAccounts.FirstOrDefault(a => a.IdLevelForeAccount == savee.IdLevelForeAccount);
+                    // إضافة البيانات إلى الجدول الأول (TBExpense)
+                    dbcontext.TBExpenses.Add(savee); // استخدم DbSet مباشرة
 
+                    // **الحصول على رقم القيد الجديد بشكل صحيح**
+                    int max = dbcontext.TBAccountingRestrictions.Any()
+                               ? dbcontext.TBAccountingRestrictions.Max(c => c.NumberaccountingRestrictions) + 1
+                               : 1;
 
-                saveaccount.NumberaccountingRestrictions = max;
-                saveaccount.AccountingName = LavelFore.AccountName;
-                saveaccount.BondType = "سند صرف";
-                saveaccount.BondNumber = savee.BondNumber;
-                saveaccount.Debtor = savee.Amount;
-                saveaccount.creditor = 0;
-                saveaccount.Statement = savee.Statement;
-                saveaccount.Nouts = "سند صرف رقم :"+" "+ savee.BondNumber;
-                saveaccount.DataEntry = savee.DataEntry;
-                saveaccount.DateTimeEntry = savee.DateTimeEntry;
-                saveaccount.CurrentState = true;
-                // إضافة البيانات إلى الجدول الثاني (TBAccountingRestriction)
-                dbcontext.Add<TBAccountingRestriction>(saveaccount);
-                // حفظ التغييرات في قاعدة البيانات
-                dbcontext.SaveChanges();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
+                    // **استعلامات أكثر كفاءة (استخدام Find بدلاً من FirstOrDefault)**
+                    var LavelFore = dbcontext.TBLevelForeAccounts.Find(savee.IdLevelForeAccount);
+                    var LavelForecreditor = dbcontext.TBLevelForeAccounts.Find(savee.IdLevelForeAccountcreditor);
+                    var expnsevcatrg = dbcontext.TBExpenseCategorys.Find(savee.IdExpenseCategory);
+
+                    // **التحقق من وجود الكائنات قبل استخدامها**
+                    if (LavelFore == null || LavelForecreditor == null || expnsevcatrg == null)
+                    {
+                        // يمكنك تسجيل خطأ هنا أو إرجاع false للإشارة إلى فشل العملية
+                        transaction.Rollback(); // التراجع عن أي تغييرات تم إجراؤها
+                        return false;
+                    }
+
+                    // **إنشاء القيد الأول**
+                    var saveaccountDebtor = new TBAccountingRestriction
+                    {
+                        NumberaccountingRestrictions = max,
+                        AccountingName = LavelFore.AccountName,
+                        BondType = "سند صرف",
+                        BondNumber = savee.BondNumber,
+                        Debtor = savee.Amount,
+                        creditor = 0,
+                        Statement = savee.Statement,
+                        Nouts = "سند صرف رقم : " + savee.BondNumber,
+                        DataEntry = savee.DataEntry,
+                        DateTimeEntry = savee.DateTimeEntry,
+                        CurrentState = true
+                    };
+
+                    dbcontext.TBAccountingRestrictions.Add(saveaccountDebtor);
+
+                    // **إنشاء القيد الثاني**
+                    var saveaccountCreditor = new TBAccountingRestriction
+                    {
+                        NumberaccountingRestrictions = max,
+                        AccountingName = LavelForecreditor.AccountName,
+                        BondType = "سند صرف",
+                        BondNumber = savee.BondNumber,
+                        Debtor = 0,
+                        creditor = savee.Amount,
+                        Statement = savee.Statement,
+                        Nouts = "سند صرف رقم : " + savee.BondNumber,
+                        DataEntry = savee.DataEntry,
+                        DateTimeEntry = savee.DateTimeEntry,
+                        CurrentState = true
+                    };
+
+                    dbcontext.TBAccountingRestrictions.Add(saveaccountCreditor);
+
+                    // **حفظ التغييرات مرة واحدة فقط**
+                    dbcontext.SaveChanges();
+
+                    transaction.Commit(); // تأكيد جميع التغييرات
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    // **تسجيل الخطأ بشكل مفصل (مهم جدًا)**
+                    Console.WriteLine($"Error saving data: {ex.Message}\n{ex.StackTrace}"); //  استبدل هذا بتسجيل مناسب في ملف أو قاعدة بيانات
+                    transaction.Rollback(); // التراجع عن أي تغييرات تم إجراؤها
+                    return false;
+                }
             }
         }
 
 
 
+
         public bool UpdateData(TBExpense updatss)
         {
-            try
-            {
-             
-                var expnsevcatrg = dbcontext.TBExpenseCategorys.FirstOrDefault(a => a.IdExpenseCategory == updatss.IdExpenseCategory);
-                var LavelFore = dbcontext.TBLevelForeAccounts.FirstOrDefault(a => a.IdLevelForeAccount == updatss.IdLevelForeAccount);
-                var update = dbcontext.TBAccountingRestrictions.FirstOrDefault(a => a.AccountingName == expnsevcatrg.ExpenseCategory && a.BondNumber == updatss.BondNumber);
-                update.AccountingName = LavelFore.AccountName;
-                update.BondType = "سند صرف";
-                update.BondNumber = updatss.BondNumber;
-                update.Debtor = updatss.Amount;
-                update.creditor = 0;
-                update.Statement = updatss.Statement;
-                update.Nouts = "سند صرف رقم :" + " " + updatss.BondNumber;
-                update.DataEntry = updatss.DataEntry;
-                update.DateTimeEntry = updatss.DateTimeEntry;
-                update.CurrentState = true;
-                dbcontext.Entry(update).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-                dbcontext.Entry(updatss).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-                dbcontext.SaveChanges();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+           
+                using (var transaction = dbcontext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var expnsevcatrg = dbcontext.TBExpenseCategorys.FirstOrDefault(a => a.IdExpenseCategory == updatss.IdExpenseCategory);
+                        var LavelFore = dbcontext.TBLevelForeAccounts.FirstOrDefault(a => a.IdLevelForeAccount == updatss.IdLevelForeAccount);
+                        var LavelForecredteor = dbcontext.TBLevelForeAccounts.FirstOrDefault(a => a.IdLevelForeAccount == updatss.IdLevelForeAccountcreditor);
+                        // *** إنشاء قيد محاسبي للمدين ***
+                        TBAccountingRestriction debtorEntry = new TBAccountingRestriction();
+                        debtorEntry.AccountingName = LavelFore.AccountName;
+                        debtorEntry.BondType = "سند صرف";
+                        debtorEntry.BondNumber = updatss.BondNumber;
+                        debtorEntry.Debtor = updatss.Amount;
+                        debtorEntry.creditor = 0;
+                        debtorEntry.Statement = updatss.Statement;
+                        debtorEntry.Nouts = "سند صرف رقم :" + " " + updatss.BondNumber;
+                        debtorEntry.DataEntry = updatss.DataEntry;
+                        debtorEntry.DateTimeEntry = updatss.DateTimeEntry;
+                        debtorEntry.CurrentState = true;
+                        dbcontext.TBAccountingRestrictions.Add(debtorEntry);
+                        // *** إنشاء قيد محاسبي للدائن ***
+                        TBAccountingRestriction creditorEntry = new TBAccountingRestriction();
+                        creditorEntry.AccountingName = LavelForecredteor.AccountName;
+                        creditorEntry.BondType = "سند صرف";
+                        creditorEntry.BondNumber = updatss.BondNumber;
+                        creditorEntry.Debtor = 0;
+                        creditorEntry.creditor = updatss.Amount;
+                        creditorEntry.Statement = updatss.Statement;
+                        creditorEntry.Nouts = "سند صرف رقم :" + " " + updatss.BondNumber;
+                        creditorEntry.DataEntry = updatss.DataEntry;
+                        creditorEntry.DateTimeEntry = updatss.DateTimeEntry;
+                        creditorEntry.CurrentState = true;
+                        dbcontext.TBAccountingRestrictions.Add(creditorEntry);
+                        // *** تحديث المصروفات ***
+                        dbcontext.Entry(updatss).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                        dbcontext.SaveChanges();
+                        transaction.Commit();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        // من الأفضل تسجيل الخطأ في سجل أو إلقاء استثناء أكثر تحديدًا
+                        Console.WriteLine($"Error updating data: {ex.Message}");
+                        return false;
+                    }
+                }   
         }
         public bool deleteData(int IdExpense)
         {

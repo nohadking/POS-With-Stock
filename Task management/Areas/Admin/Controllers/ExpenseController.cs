@@ -81,6 +81,7 @@ namespace Task_management.Areas.Admin.Controllers
 				slider.IdExpense = model.Expense.IdExpense;
 				slider.IdExpenseCategory = model.Expense.IdExpenseCategory;
 				slider.IdLevelForeAccount = model.Expense.IdLevelForeAccount;
+				slider.IdLevelForeAccountcreditor = model.Expense.IdLevelForeAccountcreditor;
 				slider.BondNumber = model.Expense.BondNumber;
 				slider.DateBond = model.Expense.DateBond;
 				slider.Statement = model.Expense.Statement;
@@ -519,7 +520,7 @@ namespace Task_management.Areas.Admin.Controllers
 									subColumn.Item().AlignLeft().Text($"{comp.Phone}").FontSize(10);
 									subColumn.Item().AlignLeft().Text($"{comp.EmailCompany}").FontSize(10);
 								});
-								string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Home", "1016e7c8-9a31-41c9-baeb-cb3e67a62cdd.jpg");
+								string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "Home", "2c575fad-2d64-4100-a831-1945ef372a08.png");
 								// التحقق من وجود الصورة قبل إضافتها
 								var hit = 75;
 								// التحقق من وجود الصورة قبل إضافتها

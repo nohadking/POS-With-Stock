@@ -51,10 +51,16 @@
                                         <span asp-validation-for="@Model.Expense.DateBond" class="text-danger"></span>
                                     </div>
                                     <div class="col-lg-6 col-xs-6">
-                                        <label asp-for="@Model.Expense.IdExpenseCategory" for="exampleInputEmail1">تابع لحساب</label>
+                                        <label asp-for="@Model.Expense.IdExpenseCategory" for="exampleInputEmail1">من حساب</label>
                                         <select class="form-select" asp-for="@Model.Expense.IdLevelForeAccount" asp-items="@(new SelectList(ViewBag.LevelForeAccount, "IdLevelForeAccount", "LevelForeAccountsName"))">
                                         </select>
                                         <span asp-validation-for="@Model.Expense.IdLevelForeAccount" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-lg-6 col-xs-6">
+                                        <label asp-for="@Model.Expense.IdLevelForeAccountcreditor" for="exampleInputEmail1">إلى حساب</label>
+                                        <select class="form-select" asp-for="@Model.Expense.IdLevelForeAccountcreditor" asp-items="@(new SelectList(ViewBag.LevelForeAccount, "IdLevelForeAccount", "LevelForeAccountsName"))">
+                                        </select>
+                                        <span asp-validation-for="@Model.Expense.IdLevelForeAccountcreditor" class="text-danger"></span>
                                     </div>
                                     <div class="col-lg-6 col-xs-6">
                                         <label asp-for="@Model.Expense.IdExpenseCategory" for="exampleInputEmail1">الفئة</label>

@@ -43,5 +43,6 @@ namespace Domin.Entity
         public int IdWarehouse { get; set; }
         public string WarehouseName { get; set; }
 
+
     }
 }

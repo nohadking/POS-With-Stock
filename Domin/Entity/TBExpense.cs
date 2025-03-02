@@ -13,6 +13,7 @@ namespace Domin.Entity
         public int IdExpense { get; set; }
         public int IdExpenseCategory { get; set; }
         public int IdLevelForeAccount { get; set; }
+        public int IdLevelForeAccountcreditor { get; set; }
         public int BondNumber { get; set; }
         public DateOnly DateBond { get; set; }
         [Required(ErrorMessageResourceType = typeof(Resource.ResourceData), ErrorMessageResourceName = "VlStatement")]

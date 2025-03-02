@@ -1555,6 +1555,15 @@ namespace Task_management.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to من حساب.
+        /// </summary>
+        internal static string lbFromaccount {
+            get {
+                return ResourceManager.GetString("lbFromaccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Full package.
         /// </summary>
         internal static string Lbfull_package {
@@ -3684,6 +3693,15 @@ namespace Task_management.Resource {
         internal static string lbTitleTwoEn {
             get {
                 return ResourceManager.GetString("lbTitleTwoEn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to إلى حساب.
+        /// </summary>
+        internal static string lbToAccount {
+            get {
+                return ResourceManager.GetString("lbToAccount", resourceCulture);
             }
         }
         

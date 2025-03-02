@@ -541,20 +541,20 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="col-lg-3 col-md-6 col-sm-12">
                                     <div class="input-blocks">
                                         <label>@ResourceWeb.lbPaymentMethodAr</label>
                                         <select id="PayMethIdEdit" class="form-select" asp-for="@Model.Purchase.IdPaymentMethod" asp-items="@(new SelectList(ViewBag.PaymentMethod, "IdPaymentMethod", "PaymentMethodAr"))">
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="col-lg-3 col-md-6 col-sm-12">
                                     <div class="input-blocks">
                                         <label>@ResourceWeb.LBPurchaseNumber</label>
                                         <input id="PurcheasNuEdit" type="text" class="form-control" value="@ViewBag.nomberMax">
                                     </div>
                                 </div>
-                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="col-lg-3 col-md-6 col-sm-12">
                                     <div class="input-blocks">
                                         <label>@ResourceWeb.LBPurchaseSubNumber</label>
                                         <input id="PurcheasSubNuEdit" type="text" class="form-control">
@@ -578,14 +578,14 @@
                                         <select id="productSelectEdit" class="form-select" asp-for="@Model.Purchase.IdProduct">
                                             <option>اختر منتج</option>
                                             @{
-                                                var Cardss = (@ViewBag.ClassCard as List<TBViewClassCard>);
+                                                var Cardss = (@ViewBag.ClassCard as List<TBViewProduct>);
                                             }
                                             @if (Cardss != null && Cardss.Any())
                                             {
                                                 foreach (var item in Cardss)
                                                 {
-                                                    <option value="@item.IdClassCard" data-additional="@item.Photo">
-                                                        @item.ItemName
+                                                    <option value="@item.IdProduct" data-additional="@item.Photo">
+                                                        @item.ProductNameAr
                                                     </option>
                                                 }
                                             }

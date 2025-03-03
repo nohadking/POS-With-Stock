@@ -227,6 +227,7 @@ builder.Services.AddScoped<IITypeOrder, CLSTBTypeOrder>();
 builder.Services.AddScoped<IIWarehouse, CLSTBWarehouse>();
 builder.Services.AddScoped<IIStock, CLSTBStock>();
 builder.Services.AddScoped<IIOrderOnline, CLSTBOrderOnline>();
+builder.Services.AddScoped<IIBondType, CLSTBBondType>();
 
 
 // تفعيل الترخيص لـ QuestPDF

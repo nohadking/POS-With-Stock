@@ -169,6 +169,15 @@ namespace Task_management.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to إضافة وتعديل انواع السندات .
+        /// </summary>
+        internal static string LBAddBondType {
+            get {
+                return ResourceManager.GetString("LBAddBondType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to إضافة وتعديل المدن .
         /// </summary>
         internal static string LBAddCitie {
@@ -777,6 +786,15 @@ namespace Task_management.Resource {
         internal static string lbBondType {
             get {
                 return ResourceManager.GetString("lbBondType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to السند.
+        /// </summary>
+        internal static string lbBondTypeName {
+            get {
+                return ResourceManager.GetString("lbBondTypeName", resourceCulture);
             }
         }
         
@@ -2028,6 +2046,15 @@ namespace Task_management.Resource {
         internal static string LBMyBestSellingProductsHomeContent {
             get {
                 return ResourceManager.GetString("LBMyBestSellingProductsHomeContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to أنواع السندات .
+        /// </summary>
+        internal static string LBMyBondType {
+            get {
+                return ResourceManager.GetString("LBMyBondType", resourceCulture);
             }
         }
         
@@ -4080,6 +4107,15 @@ namespace Task_management.Resource {
         internal static string VLAreaNameDoplceted {
             get {
                 return ResourceManager.GetString("VLAreaNameDoplceted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تم إدخال نوع السند مسبقا يرجى التأكد وإعادة المحاولة لاحقا ...!.
+        /// </summary>
+        internal static string VLBondTypeDoplceted {
+            get {
+                return ResourceManager.GetString("VLBondTypeDoplceted", resourceCulture);
             }
         }
         

@@ -1,0 +1,127 @@
+﻿@model ViewmMODeElMASTER
+@{
+    ViewData["Title"] = ResourceWeb.LBAddBondType;
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<form class="flex-fill" method="post" asp-controller="BondType" asp-action="Save" enctype="multipart/form-data">
+    <div class="page-wrapper cardhead">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="page-title">@ResourceWeb.LBAddBondType</h3>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a asp-area="Admin"asp-controller="Home"asp-action="Index">Dashboard</a></li>
+                            <li class="breadcrumb-item active">@ResourceWeb.LBAddBondType</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Header -->
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">@ResourceWeb.LBAddBondType</h5>
+                        </div>
+
+                        <div class="card-body">
+
+
+                            <input type="hidden" asp-for="@Model.BondType.DataEntry" class="form-control" value="@User.Identity.Name">
+                            <input type="hidden" asp-for="@Model.BondType.IdBondType" class="form-control">
+
+                            <input type="hidden" asp-for="@Model.BondType.DateTimeEntry" value="@DateTime.Now">
+                            <input type="hidden" asp-for="@Model.returnUrl" id="url">
+                            <span style="color:royalblue"> <strong>@TempData["Saved successfully"]</strong></span>
+                            <span style="color:red"> <strong>@TempData["ErrorSave"]</strong></span>
+
+
+                            <div class="card-content">
+                                <div class="row small-spacing">
+                                    <div class="col-lg-12 col-xs-6">
+                                        <label for="exampleInputEmail1">@ResourceWeb.lbBondTypeName</label>
+                                        <input type="text" asp-for="@Model.BondType.BondType" placeholder="@ResourceWeb.lbBondTypeName" class="form-control" maxlength="300">
+                                        <span asp-validation-for="@Model.BondType.BondType" class="text-danger"></span>
+                                        <span style="color:red"> <strong>@TempData["BondType"]</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body d-sm-flex align-item-center justify-content-between">
+
+                                <div class="form-check form-check-lg form-switch">
+                                    <input asp-for="@Model.BondType.Active" class="form-check-input" type="checkbox" role="switch" id="switch-lg">
+                                    <label class="form-check-label" for="switch-lg">@Model.BondType.Active :Active</label>
+                                </div>
+                                <div class="form-check form-check-lg form-switch">
+                                    <input asp-for="@Model.BondType.CurrentState" class="form-check-input" type="checkbox" role="switch" id="switch-lg">
+                                    <label class="form-check-label" for="switch-lg">@Model.BondType.CurrentState :Status</label>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="page-wrapper cardhead" style="margin-top:-50px">
+        <div class="content container-fluid">
+
+            <!-- Page Header -->
+            <!-- /Page Header -->
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Olde Photo</h5>
+                        </div>
+
+
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mb-4">
+
+
+
+                            <button class="btn btn-secondary" type="submit">@ResourceWeb.lbSave</button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</form>
+@section Scripts {
+
+}
+

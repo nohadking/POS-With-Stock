@@ -690,15 +690,7 @@ namespace Task_management.Areas.Admin.Controllers
             var pdfData = pdfDocument.GeneratePdf();
             return File(pdfData, "application/pdf", "Purchase_Receipt_Report.pdf");
         }
-        public string GetSupplierPhoto(int idSupplier)
-        {
-        
-                var supplier = dbcontext.TBSuppliers.FirstOrDefault(s => s.IdSupplier == idSupplier);
-                return supplier != null && !string.IsNullOrEmpty(supplier.Photo)
-                    ? $"/Images/Suppliers/{supplier.Photo}"
-                    : "/Images/default.png"; // صورة افتراضية في حالة عدم وجود صورة
-            
-        }
+    
 
     }
 }

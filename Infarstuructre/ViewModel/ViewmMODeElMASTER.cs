@@ -138,7 +138,9 @@ namespace Infarstuructre.ViewModel
         public List<TBViewWarehouse> ListViewWarehouse { get; set; }
         public TBWarehouse Warehouse { get; set; }   
         public List<TBViewStock> ListViewStock { get; set; }
-        public TBStock Stock { get; set; }
+        public TBStock Stock { get; set; }    
+        public List<TBBondType> ListBondType { get; set; }
+        public TBBondType BondType { get; set; }
 
 
     }

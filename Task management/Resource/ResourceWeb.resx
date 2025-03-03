@@ -1698,4 +1698,16 @@
   <data name="lbToAccount" xml:space="preserve">
     <value>إلى حساب</value>
   </data>
+  <data name="VLBondTypeDoplceted" xml:space="preserve">
+    <value>تم إدخال نوع السند مسبقا يرجى التأكد وإعادة المحاولة لاحقا ...!</value>
+  </data>
+  <data name="LBMyBondType" xml:space="preserve">
+    <value>أنواع السندات </value>
+  </data>
+  <data name="lbBondTypeName" xml:space="preserve">
+    <value>السند</value>
+  </data>
+  <data name="LBAddBondType" xml:space="preserve">
+    <value>إضافة وتعديل انواع السندات </value>
+  </data>
 </root>

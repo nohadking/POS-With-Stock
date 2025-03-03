@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Task_management.Areas.Admin.APIsControllers
 {
@@ -10,11 +11,13 @@ namespace Task_management.Areas.Admin.APIsControllers
         MasterDbcontext dbcontext;
         IIPurchase iPurchase;
         IIClassCard iClassCard;
-        public PurcheasApiController(MasterDbcontext dbcontext, IIPurchase iPurchase, IIClassCard iClassCard)
+        IIStock iStock;
+        public PurcheasApiController(MasterDbcontext dbcontext, IIPurchase iPurchase, IIClassCard iClassCard, IIStock iStock)
         {
             this.dbcontext = dbcontext;
             this.iPurchase = iPurchase;
             this.iClassCard = iClassCard;
+            this.iStock = iStock;
         }
         [HttpGet("/api/PurcheasApi/GetByPurcheasNu/{purchaseNumber}")]
         public IActionResult GetByPurcheasNu(int purchaseNumber)
@@ -34,9 +37,26 @@ namespace Task_management.Areas.Admin.APIsControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var stock = new TBStock
+            {
+                IdWarehouse = purchase.IdWarehouse,
+                BondType = "سند شراء",
+                BondDate = DateOnly.FromDateTime(DateTime.Now),
+                BondNumber = purchase.PurchaseNumber,
+                CurrentState = purchase.CurrentState,
+                DataEntry = purchase.DataEntry,
+                IdProduct = purchase.IdProduct,
+                InputQuantity = purchase.Quantity,
+                OutputQuantity = 0,
+                DateTimeEntry = DateTime.Now
+            };
+
+            var result0 = iStock.saveData(stock);
+
             var result = iPurchase.saveData(purchase);
             return Ok(result);
         }
+
         [HttpDelete("DeletePurcheases")]
         public IActionResult DeletePurcheases(List<int> idsList)
         {
@@ -46,6 +66,15 @@ namespace Task_management.Areas.Admin.APIsControllers
 
                 if (purcheas == null)
                     continue;
+
+                var bindNumber = purcheas.PurchaseNumber;
+
+                var stocks = dbcontext.TBStocks.Where(s => s.BondNumber == bindNumber).ToList();
+
+                if (stocks != null)
+                {
+                    dbcontext.TBStocks.RemoveRange(stocks);
+                }
 
                 dbcontext.TBPurchases.Remove(purcheas);
                 dbcontext.SaveChanges();

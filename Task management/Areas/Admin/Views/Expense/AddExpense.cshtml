@@ -40,6 +40,14 @@
                             <div class="card-content">
                                 <div class="row small-spacing">
                                     <div class="col-lg-6 col-xs-6">
+                                        <label for="exampleInputEmail1">نوع السند  </label>
+                                        <select class="form-select" asp-for="@Model.Expense.IdBondType" asp-items="@(new SelectList(ViewBag.boundtype, "IdBondType", "BondType"))">
+                                        </select>
+                                        <span asp-validation-for="@Model.Expense.IdBondType" class="text-danger"></span>
+                                    </div>
+
+
+                                    <div class="col-lg-6 col-xs-6">
                                         <label for="exampleInputEmail1">@ResourceWeb.lbBondNumber</label>
                                         <input type="text" asp-for="@Model.Expense.BondNumber" placeholder="@ResourceWeb.lbBondNumber" class="form-control" readonly>
                                         <span asp-validation-for="@Model.Expense.BondNumber" class="text-danger"></span>

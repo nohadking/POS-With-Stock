@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Infarstuructre.BL
 {
@@ -88,9 +89,10 @@ namespace Infarstuructre.BL
                     var LavelFore = dbcontext.TBLevelForeAccounts.Find(savee.IdLevelForeAccount);
                     var LavelForecreditor = dbcontext.TBLevelForeAccounts.Find(savee.IdLevelForeAccountcreditor);
                     var expnsevcatrg = dbcontext.TBExpenseCategorys.Find(savee.IdExpenseCategory);
+                    var boundtype = dbcontext.TBBondTypes.Find(savee.IdBondType);
 
                     // **التحقق من وجود الكائنات قبل استخدامها**
-                    if (LavelFore == null || LavelForecreditor == null || expnsevcatrg == null)
+                    if (LavelFore == null || LavelForecreditor == null || expnsevcatrg == null|| boundtype==null)
                     {
                         // يمكنك تسجيل خطأ هنا أو إرجاع false للإشارة إلى فشل العملية
                         transaction.Rollback(); // التراجع عن أي تغييرات تم إجراؤها
@@ -102,12 +104,12 @@ namespace Infarstuructre.BL
                     {
                         NumberaccountingRestrictions = max,
                         AccountingName = LavelFore.AccountName,
-                        BondType = "سند صرف",
+                        BondType = boundtype.BondType,
                         BondNumber = savee.BondNumber,
                         Debtor = savee.Amount,
                         creditor = 0,
                         Statement = savee.Statement,
-                        Nouts = "سند صرف رقم : " + savee.BondNumber,
+                        Nouts = boundtype.BondType + " " +"رقم :"+ savee.BondNumber,
                         DataEntry = savee.DataEntry,
                         DateTimeEntry = savee.DateTimeEntry,
                         CurrentState = true
@@ -120,12 +122,12 @@ namespace Infarstuructre.BL
                     {
                         NumberaccountingRestrictions = max,
                         AccountingName = LavelForecreditor.AccountName,
-                        BondType = "سند صرف",
+                        BondType = boundtype.BondType,
                         BondNumber = savee.BondNumber,
                         Debtor = 0,
                         creditor = savee.Amount,
                         Statement = savee.Statement,
-                        Nouts = "سند صرف رقم : " + savee.BondNumber,
+                        Nouts = boundtype.BondType + " " + "رقم :" + savee.BondNumber,
                         DataEntry = savee.DataEntry,
                         DateTimeEntry = savee.DateTimeEntry,
                         CurrentState = true
@@ -162,28 +164,29 @@ namespace Infarstuructre.BL
                         var expnsevcatrg = dbcontext.TBExpenseCategorys.FirstOrDefault(a => a.IdExpenseCategory == updatss.IdExpenseCategory);
                         var LavelFore = dbcontext.TBLevelForeAccounts.FirstOrDefault(a => a.IdLevelForeAccount == updatss.IdLevelForeAccount);
                         var LavelForecredteor = dbcontext.TBLevelForeAccounts.FirstOrDefault(a => a.IdLevelForeAccount == updatss.IdLevelForeAccountcreditor);
-                        // *** إنشاء قيد محاسبي للمدين ***
-                        TBAccountingRestriction debtorEntry = new TBAccountingRestriction();
+                    var boundtype = dbcontext.TBBondTypes.Find(updatss.IdBondType);
+                    // *** إنشاء قيد محاسبي للمدين ***
+                    TBAccountingRestriction debtorEntry = new TBAccountingRestriction();
                         debtorEntry.AccountingName = LavelFore.AccountName;
-                        debtorEntry.BondType = "سند صرف";
+                        debtorEntry.BondType = boundtype.BondType;
                         debtorEntry.BondNumber = updatss.BondNumber;
                         debtorEntry.Debtor = updatss.Amount;
                         debtorEntry.creditor = 0;
                         debtorEntry.Statement = updatss.Statement;
-                        debtorEntry.Nouts = "سند صرف رقم :" + " " + updatss.BondNumber;
-                        debtorEntry.DataEntry = updatss.DataEntry;
+                        debtorEntry.Nouts = boundtype.BondType + " " + "رقم :" + updatss.BondNumber;
+                    debtorEntry.DataEntry = updatss.DataEntry;
                         debtorEntry.DateTimeEntry = updatss.DateTimeEntry;
                         debtorEntry.CurrentState = true;
                         dbcontext.TBAccountingRestrictions.Add(debtorEntry);
                         // *** إنشاء قيد محاسبي للدائن ***
                         TBAccountingRestriction creditorEntry = new TBAccountingRestriction();
                         creditorEntry.AccountingName = LavelForecredteor.AccountName;
-                        creditorEntry.BondType = "سند صرف";
+                        creditorEntry.BondType = boundtype.BondType;
                         creditorEntry.BondNumber = updatss.BondNumber;
                         creditorEntry.Debtor = 0;
                         creditorEntry.creditor = updatss.Amount;
                         creditorEntry.Statement = updatss.Statement;
-                        creditorEntry.Nouts = "سند صرف رقم :" + " " + updatss.BondNumber;
+                        creditorEntry.Nouts = boundtype.BondType + " " + "رقم :" + updatss.BondNumber; ;
                         creditorEntry.DataEntry = updatss.DataEntry;
                         creditorEntry.DateTimeEntry = updatss.DateTimeEntry;
                         creditorEntry.CurrentState = true;

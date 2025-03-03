@@ -23,6 +23,9 @@ namespace Domin.Entity
         public decimal Amount { get; set; }
         public int IdLevelForeAccountcreditor { get; set; }
         public string AccountNameCreditor { get; set; }
+        public int IdBondType { get; set; }
+        public string BondType { get; set; }
+
 
 
     }

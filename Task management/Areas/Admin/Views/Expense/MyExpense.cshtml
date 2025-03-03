@@ -117,6 +117,7 @@
                                         <span class="checkmarks"></span>
                                     </label>
                                 </th>
+                                <th>@ResourceWeb.lbBondType</th>
                                 <th>@ResourceWeb.lbFromaccount</th>
                                 <th>@ResourceWeb.lbToAccount</th>
                                 <th>@ResourceWeb.lbExpenseCategory</th>
@@ -141,7 +142,7 @@
                                             <span class="checkmarks"></span>
                                         </label>
                                     </td>
-
+                                    <td>@item.BondType</td>
                                     <td>@item.AccountName</td>
                                     <td>@item.AccountNameCreditor</td>
                                     <td>@item.ExpenseCategory</td>
@@ -203,6 +204,13 @@
                                 <input type="hidden" asp-for="@Model.returnUrl" id="url">
                                 <span style="color:royalblue"> <strong>@TempData["Saved successfully"]</strong></span>
                                 <span style="color:red"> <strong>@TempData["ErrorSave"]</strong></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1">نوع السند  </label>
+                                <select class="form-select" asp-for="@Model.Expense.IdBondType" asp-items="@(new SelectList(ViewBag.boundtype, "IdBondType", "BondType"))">
+                                </select>
+                                <span asp-validation-for="@Model.Expense.IdBondType" class="text-danger"></span>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" asp-for="@Model.Expense.BondNumber">@ResourceWeb.lbBondNumber</label>

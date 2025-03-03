@@ -24,7 +24,8 @@ namespace Task_management.Areas.Admin.Controllers
 		IILevelForeAccount iLevelForeAccount;
 		MasterDbcontext dbcontext;
 		IIAccountingRestriction iAccountingRestriction;
-		public ExpenseController(IIExpense iExpense1, IICompanyInformation iCompanyInformation1, IIExpenseCategory iExpenseCategory1, IILevelForeAccount iLevelForeAccount1, MasterDbcontext dbcontext, IIAccountingRestriction iAccountingRestriction)
+		IIBondType iBondType;
+        public ExpenseController(IIExpense iExpense1, IICompanyInformation iCompanyInformation1, IIExpenseCategory iExpenseCategory1, IILevelForeAccount iLevelForeAccount1, MasterDbcontext dbcontext, IIAccountingRestriction iAccountingRestriction,IIBondType iBondType1)
 		{
 			iExpense = iExpense1;
 			iCompanyInformation = iCompanyInformation1;
@@ -32,7 +33,9 @@ namespace Task_management.Areas.Admin.Controllers
 			iLevelForeAccount = iLevelForeAccount1;
 			this.dbcontext = dbcontext;
 			this.iAccountingRestriction = iAccountingRestriction;
-		}
+            iBondType = iBondType1;
+
+        }
 		public IActionResult MyExpense()
 		{
 			ViewmMODeElMASTER vmodel = new ViewmMODeElMASTER();
@@ -40,6 +43,7 @@ namespace Task_management.Areas.Admin.Controllers
 			vmodel.ListViewExpense = iExpense.GetAll();
 			ViewBag.ExpenseCategory = vmodel.ListExpenseCategory = iExpenseCategory.GetAll();
 			ViewBag.LevelForeAccount = vmodel.ListViewLevelForeAccount = iLevelForeAccount.GetAll();
+			ViewBag.boundtype = vmodel.ListBondType = iBondType.GetAll();
 
 			ViewBag.Expense = vmodel.ListViewExpense = iExpense.GetAll().GroupBy(i => i.AccountName).Select(g => g.First()).ToList();
 
@@ -61,7 +65,8 @@ namespace Task_management.Areas.Admin.Controllers
 			ViewBag.Expense = vmodel.ListViewExpense = iExpense.GetAll().GroupBy(i => i.AccountName).Select(g => g.First()).ToList();
 			vmodel.ListViewExpense = iExpense.GetAll();
 			ViewBag.ExpenseCategory = vmodel.ListExpenseCategory = iExpenseCategory.GetAll();
-			if (IdExpense != null)
+            ViewBag.boundtype = vmodel.ListBondType = iBondType.GetAll();
+            if (IdExpense != null)
 			{
 				vmodel.Expense = iExpense.GetById(Convert.ToInt32(IdExpense));
 				return View(vmodel);
@@ -81,6 +86,7 @@ namespace Task_management.Areas.Admin.Controllers
 				slider.IdExpense = model.Expense.IdExpense;
 				slider.IdExpenseCategory = model.Expense.IdExpenseCategory;
 				slider.IdLevelForeAccount = model.Expense.IdLevelForeAccount;
+				slider.IdBondType = model.Expense.IdBondType;
 				slider.IdLevelForeAccountcreditor = model.Expense.IdLevelForeAccountcreditor;
 				slider.BondNumber = model.Expense.BondNumber;
 				slider.DateBond = model.Expense.DateBond;

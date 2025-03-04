@@ -44,20 +44,8 @@ namespace Task_management.Areas.Admin.APIsControllers
                 return BadRequest();
             }
 
-            var invoice = new TBInvose
-            {
-                IdInvoseHeder = model.IdInvoseHeder,
-                IdProduct = model.IdProduct,
-                Quantity = model.Quantity,
-                price = model.price,
-                total = model.total,
-                CurrentState = true,
-                DataEntry = user.UserName,
-                DateTimeEntry = DateTime.Now,
-            };
-
-            iInvose.saveData(invoice);
-            return Ok(invoice);
+            iInvose.saveData(model);
+            return Ok(model);
         }
 
         [HttpPut("{idInvoic}")]

@@ -1309,7 +1309,7 @@
     <value>تم ادخال فئة المصروفات مسبقا  يرجى التأكد واعادة المحاولة لاحقا  لتتم العملية بنجاح ...!</value>
   </data>
   <data name="LBMyExpenseCategory" xml:space="preserve">
-    <value>فئات المصاريف</value>
+    <value>فئات السندات</value>
   </data>
   <data name="lbExpenseCategory" xml:space="preserve">
     <value>فئة المصاريف</value>
@@ -1321,7 +1321,7 @@
     <value>إضافة وتعديل فئات المصاريف</value>
   </data>
   <data name="LBMyExpense" xml:space="preserve">
-    <value>المصاريف</value>
+    <value>السندات</value>
   </data>
   <data name="lbBondNumber" xml:space="preserve">
     <value>رقم السند</value>

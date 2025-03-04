@@ -2230,7 +2230,7 @@ namespace Task_management.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to المصاريف.
+        ///   Looks up a localized string similar to السندات.
         /// </summary>
         internal static string LBMyExpense {
             get {
@@ -2239,7 +2239,7 @@ namespace Task_management.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to فئات المصاريف.
+        ///   Looks up a localized string similar to فئات السندات.
         /// </summary>
         internal static string LBMyExpenseCategory {
             get {

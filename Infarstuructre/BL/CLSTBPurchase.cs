@@ -64,6 +64,13 @@ namespace Infarstuructre.BL
 				return false;
 			}
 		}
+
+
+
+
+
+
+
 		public bool UpdateData(TBPurchase updatss)
 		{
 			try

@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Asn1.X509.Qualified;
+using static Domin.Entity.Helper;
 
 namespace Task_management.Areas.Admin.APIsControllers
 {
@@ -9,17 +12,40 @@ namespace Task_management.Areas.Admin.APIsControllers
     {
         IIAccountingRestriction iAccountingRestriction;
         MasterDbcontext dbcontext;
-		public AccountRestrectionController(IIAccountingRestriction iAccountingRestriction = null, MasterDbcontext dbcontext = null)
-		{
-			this.iAccountingRestriction = iAccountingRestriction;
-			this.dbcontext = dbcontext;
-		}
+        IISupplier iSupplier;
+        public AccountRestrectionController(IIAccountingRestriction iAccountingRestriction = null, MasterDbcontext dbcontext = null, IISupplier iSupplier = null)
+        {
+            this.iAccountingRestriction = iAccountingRestriction;
+            this.dbcontext = dbcontext;
+            this.iSupplier = iSupplier;
+        }
 
 
-		[HttpPost]
+        [HttpPost]
         public IActionResult AddAccountRe([FromBody] TBAccountingRestriction model)
         {
             var result = iAccountingRestriction.saveData(model);
+
+            var accountNm = dbcontext.TBSuppliers.Where(s => s.SupplierName.Contains("بضاعة في المستودعات".Trim())).FirstOrDefault();
+            var accNm = accountNm.SupplierName;
+
+            var acc2 = new TBAccountingRestriction
+            {
+                NumberaccountingRestrictions = model.NumberaccountingRestrictions,
+                AccountingName = accNm,
+                BondType = model.BondType,
+                BondNumber = model.BondNumber,
+                Debtor = model.creditor,
+                creditor = model.Debtor,
+                Statement = model.Statement,
+                Nouts = model.Nouts,
+                DataEntry = model.DataEntry,
+                DateTimeEntry = model.DateTimeEntry,
+                CurrentState = model.CurrentState,
+            };
+
+            iAccountingRestriction.saveData(acc2);
+
             return Ok(result);
         }
 
@@ -39,11 +65,14 @@ namespace Task_management.Areas.Admin.APIsControllers
         public IActionResult DeleteAccountRe(int accountId)
         {
             var acc = dbcontext.TBAccountingRestrictions.Find(accountId);
+            var BondNum = acc.BondNumber;
 
-            if (acc == null)
+            var accs = dbcontext.TBAccountingRestrictions.Where(a => a.BondNumber == BondNum).ToList();
+
+            if (accs == null)
                 return NoContent();
 
-			var result = dbcontext.TBAccountingRestrictions.Remove(acc);
+		    dbcontext.TBAccountingRestrictions.RemoveRange(accs);
             dbcontext.SaveChanges();
 
 			return Ok(acc);

@@ -1,6 +1,7 @@
 ﻿
 
 using Domin.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infarstuructre.BL
 {
@@ -55,8 +56,24 @@ namespace Infarstuructre.BL
 			//راح يتم أضافة على المشتريات  خانة من خلالها تختار المستودع الي راح تنزل عليه البضاعة وهي علي  
 			try
 			{
-				dbcontext.Add<TBPurchase>(savee);
-				dbcontext.SaveChanges();
+				//حفظ الستوك مع البرشيس
+                var stock = new TBStock
+                {
+                    IdWarehouse = savee.IdWarehouse,
+                    BondType = "سند شراء",
+                    BondDate = DateOnly.FromDateTime(DateTime.Now),
+                    BondNumber = savee.PurchaseNumber,
+                    CurrentState = savee.CurrentState,
+                    DataEntry = savee.DataEntry,
+                    IdProduct = savee.IdProduct,
+                    InputQuantity = savee.Quantity,
+                    OutputQuantity = 0,
+                    DateTimeEntry = DateTime.Now
+                };
+
+                dbcontext.Add<TBStock>(stock);
+                dbcontext.Add<TBPurchase>(savee);
+                dbcontext.SaveChanges();
 				return true;
 			}
 			catch (Exception)
@@ -91,7 +108,21 @@ namespace Infarstuructre.BL
 				var catr = GetById(IdPurchase);
 				catr.CurrentState = false;
 				TBPurchase dele = dbcontext.TBPurchases.Where(a => a.PurchaseNumber == IdPurchase).FirstOrDefault();
-				dbcontext.TBPurchases.Remove(dele);
+                var purcheasNum = dele.PurchaseNumber;
+
+                var stocks = dbcontext.TBStocks.Where(a => a.BondNumber == purcheasNum).ToList();
+                if(stocks.Count > 0)
+                {
+                    dbcontext.TBStocks.RemoveRange(stocks);
+                }
+
+                var accounts = dbcontext.TBAccountingRestrictions.Where(a => a.BondNumber == purcheasNum).ToList();
+                if (accounts.Count > 0)
+                {
+                    dbcontext.TBAccountingRestrictions.RemoveRange(accounts);
+                }
+
+                dbcontext.TBPurchases.Remove(dele);
 				dbcontext.Entry(catr).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
 				dbcontext.SaveChanges();
 				return true;

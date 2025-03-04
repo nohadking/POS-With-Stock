@@ -37,22 +37,6 @@ namespace Task_management.Areas.Admin.APIsControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var stock = new TBStock
-            {
-                IdWarehouse = purchase.IdWarehouse,
-                BondType = "سند شراء",
-                BondDate = DateOnly.FromDateTime(DateTime.Now),
-                BondNumber = purchase.PurchaseNumber,
-                CurrentState = purchase.CurrentState,
-                DataEntry = purchase.DataEntry,
-                IdProduct = purchase.IdProduct,
-                InputQuantity = purchase.Quantity,
-                OutputQuantity = 0,
-                DateTimeEntry = DateTime.Now
-            };
-
-            var result0 = iStock.saveData(stock);
-
             var result = iPurchase.saveData(purchase);
             return Ok(result);
         }

@@ -46,8 +46,13 @@ namespace Infarstuructre.BL
         {
             try
             {
+              // حفظ في المستودعات الكمية الخارجة 
+              //حفظ قيد المبيعات داتل القيود مدين - دائن 
+               // المدين من حساب العميل 
+               //الدائن الى حساب المبيعات  //المبيعات
                 dbcontext.Add<TBInvose>(savee);
                 dbcontext.SaveChanges();
+
                 return true;
             }
             catch (Exception)

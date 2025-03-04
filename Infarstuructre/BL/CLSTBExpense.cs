@@ -87,6 +87,7 @@ namespace Infarstuructre.BL
 
                     // **استعلامات أكثر كفاءة (استخدام Find بدلاً من FirstOrDefault)**
                     var LavelFore = dbcontext.TBLevelForeAccounts.Find(savee.IdLevelForeAccount);
+
                     var LavelForecreditor = dbcontext.TBLevelForeAccounts.Find(savee.IdLevelForeAccountcreditor);
                     var expnsevcatrg = dbcontext.TBExpenseCategorys.Find(savee.IdExpenseCategory);
                     var boundtype = dbcontext.TBBondTypes.Find(savee.IdBondType);
@@ -156,7 +157,13 @@ namespace Infarstuructre.BL
 
         public bool UpdateData(TBExpense updatss)
         {
-           
+            var bondtype = dbcontext.TBBondTypes.Where(a => a.IdBondType == updatss.IdBondType).FirstOrDefault();
+
+            var expenss = dbcontext.TBAccountingRestrictions.Where(a => a.BondType == bondtype.BondType && a.BondNumber == updatss.BondNumber).ToList();
+
+            dbcontext.TBAccountingRestrictions.RemoveRange(expenss);
+            dbcontext.SaveChanges();
+
                 using (var transaction = dbcontext.Database.BeginTransaction())
                 {
                     try

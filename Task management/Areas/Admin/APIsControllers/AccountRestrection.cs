@@ -13,11 +13,13 @@ namespace Task_management.Areas.Admin.APIsControllers
         IIAccountingRestriction iAccountingRestriction;
         MasterDbcontext dbcontext;
         IISupplier iSupplier;
-        public AccountRestrectionController(IIAccountingRestriction iAccountingRestriction = null, MasterDbcontext dbcontext = null, IISupplier iSupplier = null)
+        IIExpense iExpense;
+        public AccountRestrectionController(IIAccountingRestriction iAccountingRestriction = null, MasterDbcontext dbcontext = null, IISupplier iSupplier = null, IIExpense iExpense = null)
         {
             this.iAccountingRestriction = iAccountingRestriction;
             this.dbcontext = dbcontext;
             this.iSupplier = iSupplier;
+            this.iExpense = iExpense;
         }
 
 
@@ -26,8 +28,8 @@ namespace Task_management.Areas.Admin.APIsControllers
         {
             var result = iAccountingRestriction.saveData(model);
 
-            var accountNm = dbcontext.TBSuppliers.Where(s => s.SupplierName.Contains("بضاعة في المستودعات".Trim())).FirstOrDefault();
-            var accNm = accountNm.SupplierName;
+            var accountNm = dbcontext.TBLevelForeAccounts.Where(s => s.AccountName.Contains("بضاعة في المستودعات")).FirstOrDefault();
+            var accNm = accountNm.AccountName;
 
             var acc2 = new TBAccountingRestriction
             {

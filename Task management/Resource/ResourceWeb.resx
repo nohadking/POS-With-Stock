@@ -1710,4 +1710,16 @@
   <data name="LBAddBondType" xml:space="preserve">
     <value>إضافة وتعديل انواع السندات </value>
   </data>
+  <data name="LBMyStock" xml:space="preserve">
+    <value>جرد المستودعات</value>
+  </data>
+  <data name="lbBondDate" xml:space="preserve">
+    <value>تاريخ السند </value>
+  </data>
+  <data name="lbInputQuantity" xml:space="preserve">
+    <value>الكمية المدخلة</value>
+  </data>
+  <data name="lbOutputQuantity" xml:space="preserve">
+    <value>الكمية الخارجة</value>
+  </data>
 </root>

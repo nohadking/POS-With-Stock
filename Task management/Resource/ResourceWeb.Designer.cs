@@ -772,6 +772,15 @@ namespace Task_management.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to تاريخ السند .
+        /// </summary>
+        internal static string lbBondDate {
+            get {
+                return ResourceManager.GetString("lbBondDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to رقم السند.
         /// </summary>
         internal static string lbBondNumber {
@@ -1753,6 +1762,15 @@ namespace Task_management.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to الكمية المدخلة.
+        /// </summary>
+        internal static string lbInputQuantity {
+            get {
+                return ResourceManager.GetString("lbInputQuantity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date added.
         /// </summary>
         internal static string Lbinsert_dt {
@@ -2500,6 +2518,15 @@ namespace Task_management.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to جرد المستودعات.
+        /// </summary>
+        internal static string LBMyStock {
+            get {
+                return ResourceManager.GetString("LBMyStock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to بيانات الموردين .
         /// </summary>
         internal static string LBMYSupplier {
@@ -2910,6 +2937,15 @@ namespace Task_management.Resource {
         internal static string LBOrderStatus {
             get {
                 return ResourceManager.GetString("LBOrderStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to الكمية الخارجة.
+        /// </summary>
+        internal static string lbOutputQuantity {
+            get {
+                return ResourceManager.GetString("lbOutputQuantity", resourceCulture);
             }
         }
         

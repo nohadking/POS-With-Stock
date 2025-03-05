@@ -63,11 +63,12 @@ namespace Infarstuructre.BL
                     OutputQuantity = savee.Quantity,
                     DataEntry = savee.DataEntry,
                     DateTimeEntry = savee.DateTimeEntry,
-                    CurrentState = savee.CurrentState,
+                    CurrentState = true,
                 };
               //حفظ قيد المبيعات داتل القيود مدين - دائن 
                // المدين من حساب العميل 
                //الدائن الى حساب المبيعات  //المبيعات
+                dbcontext.Add<TBStock>(stock);
                 dbcontext.Add<TBInvose>(savee);
                 dbcontext.SaveChanges();
 

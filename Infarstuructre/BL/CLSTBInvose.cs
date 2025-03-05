@@ -1,5 +1,6 @@
 ﻿
 
+using Domin.Entity;
 using Microsoft.Kiota.Abstractions;
 
 namespace Infarstuructre.BL
@@ -46,7 +47,24 @@ namespace Infarstuructre.BL
         {
             try
             {
-              // حفظ في المستودعات الكمية الخارجة 
+                // حفظ في المستودعات الكمية الخارجة 
+
+                var wareHouse = dbcontext.TBWarehouses.Where(w => w.WarehouseName.Contains("المستودع الرئيسي")).FirstOrDefault();
+                var invoiceHeader = dbcontext.TBInvoseHeders.Find(savee.IdInvoseHeder);
+
+                var stock = new TBStock
+                {
+                    IdWarehouse = wareHouse.IdWarehouse,
+                    BondType = "فاتورة مبيعات",
+                    BondNumber = invoiceHeader.InvoiceNumber,
+                    BondDate = DateOnly.FromDateTime(DateTime.Now),
+                    IdProduct = savee.IdProduct,
+                    InputQuantity = 0,
+                    OutputQuantity = savee.Quantity,
+                    DataEntry = savee.DataEntry,
+                    DateTimeEntry = savee.DateTimeEntry,
+                    CurrentState = savee.CurrentState,
+                };
               //حفظ قيد المبيعات داتل القيود مدين - دائن 
                // المدين من حساب العميل 
                //الدائن الى حساب المبيعات  //المبيعات

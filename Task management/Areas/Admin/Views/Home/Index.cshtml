@@ -207,7 +207,7 @@
 			</div>
 			<div class="card-body">
 				<div class="table-responsive dataview">
-					<table class="table dashboard-expired-products">
+					<table class="table dashboard-expired-products" id="online-users-table">
 						<thead>
 							<tr>
 								<th class="no-sort">
@@ -218,50 +218,20 @@
 								</th>
 								<th>المستخدم</th>
 								<th>البريد الاكتروني</th>
-								<th>رقم الهاتف </th>
-								
+								<th>رقم الهاتف</th>
 								<th class="no-sort">Action</th>
 							</tr>
 						</thead>
-						<tbody>
-							@foreach (var item in ViewBag.onlineuser)
-							{
-								<tr>
-									<td>
-										<label class="checkboxs">
-											<input type="checkbox">
-											<span class="checkmarks"></span>
-										</label>
-									</td>
-									<td>
-										<div class="productimgname">
-											<a href="javascript:void(0);" class="product-img stock-img">
-												<img src="@Url.Content("~/Images/Users/" + item.ProductImage)" alt="product">
-											</a>
-											<a href="javascript:void(0);">@item.name </a>
-										</div>
-									</td>
-									<td><a href="javascript:void(0);">@item.email</a></td>
-									<td>@item.PhoneNumber</td>
-								
-									<td class="action-table-data">
-										<div class="edit-delete-action">
-											<a class="me-2 p-2" href="#">
-												<i data-feather="edit" class="feather-edit"></i>
-											</a>
-											<a class=" confirm-text p-2" href="javascript:void(0);">
-												<i data-feather="trash-2" class="feather-trash-2"></i>
-											</a>
-										</div>
-									</td>
-								</tr>
-							}
-						
+						<tbody id="onlineUsersTableBody">
+							<!-- سيتم ملء البيانات هنا بواسطة JavaScript -->
 						</tbody>
 					</table>
 				</div>
 			</div>
 		</div>
+
+
+		
 	</div>
 </div>
 
@@ -314,6 +284,87 @@
 			});
 		});
 	</script>
+
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+	<script>
+		const connection = new signalR.HubConnectionBuilder()
+			.withUrl("/userHub")
+			.build();
+
+		// عند الاتصال بالمستخدمين الجدد
+		connection.on("UserConnected", function (users) {
+			updateOnlineUsers(users);
+		});
+
+		// عند قطع الاتصال بالمستخدمين
+		connection.on("UserDisconnected", function (users) {
+			updateOnlineUsers(users);
+		});
+
+		// تحديث قائمة المستخدمين المتصلين
+		function updateOnlineUsers(users) {
+			const tableBody = document.getElementById("onlineUsersTableBody");
+			tableBody.innerHTML = ""; // مسح البيانات الحالية
+
+			users.forEach(user => {
+				const row = document.createElement("tr");
+
+				// خلية الاختيار
+				const checkboxCell = document.createElement("td");
+				checkboxCell.innerHTML = `
+							<label class="checkboxs">
+								<input type="checkbox">
+								<span class="checkmarks"></span>
+							</label>
+						`;
+				row.appendChild(checkboxCell);
+
+				// اسم المستخدم
+				const nameCell = document.createElement("td");
+				nameCell.innerHTML = `
+							<div class="productimgname">
+								<a href="javascript:void(0);" class="product-img stock-img">
+									<img src="/Images/Users/${user.imageUser}" alt="user-image"> <!-- صورة المستخدم -->
+								</a>
+								<a href="javascript:void(0);">${user.userName}</a> <!-- عرض اسم المستخدم -->
+							</div>
+						`;
+				row.appendChild(nameCell);
+
+				// البريد الإلكتروني
+				const emailCell = document.createElement("td");
+				emailCell.innerHTML = `<a href="mailto:${user.email}">${user.email}</a>`; // عرض البريد الإلكتروني
+				row.appendChild(emailCell);
+
+				// رقم الهاتف
+				const phoneCell = document.createElement("td");
+				phoneCell.textContent = user.phoneNumber; // عرض رقم الهاتف
+				row.appendChild(phoneCell);
+
+				// الإجراءات
+				const actionCell = document.createElement("td");
+				actionCell.classList.add("action-table-data");
+				actionCell.innerHTML = `
+							<div class="edit-delete-action">
+								<a class="me-2 p-2" href="#">
+									<i data-feather="edit" class="feather-edit"></i>
+								</a>
+								<a class="confirm-text p-2" href="javascript:void(0);">
+									<i data-feather="trash-2" class="feather-trash-2"></i>
+								</a>
+							</div>
+						`;
+				row.appendChild(actionCell);
+
+				tableBody.appendChild(row); // إضافة السطر إلى الجدول
+			});
+		}
+
+		// بدء الاتصال
+		connection.start().catch(err => console.error(err.toString()));
+	</script>
+
 
 
 

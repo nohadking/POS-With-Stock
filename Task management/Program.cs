@@ -230,6 +230,8 @@ builder.Services.AddScoped<IIOrderOnline, CLSTBOrderOnline>();
 builder.Services.AddScoped<IIBondType, CLSTBBondType>();
 
 
+
+builder.Services.AddSignalR();
 // تفعيل الترخيص لـ QuestPDF
 QuestPDF.Settings.License = LicenseType.Community;
 
@@ -255,12 +257,17 @@ if (app.Environment.IsDevelopment())
 
 // استخدام ملفات ثابتة
 app.UseStaticFiles();
-
+app.UseRouting();
 // استخدام المصادقة والتفويض
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseEndpoints(endpoints =>
+{
+	endpoints.MapHub<UserHub>("/userHub");  // مسار Hub
+});
 app.UseCookiePolicy();
 app.UseSession();
+
 
 // Middleware للتحقق من تسجيل الدخول قبل الوصول إلى Swagger
 app.Use(async (context, next) =>
@@ -276,6 +283,7 @@ app.Use(async (context, next) =>
     await next.Invoke();
 });
 
+
 // تكوين طرق الـ Controller
 app.MapControllerRoute(
     name: "areas",
@@ -286,6 +294,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
+
+
+
+
 
 // تفعيل Swagger UI
 app.UseSwagger();

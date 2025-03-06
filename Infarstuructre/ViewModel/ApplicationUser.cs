@@ -13,5 +13,10 @@ namespace Infarstuructre.ViewModel
         public string ImageUser { get; set; }
         public bool ActiveUser { get; set; }
         public bool IsOnline { get; set; }
-    }
+
+		public static implicit operator ApplicationUser(List<ApplicationUser> v)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

@@ -27,10 +27,12 @@ namespace Infarstuructre.BL
         Task<List<ApplicationUser>> GetAllByNameAsync(string name);
         Task<List<VwUser>> GetAllbyIdAsync(string userId);
         Task<List<ApplicationUser>> GetAllByNameallAsync();
+        List<ApplicationUser> GetAllByName2(string name);
 
 
 
-    }
+
+	}
 	public class CLSUserInformation: IIUserInformation
 	{
 		UserManager<ApplicationUser> _userManager;
@@ -136,9 +138,14 @@ namespace Infarstuructre.BL
             return MySlider;
         }
 
+		public List<ApplicationUser> GetAllByName2(string name)
+		{
+			List<ApplicationUser> MySlider =  _userManager.Users.Where(x => x.Email == name).Where(n => n.ActiveUser == true).ToList(); //_userManager.Users.OrderBy(x=>x.Name).ToList()
+																																				  //List<VwUser> MySlider = dbcontext.VwUsers.OrderByDescending(n => n.Id).Where(a => a.ActiveUser == true).ToList();
+			return MySlider;
+		}
 
-
-        public async Task<ApplicationUser> GetByIdAsync(string? Id)
+		public async Task<ApplicationUser> GetByIdAsync(string? Id)
         {
             ApplicationUser sslid = await _userManager.Users.FirstOrDefaultAsync(a => a.Id == Id);
             return sslid;

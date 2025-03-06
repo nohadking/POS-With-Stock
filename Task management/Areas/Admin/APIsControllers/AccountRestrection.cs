@@ -28,13 +28,10 @@ namespace Task_management.Areas.Admin.APIsControllers
         {
             var result = iAccountingRestriction.saveData(model);
 
-            var accountNm = dbcontext.TBLevelForeAccounts.Where(s => s.AccountName.Contains("بضاعة في المستودعات")).FirstOrDefault();
-            var accNm = accountNm.AccountName;
-
             var acc2 = new TBAccountingRestriction
             {
                 NumberaccountingRestrictions = model.NumberaccountingRestrictions,
-                AccountingName = accNm,
+                AccountingName = "مبيعات",
                 BondType = model.BondType,
                 BondNumber = model.BondNumber,
                 Debtor = model.creditor,

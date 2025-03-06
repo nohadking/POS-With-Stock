@@ -91,6 +91,7 @@
 </head>
 <body>
     <p id="InvoiceNumberMaimAlMain"></p>
+    <p hidden id="NumAccountMax">@ViewBag.nomberAcc</p>
 
     <div id="global-loader">
         <div class="whirly-loader"> </div>
@@ -1828,12 +1829,15 @@
     <script>
         function SaveInvoiceInDB() {
             const idCustomerCategoryy = document.querySelector('#idForUCustCate').value;
+            const NameCustomerCategoryy = document.querySelector('#idForUCustCate').textContent;
             const invoieNumberr = parseInt(document.querySelector('#IIdInvoiceNumberForSave').textContent.trim(), 10);
             const idPaymentMethodd = parseInt(document.querySelector('#idPayMeth1')?.textContent?.trim(), 10) || null;
+            const PaymentMethodd2 = document.querySelector('#PayMeth').textContent;
             const idForInvHed = parseInt(0, 10);
             const flexSwitchCheckChecked = document.querySelector("#flexSwitchCheckChecked").checked;
             const carintstaite = document.querySelector("#carintstaite").checked;
             const UserIdentity = document.querySelector("#UserIdentity").value;
+            const NumAccountMax = parseInt(document.querySelector("#NumAccountMax").textContent);
             const timeNow = new Date().toISOString();
             const payload = {
                 "idInvoseHeder": idForInvHed,
@@ -1869,9 +1873,11 @@
                     console.log('Response Data (InvoiceHeader):', data);
 
                     document.querySelector("#InvoiceNumberMaimAlMain").textContent = data.invoiceNumber.toString();
-                    //معلومات المنتجات
+
+                    // معلومات المنتجات
                     const addedProducts = document.querySelectorAll("#productsAddedToOrder .product-list");
                     const productRequests = [];
+                    let totalCredit = 0;
                     addedProducts.forEach(product => {
                         const productName = product.querySelector(".product-info h6 a").textContent.trim();
                         const idPro = parseInt(product.querySelector(".iiddPro").textContent.trim(), 10);
@@ -1879,7 +1885,7 @@
                             product.querySelector(".product-info .info h5").textContent.trim().replace(/[^0-9.]/g, '')
                         );
                         const qty = parseInt(product.querySelector('input[name="qty"]').value);
-
+                        totalCredit += price * qty;
                         const p1 = {
                             "idInvose": 0,
                             "idInvoseHeder": parseInt(data.idInvoseHeder, 10),
@@ -1890,31 +1896,60 @@
                             "dataEntry": UserIdentity,
                             "dateTimeEntry": new Date().toISOString(),
                             "currentState": true
-                        }
+                        };
 
-                        console.log("p1  " + JSON.stringify(p1))
-                        // إضافة طلب إرسال المنتج إلى المصفوفة
+                        console.log("p1  " + JSON.stringify(p1));
+
+                        // إضافة الطلب إلى المصفوفة
                         productRequests.push(
                             fetch(`${baseUrl}/Invoice`, {
                                 method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
+                                headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify(p1)
                             })
-                                .then(response => {
-                                    return response.json();
-                                })
+                                .then(response => response.json())
                                 .then(productData => {
                                     console.log('Response Data (InvoiceDetails):', productData);
                                 })
                                 .catch(error => {
                                     console.error('Error saving product:', error);
+                                    throw error;
                                 })
                         );
                     });
 
-                    return Promise.all(productRequests);
+                    return Promise.all(productRequests)
+                        .then(() => {
+                            console.log("All products saved successfully!");
+
+                            var accountingRest = {
+                                "idaccountingRestrictions": 0,
+                                "numberaccountingRestrictions": NumAccountMax,
+                                "accountingName": NameCustomerCategoryy,
+                                "bondType": "فاتورة مبيعات",
+                                "bondNumber": invoieNumberr,
+                                "debtor": 0,
+                                "creditor": totalCredit,
+                                "statement": `فاتورة مبيعات رقم ${invoieNumberr} من ${NameCustomerCategoryy} ${PaymentMethodd2}`,
+                                "nouts": `فاتورة مبيعات رقم ${invoieNumberr} من ${NameCustomerCategoryy} ${PaymentMethodd2}`,
+                                "dataEntry": UserIdentity,
+                                "dateTimeEntry": new Date(),
+                                "currentState": true,
+                            };
+                            console.log("accountingRest  " + JSON.stringify(accountingRest));
+                            return fetch(`${baseUrl}/AccountRestrection`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(accountingRest)
+                            });
+                        })
+                        .then(response => response.json())
+                        .then(finalData => {
+                            console.log("Final API Response:", finalData);
+                        })
+                        .catch(error => {
+                            console.error("Error in processing:", error);
+                        });
                 })
                 .then(() => {
                     console.log('All products saved successfully!');

@@ -17,17 +17,17 @@ namespace Task_management.Areas.Admin.Controllers
 		IIPaymentMethod iPaymentMethod;
         IIInvose iInvose;
         IICompanyInformation iCompanyInformation;
-        public POSController(IICategory iCategory1,IIProduct iProduct1,IIInvoseHeder iInvoseHeder1, IIUserInformation iUserInformation1,IIPaymentMethod iPaymentMethod1,IIInvose iInvose1,IICompanyInformation iCompanyInformation1)
+        IIAccountingRestriction iAccountingRestriction;
+        public POSController(IICategory iCategory1, IIProduct iProduct1, IIInvoseHeder iInvoseHeder1, IIUserInformation iUserInformation1, IIPaymentMethod iPaymentMethod1, IIInvose iInvose1, IICompanyInformation iCompanyInformation1, IIAccountingRestriction iAccountingRestriction)
         {
             iCategory = iCategory1;
             iProduct = iProduct1;
-			iInvoseHeder = iInvoseHeder1;
-			iUserInformation = iUserInformation1;
-			iPaymentMethod = iPaymentMethod1;
+            iInvoseHeder = iInvoseHeder1;
+            iUserInformation = iUserInformation1;
+            iPaymentMethod = iPaymentMethod1;
             iInvose = iInvose1;
             iCompanyInformation = iCompanyInformation1;
-
-
+            this.iAccountingRestriction = iAccountingRestriction;
         }
         public IActionResult MyPOS()
         {
@@ -38,6 +38,14 @@ namespace Task_management.Areas.Admin.Controllers
             ViewBag.nomberMax = numberinvose.Any()
         ? numberinvose.Max(c => c.InvoiceNumber) + 1
         : 1;
+
+            var numberAcc = vmodel.ListAccountingRestriction = iAccountingRestriction.GetAll();
+
+
+            ViewBag.nomberAcc = numberAcc.Any()
+                ? numberAcc.Max(c => c.NumberaccountingRestrictions) + 1
+                    : 1;
+
             ViewBag.user = iUserInformation.GetAllByRole("Customer");
 			vmodel.ListPaymentMethod = iPaymentMethod.GetAllActive();
 

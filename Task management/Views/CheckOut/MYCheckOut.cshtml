@@ -17,6 +17,7 @@
                 <div class="col-sm-6">
                     <div class="page-title">
                         <h2>Check-out</h2>
+                        <h2 hidden id="nomberAccMax">@ViewBag.nomberAccMax</h2>
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -458,10 +459,12 @@
     <script>
         function AddOrderToDB() {
             var invoiceNumber = parseInt($('#InvoseNum').text()) || 0;
+            var nomberAccMax = parseInt($('#nomberAccMax').text()) || 0;
             var userId = $('#userIIDD').text().trim();
             var userNm = $('#userNNmm').text().trim();
             var qtyAll = parseInt($('#TotalQuntityFinally').text()) || 0;
             var selectedPaymentMethod = parseInt($('input[name="payment1-group-bottom"]:checked').val()) || 0;
+            var selectedPaymentMethodNm = $('input[name="payment1-group-bottom"]:checked').text();
             var reciveMethod = $('input[name="payment-group-top"]:checked').val() || 0;
             var notesForSave = $('#NotesForSave').text().trim();
             var orderTypeId = parseInt($('#orderTypeId').text()) || 0;
@@ -478,6 +481,7 @@
                 'currentState': true
             };
 
+            let totalDebtor = 0;
             var baseUrl = `${window.location.origin}/api`;
 
             fetch(`${baseUrl}/InvoiceHeader`, {
@@ -490,7 +494,7 @@
                     console.log('Response from save header:', data);
                     var invoId = data.idInvoseHeder;
                     var cart = JSON.parse(localStorage.getItem('cart')) || [];
-
+                    totalDebtor += parseFloat(p.price) * parseInt(p.quantity);
                     var promises = cart.map(p => {
                         var invoice = {
                             "idInvose": 0,
@@ -532,8 +536,36 @@
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(orderOnline)
-                        });
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('تم إرسال الطلب الأول بنجاح:', data);
+
+                                var accountingRest = {
+                                    "idaccountingRestrictions": 0,
+                                    "numberaccountingRestrictions": nomberAccMax,
+                                    "accountingName": "نقطة مبيعات",
+                                    "bondType": "فاتورة مبيعات",
+                                    "bondNumber": invoiceNumber,
+                                    "debtor": totalDebtor,
+                                    "creditor": 0,
+                                    "statement": `فاتورة مبيعات رقم ${invoiceNumber} من ${userNNmm} ${selectedPaymentMethodNm}`,
+                                    "nouts": `فاتورة مبيعات رقم ${invoiceNumber} من ${userNNmm} ${selectedPaymentMethodNm}`,
+                                    "dataEntry": userNm,
+                                    "dateTimeEntry": new Date(),
+                                    "currentState": true,
+                                };
+                                return fetch(`${baseUrl}/AccountRestrection`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify(accountingRest)
+                                });
+                            })
+                            .then(response => response.json())
+                            .then(data => console.log('تم إرسال الطلب الثاني بنجاح:', data))
+                            .catch(error => console.error('حدث خطأ أثناء إرسال الطلبات:', error));
                     });
+
                 })
                 .then(response => response.json())
                 .then(data => {

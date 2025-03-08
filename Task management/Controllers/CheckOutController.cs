@@ -12,10 +12,11 @@ namespace Task_management.Controllers
         IIDeliveryCompanyPricing DeliveryCompanyPricing;
         IIInvoseHeder iInvoseHeder;
         IIPaymentMethod iPaymentMethod;
+        IIAccountingRestriction iAccountingRestriction;
         private readonly MasterDbcontext dbcontext;
         IIOrderOnline iOrderOnline;
 
-        public CheckOutController(ILogger<HomeController> logger, IICompanyInformation iCompanyInformation1, IIHomeBackgroundimage iHomeBackgroundimage1, IIDeliveryCompanyPricing iDeliveryCompanyPricing1, IIInvoseHeder iInvoseHeder1, IIPaymentMethod iPaymentMethod1, MasterDbcontext dbcontext, IIOrderOnline iOrderOnline = null)
+        public CheckOutController(ILogger<HomeController> logger, IICompanyInformation iCompanyInformation1, IIHomeBackgroundimage iHomeBackgroundimage1, IIDeliveryCompanyPricing iDeliveryCompanyPricing1, IIInvoseHeder iInvoseHeder1, IIPaymentMethod iPaymentMethod1, MasterDbcontext dbcontext, IIOrderOnline iOrderOnline = null, IIAccountingRestriction iAccountingRestriction = null)
         {
             _logger = logger;
             iCompanyInformation = iCompanyInformation1;
@@ -25,6 +26,7 @@ namespace Task_management.Controllers
             iPaymentMethod = iPaymentMethod1;
             this.dbcontext = dbcontext;
             this.iOrderOnline = iOrderOnline;
+            this.iAccountingRestriction = iAccountingRestriction;
         }
         public IActionResult MYCheckOut()
         {
@@ -35,6 +37,11 @@ namespace Task_management.Controllers
             var numberinvose = vmodel.ListViewInvoseHede = iInvoseHeder.GetAll();
             ViewBag.nomberMax = numberinvose.Any()
                 ? numberinvose.Max(c => c.InvoiceNumber) + 1
+                : 1;
+
+            var numberAcc = vmodel.ListAccountingRestriction = iAccountingRestriction.GetAll();
+            ViewBag.nomberAccMax = numberAcc.Any()
+                ? numberAcc.Max(c => c.NumberaccountingRestrictions) + 1
                 : 1;
 
             vmodel.ListPaymentMethod = iPaymentMethod.GetAll();

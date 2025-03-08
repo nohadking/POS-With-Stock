@@ -655,6 +655,16 @@ namespace Infarstuructre.Data
            .HasDefaultValueSql("((1))");  
        
             //--------------------------------- 
+            //---------------------------------
+            builder.Entity<TBDeliveryCompanyRequests>()
+           .Property(b => b.DateTimeEntry)
+           .HasDefaultValueSql("getdate()");
+            builder.Entity<TBDeliveryCompanyRequests>()
+           .Property(b => b.CurrentState)
+           .HasDefaultValueSql("((1))");  
+
+       
+            //--------------------------------- 
         }
         //***********************************
         public DbSet<VwUser> VwUsers { get; set; }
@@ -719,6 +729,8 @@ namespace Infarstuructre.Data
         public DbSet<TBStock> TBStocks { get; set; }
         public DbSet<TBViewStock> ViewStock { get; set; }
         public DbSet<TBBondType> TBBondTypes { get; set; }
+        public DbSet<TBDeliveryCompanyRequests> TBDeliveryCompanyRequestss { get; set; }
+
 
 
     }

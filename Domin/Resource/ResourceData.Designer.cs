@@ -151,7 +151,7 @@ namespace Domin.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The number of characters entered must not exceed 2000 characters...!.
+        ///   Looks up a localized string similar to يجب ان لاتتجاوز عدد الاحرف المدخل عن 2000 حرف يرجى التأد لتتم العملية بنجاح ...!.
         /// </summary>
         internal static string MaxLength2000 {
             get {
@@ -862,6 +862,15 @@ namespace Domin.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to يرجى أدراج العنوان كاملا لتتم العملية بنجاح ...!.
+        /// </summary>
+        internal static string VlFullAddress {
+            get {
+                return ResourceManager.GetString("VlFullAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to يرجى أدراج الاسم كاملا لتتم العملية بنجاح ....!.
         /// </summary>
         internal static string VlFullName {
@@ -993,6 +1002,15 @@ namespace Domin.Resource {
         internal static string VlMoblie {
             get {
                 return ResourceManager.GetString("VlMoblie", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to يرجى أدخال الاسم كاملا لتتم العملية بنجاح ..!.
+        /// </summary>
+        internal static string VlNameClint {
+            get {
+                return ResourceManager.GetString("VlNameClint", resourceCulture);
             }
         }
         

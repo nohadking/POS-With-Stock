@@ -154,7 +154,7 @@
     <value>The number of characters entered must not exceed 1000 characters...!</value>
   </data>
   <data name="MaxLength2000" xml:space="preserve">
-    <value>The number of characters entered must not exceed 2000 characters...!</value>
+    <value>يجب ان لاتتجاوز عدد الاحرف المدخل عن 2000 حرف يرجى التأد لتتم العملية بنجاح ...!</value>
   </data>
   <data name="MaxLength3000" xml:space="preserve">
     <value>أقصى عدد أحرف يمكن أدخاله هو 3000 حرف .. !</value>
@@ -689,5 +689,11 @@
   </data>
   <data name="VlBondType" xml:space="preserve">
     <value>يرجى أدراج نوع السند لتتم العملية بنجاح ..!</value>
+  </data>
+  <data name="VlNameClint" xml:space="preserve">
+    <value>يرجى أدخال الاسم كاملا لتتم العملية بنجاح ..!</value>
+  </data>
+  <data name="VlFullAddress" xml:space="preserve">
+    <value>يرجى أدراج العنوان كاملا لتتم العملية بنجاح ...!</value>
   </data>
 </root>
